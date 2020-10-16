@@ -1,0 +1,17 @@
+query Me {
+  me {
+    id
+    email
+    activated
+    avatar
+    createdAt
+    mentor {
+      firstName
+      lastName
+    }
+    individual {
+      firstName
+      lastName
+    }
+  }
+}

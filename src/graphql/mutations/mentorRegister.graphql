@@ -1,0 +1,15 @@
+mutation MentorRegister($options: RegisterInput!) {
+  registerMentor(options: $options) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+      email
+      mentor {
+        firstName
+      }
+    }
+  }
+}
