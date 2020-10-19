@@ -75,9 +75,9 @@ export const NavBar: React.FC<NavBarProps> = () => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>
-            <Link to={`/mentor/${data.me.id}`}>Profile</Link>
-          </MenuItem>
+          {data.me.mentor ? (<MenuItem onClick={handleClose}>
+            <Link to={`/mentor/${data.me.mentor.id}`}>Profile</Link>
+          </MenuItem>) : null}
           <MenuItem onClick={handleClose}>My account</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>

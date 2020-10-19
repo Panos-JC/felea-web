@@ -1,4 +1,10 @@
-import { Divider, IconButton, makeStyles, Typography } from "@material-ui/core";
+import {
+  Chip,
+  Divider,
+  IconButton,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import React from "react";
 
@@ -29,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "1rem",
     marginBottom: "1rem",
   },
+  industries: {
+    marginBottom: "1rem",
+  },
+  industryChip: {
+    marginRight: "0.5rem",
+  },
 }));
 
 interface WorkExperienceProps {
@@ -37,6 +49,7 @@ interface WorkExperienceProps {
   from: string;
   to: string;
   description: string;
+  industries: any[];
 }
 
 export const WorkExperience: React.FC<WorkExperienceProps> = ({
@@ -45,6 +58,7 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
   from,
   to,
   description,
+  industries,
 }) => {
   const classes = useStyles();
 
@@ -69,6 +83,16 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
       >
         {description}
       </Typography>
+      <div className={classes.industries}>
+        {industries &&
+          industries.map((industry) => (
+            <Chip
+              key={industry.name}
+              className={classes.industryChip}
+              label={industry.name}
+            />
+          ))}
+      </div>
       <Divider />
     </div>
   );

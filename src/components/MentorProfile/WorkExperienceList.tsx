@@ -12,8 +12,17 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
+import { Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import React, { useEffect, useState } from "react";
+import {
+  Industry,
+  useCreateWorkExperienceMutation,
+  useIndustriesQuery,
+  useWorkExperiencesQuery,
+  WorkExperienceInput,
+  WorkExperiencesDocument,
+} from "../../generated/graphql";
 import { GeneralCard } from "./GeneralCard";
 import { WorkExperience } from "./WorkExperience";
 
@@ -31,31 +40,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ExperienceProps {
-  workExperience: {
-    role: string;
-    company: string;
-    from: string;
-    to: string;
-    description: string;
-  }[];
-  setWorkExperience: React.Dispatch<
-    React.SetStateAction<
-      {
-        role: string;
-        company: string;
-        from: string;
-        to: string;
-        description: string;
-      }[]
-    >
-  >;
+  id: number;
 }
 
-export const Experience: React.FC<ExperienceProps> = ({
-  workExperience,
-  setWorkExperience,
-}) => {
+export const Experience: React.FC<ExperienceProps> = ({ id }) => {
   const classes = useStyles();
+
+  const { data } = useIndustriesQuery();
+  const [createWorkExperience] = useCreateWorkExperienceMutation();
+
+  const {
+    data: workExperiencesData,
+    loading: workExperiencesLoading,
+  } = useWorkExperiencesQuery({ variables: { mentorId: id } });
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -64,6 +61,14 @@ export const Experience: React.FC<ExperienceProps> = ({
   const [from, setFrom] = useState<any>(new Date());
   const [to, setTo] = useState<any>(new Date());
   const [description, setDescription] = useState("");
+  const [selectedTags, setSelectedTags] = useState<any[]>([]);
+
+  useEffect(() => {
+    console.log(
+      "selectedTags ",
+      selectedTags.map((item) => item["name"].toLowerCase())
+    );
+  }, [selectedTags]);
 
   const handleInputChange = (event: any) => {
     switch (event.target.name) {
@@ -81,7 +86,7 @@ export const Experience: React.FC<ExperienceProps> = ({
     }
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const monthNames = [
       "January",
       "February",
@@ -99,35 +104,43 @@ export const Experience: React.FC<ExperienceProps> = ({
 
     const fromDate = new Date(from);
     const toDate = new Date(to);
+    try {
+      const input: WorkExperienceInput = {
+        role,
+        companyName: company,
+        description,
+        from: `${monthNames[fromDate.getMonth()]} ${fromDate.getFullYear()}`,
+        untill: `${monthNames[toDate.getMonth()]} ${toDate.getFullYear()}`,
+        industries: selectedTags.map((item) => item["name"].toLowerCase()),
+      };
 
-    const newWorkExperience = {
-      role,
-      company,
-      from: `${monthNames[fromDate.getMonth()]} ${fromDate.getFullYear()}`,
-      to: `${monthNames[toDate.getMonth()]} ${toDate.getFullYear()}`,
-      description,
-    };
+      console.log("input ", input);
 
-    setWorkExperience((old) => [...old, newWorkExperience]);
-
-    console.log(role);
-    console.log(company);
-    console.log(`${monthNames[fromDate.getMonth()]} ${fromDate.getFullYear()}`);
-    console.log(`${monthNames[toDate.getMonth()]} ${toDate.getFullYear()}`);
-    console.log(description);
+      const data = await createWorkExperience({
+        variables: { input },
+        refetchQueries: [
+          { query: WorkExperiencesDocument, variables: { mentorId: id } },
+        ],
+      });
+      console.log("Response ", data);
+    } catch (error) {
+      console.log(error);
+    }
     setDialogOpen(false);
   };
 
   return (
     <GeneralCard title="Experience">
-      {workExperience.length > 0 &&
-        workExperience.map((work) => (
+      {!workExperiencesLoading &&
+        workExperiencesData?.workExperiences.map((work) => (
           <WorkExperience
+            key={work.id}
             role={work.role}
-            company={work.company}
+            company={work.companyName}
             from={work.from}
-            to={work.to}
+            to={work.untill}
             description={work.description}
+            industries={work.industries}
           />
         ))}
       <div className={classes.addWorkWrapper}>
@@ -215,6 +228,26 @@ export const Experience: React.FC<ExperienceProps> = ({
                 variant="outlined"
                 value={description}
                 onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Autocomplete
+                multiple
+                id="tags-standard"
+                options={data?.industries as Industry[]}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, values) => {
+                  setSelectedTags(values);
+                }}
+                // defaultValue={[top100Films[13]]}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Multiple values"
+                    placeholder="Favorites"
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>

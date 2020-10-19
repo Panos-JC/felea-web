@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { Register } from "./pages/auth/Register";
 import { RegisterMentor } from "./pages/auth/RegisterMentor";
 import { Home } from "./pages/Home";
+import { Mentors } from "./pages/Mentors";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Router>
         <Switch>
           <ProtectedRoute path="/mentor/:id" component={MentorProfile} exact />
+          <ProtectedRoute path="/mentors" component={Mentors} exact />
 
           <ProtectedRoute path="/" component={Home} exact />
 

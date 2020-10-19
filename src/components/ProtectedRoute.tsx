@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  component,
+  component: Component,
   path,
   exact = false,
 }) => {
@@ -20,7 +20,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }, [cookies]);
 
   return cookies.qid ? (
-    <Route path={path} exact={exact} component={component} />
+    <Route path={path} exact={exact}>
+      <Component />
+    </Route>
   ) : (
     <Redirect to="/login" />
   );

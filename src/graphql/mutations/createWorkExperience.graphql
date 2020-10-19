@@ -1,0 +1,9 @@
+mutation CreateWorkExperience($input: WorkExperienceInput!) {
+  createWorkExperience(input: $input) {
+    role
+    companyName
+    description
+    from
+    untill
+  }
+}

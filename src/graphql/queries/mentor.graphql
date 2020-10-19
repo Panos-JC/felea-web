@@ -1,0 +1,12 @@
+query Mentor($mentorId: Int!) {
+  mentor(mentorId: $mentorId) {
+    id
+    firstName
+    lastName
+    rate
+    bio
+    user {
+      avatar
+    }
+  }
+}

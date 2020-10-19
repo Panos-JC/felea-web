@@ -6,6 +6,7 @@ query Me {
     avatar
     createdAt
     mentor {
+      id
       firstName
       lastName
     }
