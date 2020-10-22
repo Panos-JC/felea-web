@@ -8,12 +8,9 @@ import {
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { useState } from "react";
-import {
-  useIndustriesQuery,
-  useWorkExperiencesQuery,
-} from "../../generated/graphql";
-import { WorkExperienceForm } from "./forms/WorkExperienceForm";
-import { GeneralCard } from "./GeneralCard";
+import { useWorkExperiencesQuery } from "../../../generated/graphql";
+import { WorkExperienceForm } from "../forms/WorkExperienceForm";
+import { GeneralCard } from "../generalCard/GeneralCard";
 import { WorkExperience } from "./WorkExperience";
 
 const useStyles = makeStyles((theme) => ({

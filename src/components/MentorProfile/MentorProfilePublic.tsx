@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Layout } from "../components/Layout";
-import { MentorInfoCard } from "../components/MentorProfile/MentorInfoCard";
-import { WorkExperienceList } from "../components/MentorProfile/WorkExperienceList";
-import { useMentorQuery } from "../generated/graphql";
+import React from "react";
+import { Layout } from "../layout/Layout";
+import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
+import { WorkExperienceList } from "./workExperience/WorkExperienceList";
+import { useMentorQuery } from "../../generated/graphql";
 import { useParams } from "react-router-dom";
-import { Bio } from "../components/MentorProfile/Bio";
+import { Bio } from "./bio/Bio";
 
 // const useStyles = makeStyles((theme) => ({
 

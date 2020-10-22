@@ -1,6 +1,6 @@
 import { Container } from "@material-ui/core";
 import React from "react";
-import { NavBar } from "./NavBar";
+import { NavBar } from "../navbar/NavBar";
 
 interface LayoutProps {
   maxWidth?: "lg" | "md" | "sm" | "xl" | "xs" | false;

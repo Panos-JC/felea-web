@@ -19,8 +19,8 @@ import {
   MeDocument,
   useMeQuery,
   useSetMentorDetailsMutation,
-} from "../../generated/graphql";
-import { LoadingButton } from "../LoadingButton";
+} from "../../../generated/graphql";
+import { LoadingButton } from "../../loadingButton/LoadingButton";
 
 const useStyles = makeStyles((theme) => ({
   settings: {

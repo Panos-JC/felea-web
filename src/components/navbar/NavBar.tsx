@@ -11,7 +11,7 @@ import {
 import { AccountCircle } from "@material-ui/icons";
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useMeQuery, useLogoutMutation } from "../generated/graphql";
+import { useMeQuery, useLogoutMutation } from "../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
   root: {

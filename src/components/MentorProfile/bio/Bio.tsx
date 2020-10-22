@@ -16,8 +16,8 @@ import {
   MeDocument,
   MentorDocument,
   useSetBioMutation,
-} from "../../generated/graphql";
-import { GeneralCard } from "./GeneralCard";
+} from "../../../generated/graphql";
+import { GeneralCard } from "../generalCard/GeneralCard";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

@@ -1,9 +1,9 @@
 import React from "react";
-import { Layout } from "../components/Layout";
-import { Bio } from "../components/MentorProfile/Bio";
-import { MentorInfoCard } from "../components/MentorProfile/MentorInfoCard";
-import { WorkExperienceList } from "../components/MentorProfile/WorkExperienceList";
-import { useMeQuery } from "../generated/graphql";
+import { Layout } from "../layout/Layout";
+import { Bio } from "./bio/Bio";
+import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
+import { WorkExperienceList } from "./workExperience/WorkExperienceList";
+import { useMeQuery } from "../../generated/graphql";
 
 interface MentorProfilePrivateProps {}
 

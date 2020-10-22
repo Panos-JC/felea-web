@@ -8,8 +8,8 @@ import {
 } from "@material-ui/core";
 import { Person, VpnKey } from "@material-ui/icons";
 import React from "react";
-import { Layout } from "../components/Layout";
-import { SettingsForm } from "../components/MentorProfile/SettingsForm";
+import { Layout } from "../layout/Layout";
+import { SettingsForm } from "./forms/SettingsForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {

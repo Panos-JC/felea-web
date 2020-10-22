@@ -1,8 +1,8 @@
 // import { makeStyles } from "@material-ui/core";
 import React from "react";
-import { Layout } from "../components/Layout";
-import { MentorCard } from "../components/MentorCard";
-import { useMentorsQuery } from "../generated/graphql";
+import { Layout } from "../layout/Layout";
+import { MentorCard } from "./MentorCard";
+import { useMentorsQuery } from "../../generated/graphql";
 
 // const useStyles = makeStyles((theme) => ({}));
 
