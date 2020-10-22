@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  link: {
+    textDecoration: "none",
+    color: theme.palette.text.primary,
+  },
 }));
 
 interface NavBarProps {}
@@ -39,7 +43,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
 
   const history = useHistory();
 
-  const { data } = useMeQuery();
+  const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -56,40 +60,62 @@ export const NavBar: React.FC<NavBarProps> = () => {
     history.push("/login");
   };
 
-  let body = null;
-  if (data?.me) {
-    body = (
-      <>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={handleMenu}
-          color="default"
-        >
-          <AccountCircle />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          {data.me.mentor ? (<MenuItem onClick={handleClose}>
-            <Link to={`/mentor/${data.me.mentor.id}`}>Profile</Link>
-          </MenuItem>) : null}
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-      </>
-    );
-  } else {
-    body = (
-      <Button color="inherit" href="/login">
-        Login
-      </Button>
-    );
-  }
+  const body = (
+    <div>
+      {data?.me?.individual && (
+        <Link to="/mentors" className={classes.link}>
+          <Button
+            className={classes.menuButton}
+            color="primary"
+            variant="outlined"
+          >
+            Browse Mentors
+          </Button>
+        </Link>
+      )}
+
+      <IconButton
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleMenu}
+        color="default"
+      >
+        <AccountCircle />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {data?.me?.mentor && (
+          <MenuItem onClick={handleClose}>
+            <Link className={classes.link} to="/profile">
+              Profile
+            </Link>
+          </MenuItem>
+        )}
+        {data?.me?.mentor && (
+          <MenuItem onClick={handleClose}>
+            <Link className={classes.link} to={`/setings/profile`}>
+              Settings
+            </Link>
+          </MenuItem>
+        )}
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      </Menu>
+    </div>
+  );
 
   return (
     <AppBar elevation={2} position="static" color="inherit">
@@ -97,7 +123,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
         <Typography variant="h6" className={classes.title}>
           Felea
         </Typography>
-        {body}
+        {data?.me ? body : <Button>Login</Button>}
       </Toolbar>
     </AppBar>
   );

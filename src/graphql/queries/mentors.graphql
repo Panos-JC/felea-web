@@ -1,0 +1,11 @@
+query Mentors {
+  mentors {
+    id
+    firstName
+    lastName
+    title
+    location
+    languages
+    rate
+  }
+}
