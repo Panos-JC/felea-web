@@ -1,8 +1,12 @@
-mutation SetBio($mentorId: Int!, $bio: String!) {
-  setBio(mentorId: $mentorId, bio: $bio) {
-    id
-    firstName
-    lastName
-    bio
+mutation SetBio($bio: String!) {
+  setBio(bio: $bio) {
+    error {
+      message
+    }
+    mentor {
+      firstName
+      lastName
+      bio
+    }
   }
 }

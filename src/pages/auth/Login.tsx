@@ -69,8 +69,9 @@ export const Login: React.FC<loginProps> = () => {
     if (data?.login.errors) {
       setErrors(data.login.errors[0]);
     } else if (data?.login.user) {
-      data.login.user.mentor ? history.push(`/mentor/${data.login.user.mentor.id}`) : history.push(`/mentors`);
-      
+      data.login.user.mentor
+        ? history.push("/profile")
+        : history.push("/mentors");
     }
     console.log("RESPONSE ", data);
   };

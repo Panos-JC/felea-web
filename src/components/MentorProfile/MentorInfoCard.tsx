@@ -79,14 +79,26 @@ interface MentorInfoCardProps {
   firstName?: string;
   lastName?: string;
   avatar?: string;
+  title?: string | null;
+  rate?: string | null;
+  location?: string | null;
+  languages?: string | null;
+  loading: boolean;
 }
 
 export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
   firstName,
   lastName,
   avatar,
+  title,
+  rate,
+  location,
+  languages,
+  loading,
 }) => {
   const classes = useStyles();
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <Card className={classes.card}>
@@ -96,18 +108,18 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
           {`${firstName} ${lastName}`}
         </Typography>
         <Typography className={classes.subtitle} variant="caption">
-          Digital Strategist & Trainer
+          {title}
         </Typography>
       </div>
       <div className={classes.infoSmall}>
-        <div className={classes.titleSmall}>Athens, Greece</div>
-        <div className={classes.titleSmall}>Greek, English</div>
+        <div className={classes.titleSmall}>{location}</div>
+        <div className={classes.titleSmall}>{languages}</div>
       </div>
       <div className={classes.cardBody}>
         <div className={classes.stats}>
           <span className={classes.stat}>
             <Typography className={classes.statNumber} variant="subtitle1">
-              150 &euro;
+              {rate} &euro;
             </Typography>
             <Typography className={classes.subtitle} variant="subtitle2">
               Hourly Rate

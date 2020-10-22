@@ -9,8 +9,14 @@ query Me {
       id
       firstName
       lastName
+      bio
+      title
+      location
+      languages
+      rate
     }
     individual {
+      id
       firstName
       lastName
     }

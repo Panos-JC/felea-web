@@ -17,6 +17,7 @@ export type Query = {
   workExperiences: Array<WorkExperience>;
   industries: Array<Industry>;
   mentor: Mentor;
+  mentors: Array<Mentor>;
 };
 
 
@@ -91,7 +92,8 @@ export type Mutation = {
   login: UserResponse;
   logout: Scalars['Boolean'];
   createWorkExperience: WorkExperience;
-  setBio: Mentor;
+  setMentorDetails: MentorResponse;
+  setBio: MentorResponse;
 };
 
 
@@ -116,9 +118,13 @@ export type MutationCreateWorkExperienceArgs = {
 };
 
 
+export type MutationSetMentorDetailsArgs = {
+  options: MentorDetailsInput;
+};
+
+
 export type MutationSetBioArgs = {
   bio: Scalars['String'];
-  mentorId: Scalars['Int'];
 };
 
 export type UserResponse = {
@@ -147,6 +153,26 @@ export type WorkExperienceInput = {
   from: Scalars['String'];
   untill: Scalars['String'];
   industries: Array<Scalars['String']>;
+};
+
+export type MentorResponse = {
+  __typename?: 'MentorResponse';
+  error?: Maybe<ErrorMessage>;
+  mentor?: Maybe<Mentor>;
+};
+
+export type ErrorMessage = {
+  __typename?: 'ErrorMessage';
+  message: Scalars['String'];
+};
+
+export type MentorDetailsInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  title: Scalars['String'];
+  rate: Scalars['String'];
+  location: Scalars['String'];
+  languages: Scalars['String'];
 };
 
 export type CreateWorkExperienceMutationVariables = Exact<{
@@ -221,7 +247,6 @@ export type MentorRegisterMutation = (
 );
 
 export type SetBioMutationVariables = Exact<{
-  mentorId: Scalars['Int'];
   bio: Scalars['String'];
 }>;
 
@@ -229,8 +254,33 @@ export type SetBioMutationVariables = Exact<{
 export type SetBioMutation = (
   { __typename?: 'Mutation' }
   & { setBio: (
-    { __typename?: 'Mentor' }
-    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'bio'>
+    { __typename?: 'MentorResponse' }
+    & { error?: Maybe<(
+      { __typename?: 'ErrorMessage' }
+      & Pick<ErrorMessage, 'message'>
+    )>, mentor?: Maybe<(
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'firstName' | 'lastName' | 'bio'>
+    )> }
+  ) }
+);
+
+export type SetMentorDetailsMutationVariables = Exact<{
+  options: MentorDetailsInput;
+}>;
+
+
+export type SetMentorDetailsMutation = (
+  { __typename?: 'Mutation' }
+  & { setMentorDetails: (
+    { __typename?: 'MentorResponse' }
+    & { error?: Maybe<(
+      { __typename?: 'ErrorMessage' }
+      & Pick<ErrorMessage, 'message'>
+    )>, mentor?: Maybe<(
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+    )> }
   ) }
 );
 
@@ -255,10 +305,10 @@ export type MeQuery = (
     & Pick<Users, 'id' | 'email' | 'activated' | 'avatar' | 'createdAt'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'bio' | 'title' | 'location' | 'languages' | 'rate'>
     )>, individual?: Maybe<(
       { __typename?: 'Individual' }
-      & Pick<Individual, 'firstName' | 'lastName'>
+      & Pick<Individual, 'id' | 'firstName' | 'lastName'>
     )> }
   )> }
 );
@@ -272,12 +322,23 @@ export type MentorQuery = (
   { __typename?: 'Query' }
   & { mentor: (
     { __typename?: 'Mentor' }
-    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'rate' | 'bio'>
+    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'rate' | 'bio' | 'location' | 'languages'>
     & { user: (
       { __typename?: 'Users' }
       & Pick<Users, 'avatar'>
     ) }
   ) }
+);
+
+export type MentorsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MentorsQuery = (
+  { __typename?: 'Query' }
+  & { mentors: Array<(
+    { __typename?: 'Mentor' }
+    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+  )> }
 );
 
 export type WorkExperiencesQueryVariables = Exact<{
@@ -455,12 +516,16 @@ export type MentorRegisterMutationHookResult = ReturnType<typeof useMentorRegist
 export type MentorRegisterMutationResult = Apollo.MutationResult<MentorRegisterMutation>;
 export type MentorRegisterMutationOptions = Apollo.BaseMutationOptions<MentorRegisterMutation, MentorRegisterMutationVariables>;
 export const SetBioDocument = gql`
-    mutation SetBio($mentorId: Int!, $bio: String!) {
-  setBio(mentorId: $mentorId, bio: $bio) {
-    id
-    firstName
-    lastName
-    bio
+    mutation SetBio($bio: String!) {
+  setBio(bio: $bio) {
+    error {
+      message
+    }
+    mentor {
+      firstName
+      lastName
+      bio
+    }
   }
 }
     `;
@@ -479,7 +544,6 @@ export type SetBioMutationFn = Apollo.MutationFunction<SetBioMutation, SetBioMut
  * @example
  * const [setBioMutation, { data, loading, error }] = useSetBioMutation({
  *   variables: {
- *      mentorId: // value for 'mentorId'
  *      bio: // value for 'bio'
  *   },
  * });
@@ -490,6 +554,48 @@ export function useSetBioMutation(baseOptions?: Apollo.MutationHookOptions<SetBi
 export type SetBioMutationHookResult = ReturnType<typeof useSetBioMutation>;
 export type SetBioMutationResult = Apollo.MutationResult<SetBioMutation>;
 export type SetBioMutationOptions = Apollo.BaseMutationOptions<SetBioMutation, SetBioMutationVariables>;
+export const SetMentorDetailsDocument = gql`
+    mutation SetMentorDetails($options: MentorDetailsInput!) {
+  setMentorDetails(options: $options) {
+    error {
+      message
+    }
+    mentor {
+      firstName
+      lastName
+      title
+      location
+      languages
+      rate
+    }
+  }
+}
+    `;
+export type SetMentorDetailsMutationFn = Apollo.MutationFunction<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>;
+
+/**
+ * __useSetMentorDetailsMutation__
+ *
+ * To run a mutation, you first call `useSetMentorDetailsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetMentorDetailsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setMentorDetailsMutation, { data, loading, error }] = useSetMentorDetailsMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSetMentorDetailsMutation(baseOptions?: Apollo.MutationHookOptions<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>) {
+        return Apollo.useMutation<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>(SetMentorDetailsDocument, baseOptions);
+      }
+export type SetMentorDetailsMutationHookResult = ReturnType<typeof useSetMentorDetailsMutation>;
+export type SetMentorDetailsMutationResult = Apollo.MutationResult<SetMentorDetailsMutation>;
+export type SetMentorDetailsMutationOptions = Apollo.BaseMutationOptions<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>;
 export const IndustriesDocument = gql`
     query Industries {
   industries {
@@ -534,8 +640,14 @@ export const MeDocument = gql`
       id
       firstName
       lastName
+      bio
+      title
+      location
+      languages
+      rate
     }
     individual {
+      id
       firstName
       lastName
     }
@@ -573,8 +685,11 @@ export const MentorDocument = gql`
     id
     firstName
     lastName
+    title
     rate
     bio
+    location
+    languages
     user {
       avatar
     }
@@ -607,6 +722,44 @@ export function useMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Men
 export type MentorQueryHookResult = ReturnType<typeof useMentorQuery>;
 export type MentorLazyQueryHookResult = ReturnType<typeof useMentorLazyQuery>;
 export type MentorQueryResult = Apollo.QueryResult<MentorQuery, MentorQueryVariables>;
+export const MentorsDocument = gql`
+    query Mentors {
+  mentors {
+    id
+    firstName
+    lastName
+    title
+    location
+    languages
+    rate
+  }
+}
+    `;
+
+/**
+ * __useMentorsQuery__
+ *
+ * To run a query within a React component, call `useMentorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMentorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMentorsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMentorsQuery(baseOptions?: Apollo.QueryHookOptions<MentorsQuery, MentorsQueryVariables>) {
+        return Apollo.useQuery<MentorsQuery, MentorsQueryVariables>(MentorsDocument, baseOptions);
+      }
+export function useMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MentorsQuery, MentorsQueryVariables>) {
+          return Apollo.useLazyQuery<MentorsQuery, MentorsQueryVariables>(MentorsDocument, baseOptions);
+        }
+export type MentorsQueryHookResult = ReturnType<typeof useMentorsQuery>;
+export type MentorsLazyQueryHookResult = ReturnType<typeof useMentorsLazyQuery>;
+export type MentorsQueryResult = Apollo.QueryResult<MentorsQuery, MentorsQueryVariables>;
 export const WorkExperiencesDocument = gql`
     query WorkExperiences($mentorId: Int!) {
   workExperiences(mentorId: $mentorId) {
