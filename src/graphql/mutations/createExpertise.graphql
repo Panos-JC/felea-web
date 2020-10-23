@@ -1,0 +1,9 @@
+mutation CreateExpertise($skillId: Int!, $description: String!) {
+  createExpertise(skillId: $skillId, description: $description) {
+    errorMsg
+    expertise {
+      id
+      description
+    }
+  }
+}

@@ -5,6 +5,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: 25,
     overflow: "inherit",
+    position: "relative",
   },
   title: {
     position: "relative",

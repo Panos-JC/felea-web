@@ -1,0 +1,10 @@
+query Expertises($mentorId: Int!) {
+  expertises(mentorId: $mentorId) {
+    id
+    description
+    skill {
+      id
+      name
+    }
+  }
+}
