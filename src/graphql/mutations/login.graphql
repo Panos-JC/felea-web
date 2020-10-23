@@ -13,6 +13,12 @@ mutation Login($email: String!, $password: String!) {
         lastName
       }
       individual {
+        id
+        firstName
+        lastName
+      }
+      admin {
+        id
         firstName
         lastName
       }

@@ -46,6 +46,7 @@ export type Users = {
   avatar: Scalars['String'];
   mentor?: Maybe<Mentor>;
   individual?: Maybe<Individual>;
+  admin?: Maybe<Admin>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -93,6 +94,14 @@ export type Individual = {
   lastName: Scalars['String'];
 };
 
+export type Admin = {
+  __typename?: 'Admin';
+  id: Scalars['Int'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  user: Users;
+};
+
 export type Skill = {
   __typename?: 'Skill';
   id: Scalars['Int'];
@@ -115,6 +124,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   registerIndividual: UserResponse;
   registerMentor: UserResponse;
+  registerAdmin: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
   createWorkExperience: WorkExperience;
@@ -130,6 +140,11 @@ export type MutationRegisterIndividualArgs = {
 
 
 export type MutationRegisterMentorArgs = {
+  options: RegisterInput;
+};
+
+
+export type MutationRegisterAdminArgs = {
   options: RegisterInput;
 };
 
@@ -214,6 +229,29 @@ export type ExpertiseResponse = {
   expertise?: Maybe<Expertise>;
 };
 
+export type RegisterAdminMutationVariables = Exact<{
+  options: RegisterInput;
+}>;
+
+
+export type RegisterAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { registerAdmin: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'Users' }
+      & Pick<Users, 'email' | 'activated' | 'avatar'>
+      & { admin?: Maybe<(
+        { __typename?: 'Admin' }
+        & Pick<Admin, 'firstName' | 'lastName'>
+      )> }
+    )> }
+  ) }
+);
+
 export type CreateExpertiseMutationVariables = Exact<{
   skillId: Scalars['Int'];
   description: Scalars['String'];
@@ -266,7 +304,10 @@ export type LoginMutation = (
         & Pick<Mentor, 'id' | 'firstName' | 'lastName'>
       )>, individual?: Maybe<(
         { __typename?: 'Individual' }
-        & Pick<Individual, 'firstName' | 'lastName'>
+        & Pick<Individual, 'id' | 'firstName' | 'lastName'>
+      )>, admin?: Maybe<(
+        { __typename?: 'Admin' }
+        & Pick<Admin, 'id' | 'firstName' | 'lastName'>
       )> }
     )> }
   ) }
@@ -444,6 +485,50 @@ export type WorkExperiencesQuery = (
 );
 
 
+export const RegisterAdminDocument = gql`
+    mutation RegisterAdmin($options: RegisterInput!) {
+  registerAdmin(options: $options) {
+    errors {
+      field
+      message
+    }
+    user {
+      email
+      activated
+      avatar
+      admin {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+export type RegisterAdminMutationFn = Apollo.MutationFunction<RegisterAdminMutation, RegisterAdminMutationVariables>;
+
+/**
+ * __useRegisterAdminMutation__
+ *
+ * To run a mutation, you first call `useRegisterAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerAdminMutation, { data, loading, error }] = useRegisterAdminMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useRegisterAdminMutation(baseOptions?: Apollo.MutationHookOptions<RegisterAdminMutation, RegisterAdminMutationVariables>) {
+        return Apollo.useMutation<RegisterAdminMutation, RegisterAdminMutationVariables>(RegisterAdminDocument, baseOptions);
+      }
+export type RegisterAdminMutationHookResult = ReturnType<typeof useRegisterAdminMutation>;
+export type RegisterAdminMutationResult = Apollo.MutationResult<RegisterAdminMutation>;
+export type RegisterAdminMutationOptions = Apollo.BaseMutationOptions<RegisterAdminMutation, RegisterAdminMutationVariables>;
 export const CreateExpertiseDocument = gql`
     mutation CreateExpertise($skillId: Int!, $description: String!) {
   createExpertise(skillId: $skillId, description: $description) {
@@ -533,6 +618,12 @@ export const LoginDocument = gql`
         lastName
       }
       individual {
+        id
+        firstName
+        lastName
+      }
+      admin {
+        id
         firstName
         lastName
       }

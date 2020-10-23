@@ -9,6 +9,8 @@ import { MentorProfilePublic } from "../components/MentorProfile/MentorProfilePu
 import { ProfileSettings } from "../components/MentorProfile/ProfileSettings";
 import { Mentors } from "../components/mentors/Mentors";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { RegisterAdmin } from "../components/auth/RegisterAdmin";
+import { Dashboard } from "../components/dashboard/Dashboard";
 
 interface RoutesProps {}
 
@@ -28,6 +30,8 @@ export const Routes: React.FC<RoutesProps> = () => {
         exact
       />
 
+      <ProtectedRoute path="/dashboard" component={Dashboard} exact />
+
       <ProtectedRoute path="/" component={Home} exact />
 
       <Route path="/login">
@@ -38,6 +42,9 @@ export const Routes: React.FC<RoutesProps> = () => {
       </Route>
       <Route path="/mentor-register">
         <RegisterMentor />
+      </Route>
+      <Route path="/admin-register">
+        <RegisterAdmin />
       </Route>
 
       {/* <Redirect from="/" to="/mentorProfile" /> */}

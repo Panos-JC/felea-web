@@ -1,0 +1,17 @@
+mutation RegisterAdmin($options: RegisterInput!) {
+  registerAdmin(options: $options) {
+    errors {
+      field
+      message
+    }
+    user {
+      email
+      activated
+      avatar
+      admin {
+        firstName
+        lastName
+      }
+    }
+  }
+}

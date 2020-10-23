@@ -49,13 +49,13 @@ export const Register: React.FC<RegisterProps> = () => {
         <Typography className={classes.title} component="h1" variant="h5">
           Sign up
         </Typography>
-        <Link to="/" className={classes.link}>
+        <Link to="/admin-register" className={classes.link}>
           <Button
             className={classes.button}
             variant="contained"
             color="primary"
           >
-            As Company
+            As Admin
           </Button>
         </Link>
         <Link to="/mentor-register" className={classes.link}>
