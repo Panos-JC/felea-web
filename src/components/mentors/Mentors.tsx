@@ -21,6 +21,7 @@ export const Mentors: React.FC<MentorsProps> = () => {
             mentorId={mentor.id}
             firstName={mentor.firstName}
             lastName={mentor.lastName}
+            bio={mentor.bio}
           />
         ))}
     </Layout>

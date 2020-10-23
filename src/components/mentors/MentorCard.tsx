@@ -1,4 +1,3 @@
-import classes from "*.module.css";
 import {
   Card,
   Avatar,
@@ -77,12 +76,14 @@ interface MentorCardProps {
   mentorId: number;
   firstName: string;
   lastName: string;
+  bio: string | null | undefined;
 }
 
 export const MentorCard: React.FC<MentorCardProps> = ({
   mentorId,
   firstName,
   lastName,
+  bio,
 }) => {
   const classes = useStyles();
   return (
@@ -140,10 +141,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
       <Divider />
       <div>
         <Typography className={classes.bio} variant="body2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus,
-          repudiandae voluptatem aliquid iure nisi nulla voluptas aperiam
-          expedita illum ab sint neque molestias distinctio minus nesciunt
-          nostrum quibusdam deleniti laudantium...
+          {bio && bio.slice(0, 245)}...
         </Typography>
         <div className={classes.skills}>
           {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (

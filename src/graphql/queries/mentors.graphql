@@ -7,5 +7,6 @@ query Mentors {
     location
     languages
     rate
+    bio
   }
 }
