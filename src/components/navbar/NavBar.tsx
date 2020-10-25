@@ -79,7 +79,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
         aria-controls="menu-appbar"
         aria-haspopup="true"
         onClick={handleMenu}
-        color="default"
+        color="inherit"
       >
         <AccountCircle />
       </IconButton>
@@ -118,7 +118,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
   );
 
   return (
-    <AppBar elevation={2} position="static" color="inherit">
+    <AppBar elevation={2} position="static" color="primary">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           Felea
