@@ -10,7 +10,7 @@ import { ProfileSettings } from "../components/MentorProfile/ProfileSettings";
 import { Mentors } from "../components/mentors/Mentors";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { RegisterAdmin } from "../components/auth/RegisterAdmin";
-import { Dashboard } from "../components/dashboard/Dashboard";
+import { DashboardLayout } from "../components/dashboard/dashboardLayout/DashboardLayout";
 
 interface RoutesProps {}
 
@@ -30,7 +30,7 @@ export const Routes: React.FC<RoutesProps> = () => {
         exact
       />
 
-      <ProtectedRoute path="/dashboard" component={Dashboard} exact />
+      <Route path="/dashboard" component={DashboardLayout} />
 
       <ProtectedRoute path="/" component={Home} exact />
 

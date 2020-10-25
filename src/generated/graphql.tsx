@@ -20,6 +20,8 @@ export type Query = {
   mentors: Array<Mentor>;
   skills: Array<Skill>;
   expertises: Array<Expertise>;
+  individuals: Array<Individual>;
+  admins: Array<Admin>;
 };
 
 
@@ -92,6 +94,8 @@ export type Individual = {
   id: Scalars['Int'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  premium: Scalars['Boolean'];
+  user: Users;
 };
 
 export type Admin = {
@@ -382,6 +386,21 @@ export type SetMentorDetailsMutation = (
   ) }
 );
 
+export type AdminsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminsQuery = (
+  { __typename?: 'Query' }
+  & { admins: Array<(
+    { __typename?: 'Admin' }
+    & Pick<Admin, 'id' | 'firstName' | 'lastName'>
+    & { user: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'activated' | 'avatar' | 'email'>
+    ) }
+  )> }
+);
+
 export type ExpertisesQueryVariables = Exact<{
   mentorId: Scalars['Int'];
 }>;
@@ -395,6 +414,21 @@ export type ExpertisesQuery = (
     & { skill: (
       { __typename?: 'Skill' }
       & Pick<Skill, 'id' | 'name'>
+    ) }
+  )> }
+);
+
+export type IndividualsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IndividualsQuery = (
+  { __typename?: 'Query' }
+  & { individuals: Array<(
+    { __typename?: 'Individual' }
+    & Pick<Individual, 'id' | 'firstName' | 'lastName' | 'premium'>
+    & { user: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'email' | 'activated' | 'avatar'>
     ) }
   )> }
 );
@@ -453,6 +487,10 @@ export type MentorsQuery = (
   & { mentors: Array<(
     { __typename?: 'Mentor' }
     & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate' | 'bio'>
+    & { user: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'email'>
+    ) }
   )> }
 );
 
@@ -809,6 +847,45 @@ export function useSetMentorDetailsMutation(baseOptions?: Apollo.MutationHookOpt
 export type SetMentorDetailsMutationHookResult = ReturnType<typeof useSetMentorDetailsMutation>;
 export type SetMentorDetailsMutationResult = Apollo.MutationResult<SetMentorDetailsMutation>;
 export type SetMentorDetailsMutationOptions = Apollo.BaseMutationOptions<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>;
+export const AdminsDocument = gql`
+    query Admins {
+  admins {
+    id
+    firstName
+    lastName
+    user {
+      activated
+      avatar
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useAdminsQuery__
+ *
+ * To run a query within a React component, call `useAdminsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminsQuery(baseOptions?: Apollo.QueryHookOptions<AdminsQuery, AdminsQueryVariables>) {
+        return Apollo.useQuery<AdminsQuery, AdminsQueryVariables>(AdminsDocument, baseOptions);
+      }
+export function useAdminsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminsQuery, AdminsQueryVariables>) {
+          return Apollo.useLazyQuery<AdminsQuery, AdminsQueryVariables>(AdminsDocument, baseOptions);
+        }
+export type AdminsQueryHookResult = ReturnType<typeof useAdminsQuery>;
+export type AdminsLazyQueryHookResult = ReturnType<typeof useAdminsLazyQuery>;
+export type AdminsQueryResult = Apollo.QueryResult<AdminsQuery, AdminsQueryVariables>;
 export const ExpertisesDocument = gql`
     query Expertises($mentorId: Int!) {
   expertises(mentorId: $mentorId) {
@@ -847,6 +924,46 @@ export function useExpertisesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type ExpertisesQueryHookResult = ReturnType<typeof useExpertisesQuery>;
 export type ExpertisesLazyQueryHookResult = ReturnType<typeof useExpertisesLazyQuery>;
 export type ExpertisesQueryResult = Apollo.QueryResult<ExpertisesQuery, ExpertisesQueryVariables>;
+export const IndividualsDocument = gql`
+    query Individuals {
+  individuals {
+    id
+    firstName
+    lastName
+    premium
+    user {
+      email
+      activated
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useIndividualsQuery__
+ *
+ * To run a query within a React component, call `useIndividualsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIndividualsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIndividualsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIndividualsQuery(baseOptions?: Apollo.QueryHookOptions<IndividualsQuery, IndividualsQueryVariables>) {
+        return Apollo.useQuery<IndividualsQuery, IndividualsQueryVariables>(IndividualsDocument, baseOptions);
+      }
+export function useIndividualsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IndividualsQuery, IndividualsQueryVariables>) {
+          return Apollo.useLazyQuery<IndividualsQuery, IndividualsQueryVariables>(IndividualsDocument, baseOptions);
+        }
+export type IndividualsQueryHookResult = ReturnType<typeof useIndividualsQuery>;
+export type IndividualsLazyQueryHookResult = ReturnType<typeof useIndividualsLazyQuery>;
+export type IndividualsQueryResult = Apollo.QueryResult<IndividualsQuery, IndividualsQueryVariables>;
 export const IndustriesDocument = gql`
     query Industries {
   industries {
@@ -984,6 +1101,9 @@ export const MentorsDocument = gql`
     languages
     rate
     bio
+    user {
+      email
+    }
   }
 }
     `;

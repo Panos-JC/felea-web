@@ -1,0 +1,13 @@
+query Individuals {
+  individuals {
+    id
+    firstName
+    lastName
+    premium
+    user {
+      email
+      activated
+      avatar
+    }
+  }
+}

@@ -8,5 +8,8 @@ query Mentors {
     languages
     rate
     bio
+    user {
+      email
+    }
   }
 }
