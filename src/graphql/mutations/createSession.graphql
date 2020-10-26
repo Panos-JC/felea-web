@@ -1,0 +1,11 @@
+mutation CreateSession($input: SessionInput!) {
+  createSession(input: $input) {
+    error {
+      field
+      message
+    }
+    session {
+      id
+    }
+  }
+}

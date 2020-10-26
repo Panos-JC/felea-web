@@ -1,0 +1,30 @@
+query Sessions {
+  sessions {
+    id
+    date
+    individual {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+    creator {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+    mentor {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+  }
+}

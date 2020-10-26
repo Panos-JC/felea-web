@@ -9,10 +9,13 @@ import {
   Avatar,
   IconButton,
   fade,
+  CircularProgress,
 } from "@material-ui/core";
 import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useSessionsQuery } from "../../../generated/graphql";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -48,8 +51,19 @@ const useStyles = makeStyles((theme) => ({
 
 interface SessionsTableProps {}
 
-export const SessionsTable: React.FC<SessionsTableProps> = ({}) => {
+export const SessionsTable: React.FC<SessionsTableProps> = () => {
   const classes = useStyles();
+
+  const { data, loading } = useSessionsQuery();
+
+  if (loading) {
+    return (
+      <div className={classes.spinner}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
   return (
     <Table>
       <TableHead>
@@ -63,50 +77,66 @@ export const SessionsTable: React.FC<SessionsTableProps> = ({}) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        <TableRow hover>
-          <TableCell>1</TableCell>
-          <TableCell>
-            <div className={classes.nameCell}>
-              <Avatar className={classes.avatar}>JD</Avatar>
-              <div>
-                <Link
-                  className={classes.link}
-                  color="inherit"
-                  component={RouterLink}
-                  to="/management/customers/1"
-                  variant="h6"
-                >
-                  First Name
-                </Link>
-                <div className={classes.email}>email</div>
-              </div>
-            </div>
-          </TableCell>
-          <TableCell>
-            <div className={classes.nameCell}>
-              <Avatar className={classes.avatar}>JD</Avatar>
-              <div>
-                <Link
-                  className={classes.link}
-                  color="inherit"
-                  component={RouterLink}
-                  to="/management/customers/1"
-                  variant="h6"
-                >
-                  First Name
-                </Link>
-                <div className={classes.email}>email</div>
-              </div>
-            </div>
-          </TableCell>
-          <TableCell>date</TableCell>
-          <TableCell>John Doe</TableCell>
-          <TableCell align="right">
-            <IconButton size="small" color="secondary">
-              <ArrowForwardIcon />
-            </IconButton>
-          </TableCell>
-        </TableRow>
+        {data &&
+          data.sessions &&
+          data.sessions.map((session) => (
+            <TableRow hover key={session.id}>
+              <TableCell>{session.id}</TableCell>
+              <TableCell>
+                <div className={classes.nameCell}>
+                  <Avatar
+                    className={classes.avatar}
+                    src={session.mentor.user.avatar}
+                  />
+                  <div>
+                    <Link
+                      className={classes.link}
+                      color="inherit"
+                      component={RouterLink}
+                      to="/management/customers/1"
+                      variant="h6"
+                    >
+                      {`${session.mentor.firstName} ${session.mentor.lastName}`}
+                    </Link>
+                    <div className={classes.email}>
+                      {session.mentor.user.email}
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className={classes.nameCell}>
+                  <Avatar
+                    className={classes.avatar}
+                    src={session.mentor.user.avatar}
+                  />
+                  <div>
+                    <Link
+                      className={classes.link}
+                      color="inherit"
+                      component={RouterLink}
+                      to="/management/customers/1"
+                      variant="h6"
+                    >
+                      {`${session.individual.firstName} ${session.individual.lastName}`}
+                    </Link>
+                    <div className={classes.email}>
+                      {session.individual.user.email}
+                    </div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>
+                {moment(session.date).format("MMMM Do YYYY")}
+              </TableCell>
+              <TableCell>{`${session.creator.firstName} ${session.creator.lastName}`}</TableCell>
+              <TableCell align="right">
+                <IconButton size="small" color="secondary">
+                  <ArrowForwardIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

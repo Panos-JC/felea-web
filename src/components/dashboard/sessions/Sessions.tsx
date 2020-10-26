@@ -8,7 +8,11 @@ interface SessionsProps {}
 export const Sessions: React.FC<SessionsProps> = () => {
   return (
     <>
-      <PageTitle title="Sessions" action="Log New Session" />
+      <PageTitle
+        title="Sessions"
+        action="Log New Session"
+        to="/dashboard/sessions/new"
+      />
       <Card>
         <SessionsTable />
       </Card>
