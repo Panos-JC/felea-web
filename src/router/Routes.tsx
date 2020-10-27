@@ -11,6 +11,8 @@ import { Mentors } from "../components/mentors/Mentors";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { RegisterAdmin } from "../components/auth/RegisterAdmin";
 import { DashboardLayout } from "../components/dashboard/dashboardLayout/DashboardLayout";
+import { Sessions } from "../components/sessions/Sessions";
+import { SessionPage } from "../components/sessions/SessionPage";
 
 interface RoutesProps {}
 
@@ -30,7 +32,10 @@ export const Routes: React.FC<RoutesProps> = () => {
         exact
       />
 
-      <Route path="/dashboard" component={DashboardLayout} />
+      <ProtectedRoute path="/sessions" component={Sessions} exact />
+      <ProtectedRoute path="/sessions/:id" component={SessionPage} exact />
+
+      <ProtectedRoute path="/dashboard" component={DashboardLayout} />
 
       <ProtectedRoute path="/" component={Home} exact />
 

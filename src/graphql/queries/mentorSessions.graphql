@@ -1,0 +1,14 @@
+query MentorSessions {
+  mentorSessions {
+    id
+    date
+    mentor {
+      firstName
+      lastName
+    }
+    individual {
+      firstName
+      lastName
+    }
+  }
+}
