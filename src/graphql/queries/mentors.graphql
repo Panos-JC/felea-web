@@ -1,5 +1,5 @@
-query Mentors {
-  mentors {
+query Mentors($skills: [String!]!, $industries: [String!]!) {
+  mentors(skills: $skills, industries: $industries) {
     id
     firstName
     lastName
@@ -12,5 +12,16 @@ query Mentors {
       email
       avatar
     }
+    expertises {
+      skill {
+        name
+      }
+    }
+    workExperience {
+      industries {
+        name
+      }
+    }
+    sessionCount
   }
 }

@@ -7,9 +7,10 @@ import {
   Chip,
   makeStyles,
 } from "@material-ui/core";
-import { StarBorder } from "@material-ui/icons";
+import { LocationOnOutlined, StarBorder } from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
+import { Skill } from "../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -20,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     marginRight: 15,
   },
   header: {
@@ -31,11 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
   headerInfo: {
     display: "flex",
+    marginTop: theme.spacing(2),
   },
   infoItem: {
+    display: "flex",
+    alignItems: "center",
     fontSize: "75%",
     color: theme.palette.text.secondary,
-    marginRight: 15,
+    marginRight: theme.spacing(4),
   },
   actions: {
     display: "flex",
@@ -70,6 +74,9 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: "none",
   },
+  locationIcon: {
+    color: theme.palette.grey["300"],
+  },
 }));
 
 interface MentorCardProps {
@@ -77,13 +84,31 @@ interface MentorCardProps {
   firstName: string;
   lastName: string;
   bio: string | null | undefined;
+  sessions: number | null | undefined;
+  location: string | null | undefined;
+  languages: string | null | undefined;
+  title: string | null | undefined;
+  rate: string | null | undefined;
+  expertises: ({
+    __typename?: "Expertise" | undefined;
+  } & {
+    skill: {
+      __typename?: "Skill" | undefined;
+    } & Pick<Skill, "name">;
+  })[];
 }
 
 export const MentorCard: React.FC<MentorCardProps> = ({
   mentorId,
   firstName,
   lastName,
+  title,
+  rate,
   bio,
+  sessions,
+  expertises,
+  location,
+  languages,
 }) => {
   const classes = useStyles();
   return (
@@ -94,11 +119,15 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           <Typography variant="h5">
             {firstName} {lastName}
           </Typography>
-          <Typography variant="caption">Digital Marketer</Typography>
+
+          {title && <Typography variant="caption">{title}</Typography>}
 
           <div className={classes.headerInfo}>
-            <Typography className={classes.infoItem}>Athens, Greece</Typography>
-            <Typography className={classes.infoItem}>Greek, English</Typography>
+            <Typography className={classes.infoItem}>
+              <LocationOnOutlined className={classes.locationIcon} />
+              {location}
+            </Typography>
+            <Typography className={classes.infoItem}>{languages}</Typography>
           </div>
         </div>
         <div className={classes.actions}>
@@ -126,11 +155,11 @@ export const MentorCard: React.FC<MentorCardProps> = ({
       <Divider />
       <div className={classes.stats}>
         <div className={classes.stat}>
-          <strong>&euro;50</strong>
+          <strong>&euro;{rate || "_"}</strong>
           <span>/ h</span>
         </div>
         <div className={classes.stat}>
-          <strong>23</strong>
+          <strong>{sessions}</strong>
           <span>sessions</span>
         </div>
         <div className={classes.stat}>
@@ -144,14 +173,16 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           {bio && bio.slice(0, 245)}...
         </Typography>
         <div className={classes.skills}>
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
-            <Chip
-              key={item}
-              size="small"
-              className={classes.skill}
-              label={`Skill ${item}`}
-            />
-          ))}
+          {expertises &&
+            expertises.map((expertise, index) => (
+              <Chip
+                key={index}
+                size="small"
+                className={classes.skill}
+                color="secondary"
+                label={expertise.skill.name}
+              />
+            ))}
         </div>
       </div>
     </Card>
