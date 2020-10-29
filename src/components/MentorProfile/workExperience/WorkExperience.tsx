@@ -1,16 +1,9 @@
-import {
-  Chip,
-  Divider,
-  IconButton,
-  makeStyles,
-  Typography,
-} from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
+import { Chip, Divider, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   workExperience: {
-    // marginBottom: 30,
+    marginBottom: 30,
   },
   title: {
     display: "flex",
@@ -49,7 +42,7 @@ interface WorkExperienceProps {
   from: string;
   to: string;
   description: string;
-  industries: any[];
+  industries: any[] | undefined;
 }
 
 export const WorkExperience: React.FC<WorkExperienceProps> = ({
@@ -68,13 +61,10 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
         <Typography className={classes.role} variant="subtitle2">
           {role}
         </Typography>
-        <IconButton className={classes.editIcon} size="small" color="secondary">
-          <Edit />
-        </IconButton>
       </div>
       <Typography className={classes.company}>{company}</Typography>
       <Typography className={classes.date}>
-        {from} - {to}
+        {new Date(from).getFullYear()} - {new Date(to).getFullYear()}
       </Typography>
       <Typography
         className={classes.description}
@@ -89,6 +79,8 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
             <Chip
               key={industry.name}
               className={classes.industryChip}
+              color="primary"
+              size="small"
               label={industry.name}
             />
           ))}

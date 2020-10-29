@@ -1,11 +1,5 @@
 import MomentUtils from "@date-io/moment";
-import {
-  Grid,
-  TextField,
-  DialogActions,
-  Button,
-  makeStyles,
-} from "@material-ui/core";
+import { Grid, TextField, Button, makeStyles } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import React, { useEffect } from "react";
@@ -19,6 +13,7 @@ import {
 } from "../../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
+  form: { marginBottom: 20 },
   picker: {
     width: "100%",
   },
@@ -37,17 +32,17 @@ type Inputs = {
 };
 
 interface WorkExperienceFormProps {
-  setDialog: React.Dispatch<React.SetStateAction<boolean>>;
   mentorId: number;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
-  setDialog,
   mentorId,
+  setEdit,
 }) => {
   const classes = useStyles();
 
-  const { data } = useIndustriesQuery();
+  const { data, loading } = useIndustriesQuery();
 
   const [createWorkExperience] = useCreateWorkExperienceMutation();
 
@@ -75,6 +70,8 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
         { query: WorkExperiencesDocument, variables: { mentorId } },
       ],
     });
+
+    setEdit(false);
   };
 
   useEffect(() => {
@@ -82,7 +79,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
   }, [register]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -160,7 +157,6 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
             helperText={errors.description ? "Required field" : null}
             autoComplete="off"
             className={classes.description}
-            id="outlined-multiline-static"
             label="Description"
             name="description"
             multiline
@@ -171,35 +167,39 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
         </Grid>
 
         <Grid item xs={12}>
-          <Autocomplete
-            multiple
-            id="tags-standard"
-            options={data?.industries as Industry[]}
-            getOptionLabel={(option) => option.name}
-            onChange={(event, values) => {
-              setValue("industries", values);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                error={errors.industries ? true : false}
-                variant="outlined"
-                label="Multiple values"
-                placeholder="Favorites"
-              />
-            )}
-          />
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              options={data?.industries as Industry[]}
+              getOptionLabel={(option) => option.name}
+              onChange={(event, values) => {
+                setValue("industries", values);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={errors.industries ? true : false}
+                  variant="outlined"
+                  label="Industries"
+                  placeholder="B2B, B2C..."
+                />
+              )}
+            />
+          )}
         </Grid>
 
         <Grid item xs={12}>
-          <DialogActions>
-            <Button onClick={() => setDialog(false)} autoFocus color="primary">
-              Cancel
-            </Button>
-            <Button type="submit" color="primary" autoFocus>
-              Add
-            </Button>
-          </DialogActions>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disableElevation
+          >
+            Add
+          </Button>
         </Grid>
       </Grid>
     </form>
