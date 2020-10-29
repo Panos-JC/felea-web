@@ -67,7 +67,7 @@ export const Register: React.FC<RegisterProps> = () => {
             As Mentor
           </Button>
         </Link>
-        <Link to="/" className={classes.link}>
+        <Link to="/guest-register" className={classes.link}>
           <Button
             className={classes.button}
             variant="contained"
