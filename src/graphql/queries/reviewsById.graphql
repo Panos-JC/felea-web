@@ -1,0 +1,15 @@
+query ReviewsById($mentorId: Int!) {
+  reviewsById(mentorId: $mentorId) {
+    id
+    message
+    rating
+    createdAt
+    individual {
+      firstName
+      lastName
+      user {
+        avatar
+      }
+    }
+  }
+}

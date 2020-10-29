@@ -17,10 +17,12 @@ export type Query = {
   __typename?: 'Query';
   admins: Array<Admin>;
   expertises: Array<Expertise>;
+  expertisesById: Array<Expertise>;
   individuals: Array<Individual>;
   industries: Array<Industry>;
   mentor: Mentor;
   mentors: Array<Mentor>;
+  reviewsById: Array<Review>;
   sessions: Array<Session>;
   mentorSessions: Array<Session>;
   skills: Array<Skill>;
@@ -29,7 +31,7 @@ export type Query = {
 };
 
 
-export type QueryExpertisesArgs = {
+export type QueryExpertisesByIdArgs = {
   mentorId: Scalars['Int'];
 };
 
@@ -42,6 +44,11 @@ export type QueryMentorArgs = {
 export type QueryMentorsArgs = {
   industries: Array<Scalars['String']>;
   skills: Array<Scalars['String']>;
+};
+
+
+export type QueryReviewsByIdArgs = {
+  mentorId: Scalars['Int'];
 };
 
 
@@ -81,6 +88,11 @@ export type Mentor = {
   languages?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   rate?: Maybe<Scalars['String']>;
+  medium?: Maybe<Scalars['String']>;
+  facebook?: Maybe<Scalars['String']>;
+  linkedin?: Maybe<Scalars['String']>;
+  twitter?: Maybe<Scalars['String']>;
+  instagram?: Maybe<Scalars['String']>;
   user: Users;
   workExperience: Array<WorkExperience>;
   sessions: Array<Session>;
@@ -129,6 +141,7 @@ export type Individual = {
   lastName: Scalars['String'];
   premium: Scalars['Boolean'];
   user: Users;
+  sessions: Array<Session>;
 };
 
 export type Expertise = {
@@ -149,11 +162,24 @@ export type Skill = {
   updatedAt: Scalars['String'];
 };
 
+export type Review = {
+  __typename?: 'Review';
+  id: Scalars['Int'];
+  message: Scalars['String'];
+  rating: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  mentor: Mentor;
+  individual: Individual;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createExpertise: ExpertiseResponse;
+  deleteExpertise: DeleteResponse;
   setMentorDetails: MentorResponse;
+  setMentorLinks: MentorResponse;
   setBio: MentorResponse;
+  createReview: ReviewResponse;
   createSession: SessionResponse;
   registerIndividual: UserResponse;
   registerMentor: UserResponse;
@@ -170,13 +196,28 @@ export type MutationCreateExpertiseArgs = {
 };
 
 
+export type MutationDeleteExpertiseArgs = {
+  id: Scalars['Int'];
+};
+
+
 export type MutationSetMentorDetailsArgs = {
   options: MentorDetailsInput;
 };
 
 
+export type MutationSetMentorLinksArgs = {
+  links: SocialLinksInput;
+};
+
+
 export type MutationSetBioArgs = {
   bio: Scalars['String'];
+};
+
+
+export type MutationCreateReviewArgs = {
+  input: ReviewInput;
 };
 
 
@@ -216,6 +257,12 @@ export type ExpertiseResponse = {
   expertise?: Maybe<Expertise>;
 };
 
+export type DeleteResponse = {
+  __typename?: 'DeleteResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  deleted?: Maybe<Scalars['Boolean']>;
+};
+
 export type MentorResponse = {
   __typename?: 'MentorResponse';
   error?: Maybe<ErrorMessage>;
@@ -234,6 +281,26 @@ export type MentorDetailsInput = {
   rate: Scalars['String'];
   location: Scalars['String'];
   languages: Scalars['String'];
+};
+
+export type SocialLinksInput = {
+  medium: Scalars['String'];
+  linkedin: Scalars['String'];
+  facebook: Scalars['String'];
+  twitter: Scalars['String'];
+  instagram: Scalars['String'];
+};
+
+export type ReviewResponse = {
+  __typename?: 'ReviewResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  review?: Maybe<Review>;
+};
+
+export type ReviewInput = {
+  message: Scalars['String'];
+  rating: Scalars['Float'];
+  mentorId: Scalars['Float'];
 };
 
 export type SessionResponse = {
@@ -323,6 +390,23 @@ export type CreateExpertiseMutation = (
   ) }
 );
 
+export type CreateReviewMutationVariables = Exact<{
+  input: ReviewInput;
+}>;
+
+
+export type CreateReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { createReview: (
+    { __typename?: 'ReviewResponse' }
+    & Pick<ReviewResponse, 'errorMsg'>
+    & { review?: Maybe<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'id' | 'message' | 'rating' | 'createdAt'>
+    )> }
+  ) }
+);
+
 export type CreateSessionMutationVariables = Exact<{
   input: SessionInput;
 }>;
@@ -352,6 +436,38 @@ export type CreateWorkExperienceMutation = (
   & { createWorkExperience: (
     { __typename?: 'WorkExperience' }
     & Pick<WorkExperience, 'role' | 'companyName' | 'description' | 'from' | 'untill'>
+  ) }
+);
+
+export type DeleteExpertiseMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteExpertiseMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteExpertise: (
+    { __typename?: 'DeleteResponse' }
+    & Pick<DeleteResponse, 'errorMsg' | 'deleted'>
+  ) }
+);
+
+export type RegisterIndividualMutationVariables = Exact<{
+  options: RegisterInput;
+}>;
+
+
+export type RegisterIndividualMutation = (
+  { __typename?: 'Mutation' }
+  & { registerIndividual: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'Users' }
+      & Pick<Users, 'email' | 'activated'>
+    )> }
   ) }
 );
 
@@ -454,6 +570,25 @@ export type SetMentorDetailsMutation = (
   ) }
 );
 
+export type SetMentorLinksMutationVariables = Exact<{
+  links: SocialLinksInput;
+}>;
+
+
+export type SetMentorLinksMutation = (
+  { __typename?: 'Mutation' }
+  & { setMentorLinks: (
+    { __typename?: 'MentorResponse' }
+    & { error?: Maybe<(
+      { __typename?: 'ErrorMessage' }
+      & Pick<ErrorMessage, 'message'>
+    )>, mentor?: Maybe<(
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'facebook' | 'medium' | 'linkedin' | 'twitter' | 'instagram'>
+    )> }
+  ) }
+);
+
 export type AdminsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -469,9 +604,7 @@ export type AdminsQuery = (
   )> }
 );
 
-export type ExpertisesQueryVariables = Exact<{
-  mentorId: Scalars['Int'];
-}>;
+export type ExpertisesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ExpertisesQuery = (
@@ -522,7 +655,7 @@ export type MeQuery = (
     & Pick<Users, 'id' | 'email' | 'activated' | 'avatar' | 'createdAt'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'bio' | 'title' | 'location' | 'languages' | 'rate'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'bio' | 'title' | 'location' | 'languages' | 'rate' | 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'medium'>
     )>, individual?: Maybe<(
       { __typename?: 'Individual' }
       & Pick<Individual, 'id' | 'firstName' | 'lastName'>
@@ -595,6 +728,27 @@ export type MentorsQuery = (
         & Pick<Industry, 'name'>
       )>> }
     )> }
+  )> }
+);
+
+export type ReviewsByIdQueryVariables = Exact<{
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type ReviewsByIdQuery = (
+  { __typename?: 'Query' }
+  & { reviewsById: Array<(
+    { __typename?: 'Review' }
+    & Pick<Review, 'id' | 'message' | 'rating' | 'createdAt'>
+    & { individual: (
+      { __typename?: 'Individual' }
+      & Pick<Individual, 'firstName' | 'lastName'>
+      & { user: (
+        { __typename?: 'Users' }
+        & Pick<Users, 'avatar'>
+      ) }
+    ) }
   )> }
 );
 
@@ -741,6 +895,44 @@ export function useCreateExpertiseMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateExpertiseMutationHookResult = ReturnType<typeof useCreateExpertiseMutation>;
 export type CreateExpertiseMutationResult = Apollo.MutationResult<CreateExpertiseMutation>;
 export type CreateExpertiseMutationOptions = Apollo.BaseMutationOptions<CreateExpertiseMutation, CreateExpertiseMutationVariables>;
+export const CreateReviewDocument = gql`
+    mutation CreateReview($input: ReviewInput!) {
+  createReview(input: $input) {
+    errorMsg
+    review {
+      id
+      message
+      rating
+      createdAt
+    }
+  }
+}
+    `;
+export type CreateReviewMutationFn = Apollo.MutationFunction<CreateReviewMutation, CreateReviewMutationVariables>;
+
+/**
+ * __useCreateReviewMutation__
+ *
+ * To run a mutation, you first call `useCreateReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReviewMutation, { data, loading, error }] = useCreateReviewMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions<CreateReviewMutation, CreateReviewMutationVariables>) {
+        return Apollo.useMutation<CreateReviewMutation, CreateReviewMutationVariables>(CreateReviewDocument, baseOptions);
+      }
+export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
+export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
+export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
 export const CreateSessionDocument = gql`
     mutation CreateSession($input: SessionInput!) {
   createSession(input: $input) {
@@ -815,6 +1007,78 @@ export function useCreateWorkExperienceMutation(baseOptions?: Apollo.MutationHoo
 export type CreateWorkExperienceMutationHookResult = ReturnType<typeof useCreateWorkExperienceMutation>;
 export type CreateWorkExperienceMutationResult = Apollo.MutationResult<CreateWorkExperienceMutation>;
 export type CreateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>;
+export const DeleteExpertiseDocument = gql`
+    mutation DeleteExpertise($id: Int!) {
+  deleteExpertise(id: $id) {
+    errorMsg
+    deleted
+  }
+}
+    `;
+export type DeleteExpertiseMutationFn = Apollo.MutationFunction<DeleteExpertiseMutation, DeleteExpertiseMutationVariables>;
+
+/**
+ * __useDeleteExpertiseMutation__
+ *
+ * To run a mutation, you first call `useDeleteExpertiseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteExpertiseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteExpertiseMutation, { data, loading, error }] = useDeleteExpertiseMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteExpertiseMutation(baseOptions?: Apollo.MutationHookOptions<DeleteExpertiseMutation, DeleteExpertiseMutationVariables>) {
+        return Apollo.useMutation<DeleteExpertiseMutation, DeleteExpertiseMutationVariables>(DeleteExpertiseDocument, baseOptions);
+      }
+export type DeleteExpertiseMutationHookResult = ReturnType<typeof useDeleteExpertiseMutation>;
+export type DeleteExpertiseMutationResult = Apollo.MutationResult<DeleteExpertiseMutation>;
+export type DeleteExpertiseMutationOptions = Apollo.BaseMutationOptions<DeleteExpertiseMutation, DeleteExpertiseMutationVariables>;
+export const RegisterIndividualDocument = gql`
+    mutation RegisterIndividual($options: RegisterInput!) {
+  registerIndividual(options: $options) {
+    errors {
+      field
+      message
+    }
+    user {
+      email
+      activated
+    }
+  }
+}
+    `;
+export type RegisterIndividualMutationFn = Apollo.MutationFunction<RegisterIndividualMutation, RegisterIndividualMutationVariables>;
+
+/**
+ * __useRegisterIndividualMutation__
+ *
+ * To run a mutation, you first call `useRegisterIndividualMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterIndividualMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerIndividualMutation, { data, loading, error }] = useRegisterIndividualMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useRegisterIndividualMutation(baseOptions?: Apollo.MutationHookOptions<RegisterIndividualMutation, RegisterIndividualMutationVariables>) {
+        return Apollo.useMutation<RegisterIndividualMutation, RegisterIndividualMutationVariables>(RegisterIndividualDocument, baseOptions);
+      }
+export type RegisterIndividualMutationHookResult = ReturnType<typeof useRegisterIndividualMutation>;
+export type RegisterIndividualMutationResult = Apollo.MutationResult<RegisterIndividualMutation>;
+export type RegisterIndividualMutationOptions = Apollo.BaseMutationOptions<RegisterIndividualMutation, RegisterIndividualMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -1022,6 +1286,47 @@ export function useSetMentorDetailsMutation(baseOptions?: Apollo.MutationHookOpt
 export type SetMentorDetailsMutationHookResult = ReturnType<typeof useSetMentorDetailsMutation>;
 export type SetMentorDetailsMutationResult = Apollo.MutationResult<SetMentorDetailsMutation>;
 export type SetMentorDetailsMutationOptions = Apollo.BaseMutationOptions<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>;
+export const SetMentorLinksDocument = gql`
+    mutation SetMentorLinks($links: SocialLinksInput!) {
+  setMentorLinks(links: $links) {
+    error {
+      message
+    }
+    mentor {
+      facebook
+      medium
+      linkedin
+      twitter
+      instagram
+    }
+  }
+}
+    `;
+export type SetMentorLinksMutationFn = Apollo.MutationFunction<SetMentorLinksMutation, SetMentorLinksMutationVariables>;
+
+/**
+ * __useSetMentorLinksMutation__
+ *
+ * To run a mutation, you first call `useSetMentorLinksMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetMentorLinksMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setMentorLinksMutation, { data, loading, error }] = useSetMentorLinksMutation({
+ *   variables: {
+ *      links: // value for 'links'
+ *   },
+ * });
+ */
+export function useSetMentorLinksMutation(baseOptions?: Apollo.MutationHookOptions<SetMentorLinksMutation, SetMentorLinksMutationVariables>) {
+        return Apollo.useMutation<SetMentorLinksMutation, SetMentorLinksMutationVariables>(SetMentorLinksDocument, baseOptions);
+      }
+export type SetMentorLinksMutationHookResult = ReturnType<typeof useSetMentorLinksMutation>;
+export type SetMentorLinksMutationResult = Apollo.MutationResult<SetMentorLinksMutation>;
+export type SetMentorLinksMutationOptions = Apollo.BaseMutationOptions<SetMentorLinksMutation, SetMentorLinksMutationVariables>;
 export const AdminsDocument = gql`
     query Admins {
   admins {
@@ -1062,8 +1367,8 @@ export type AdminsQueryHookResult = ReturnType<typeof useAdminsQuery>;
 export type AdminsLazyQueryHookResult = ReturnType<typeof useAdminsLazyQuery>;
 export type AdminsQueryResult = Apollo.QueryResult<AdminsQuery, AdminsQueryVariables>;
 export const ExpertisesDocument = gql`
-    query Expertises($mentorId: Int!) {
-  expertises(mentorId: $mentorId) {
+    query Expertises {
+  expertises {
     id
     description
     skill {
@@ -1086,7 +1391,6 @@ export const ExpertisesDocument = gql`
  * @example
  * const { data, loading, error } = useExpertisesQuery({
  *   variables: {
- *      mentorId: // value for 'mentorId'
  *   },
  * });
  */
@@ -1189,6 +1493,11 @@ export const MeDocument = gql`
       location
       languages
       rate
+      facebook
+      twitter
+      instagram
+      linkedin
+      medium
     }
     individual {
       id
@@ -1367,6 +1676,49 @@ export function useMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MentorsQueryHookResult = ReturnType<typeof useMentorsQuery>;
 export type MentorsLazyQueryHookResult = ReturnType<typeof useMentorsLazyQuery>;
 export type MentorsQueryResult = Apollo.QueryResult<MentorsQuery, MentorsQueryVariables>;
+export const ReviewsByIdDocument = gql`
+    query ReviewsById($mentorId: Int!) {
+  reviewsById(mentorId: $mentorId) {
+    id
+    message
+    rating
+    createdAt
+    individual {
+      firstName
+      lastName
+      user {
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useReviewsByIdQuery__
+ *
+ * To run a query within a React component, call `useReviewsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReviewsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReviewsByIdQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useReviewsByIdQuery(baseOptions?: Apollo.QueryHookOptions<ReviewsByIdQuery, ReviewsByIdQueryVariables>) {
+        return Apollo.useQuery<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, baseOptions);
+      }
+export function useReviewsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReviewsByIdQuery, ReviewsByIdQueryVariables>) {
+          return Apollo.useLazyQuery<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, baseOptions);
+        }
+export type ReviewsByIdQueryHookResult = ReturnType<typeof useReviewsByIdQuery>;
+export type ReviewsByIdLazyQueryHookResult = ReturnType<typeof useReviewsByIdLazyQuery>;
+export type ReviewsByIdQueryResult = Apollo.QueryResult<ReviewsByIdQuery, ReviewsByIdQueryVariables>;
 export const SessionsDocument = gql`
     query Sessions {
   sessions {
