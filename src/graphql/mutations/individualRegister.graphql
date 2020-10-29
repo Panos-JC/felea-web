@@ -1,0 +1,12 @@
+mutation RegisterIndividual($options: RegisterInput!) {
+  registerIndividual(options: $options) {
+    errors {
+      field
+      message
+    }
+    user {
+      email
+      activated
+    }
+  }
+}

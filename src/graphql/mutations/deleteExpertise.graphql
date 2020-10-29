@@ -1,0 +1,6 @@
+mutation DeleteExpertise($id: Int!) {
+  deleteExpertise(id: $id) {
+    errorMsg
+    deleted
+  }
+}
