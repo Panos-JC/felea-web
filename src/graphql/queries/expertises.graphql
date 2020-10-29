@@ -1,5 +1,5 @@
-query Expertises($mentorId: Int!) {
-  expertises(mentorId: $mentorId) {
+query Expertises {
+  expertises {
     id
     description
     skill {

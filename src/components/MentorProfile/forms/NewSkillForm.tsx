@@ -26,14 +26,10 @@ type Inputs = {
 };
 
 interface NewSkillFormProps {
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-  mentorId: number;
+  setEdit?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const NewSkillForm: React.FC<NewSkillFormProps> = ({
-  setEdit,
-  mentorId,
-}) => {
+export const NewSkillForm: React.FC<NewSkillFormProps> = ({ setEdit }) => {
   const classes = useStyles();
 
   const { data, loading } = useSkillsQuery();
@@ -54,10 +50,10 @@ export const NewSkillForm: React.FC<NewSkillFormProps> = ({
         skillId: formData.skill.id,
         description: formData.description,
       },
-      refetchQueries: [{ query: ExpertisesDocument, variables: { mentorId } }],
+      refetchQueries: [{ query: ExpertisesDocument }],
     });
 
-    if (!createExpLoading) {
+    if (!createExpLoading && setEdit) {
       setEdit(false);
     }
   };

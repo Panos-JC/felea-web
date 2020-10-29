@@ -29,7 +29,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({ mentorId }) => {
 
   const [edit, setEdit] = useState<boolean>(false);
 
-  const { data, loading } = useExpertisesQuery({ variables: { mentorId } });
+  const { data, loading } = useExpertisesQuery();
 
   return (
     <GeneralCard title="Expertise">
@@ -45,7 +45,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({ mentorId }) => {
       <Grid container spacing={2}>
         {edit && (
           <Grid item xs={12}>
-            <NewSkillForm mentorId={mentorId} setEdit={setEdit} />
+            <NewSkillForm setEdit={setEdit} />
           </Grid>
         )}
         {loading ? (
@@ -56,6 +56,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({ mentorId }) => {
           data.expertises.map((expertise) => (
             <Grid item xs={12}>
               <Expertise
+                id={expertise.id}
                 skill={expertise.skill.name}
                 description={expertise.description}
               />

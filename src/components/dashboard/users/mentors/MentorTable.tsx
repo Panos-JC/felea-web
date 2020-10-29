@@ -53,7 +53,9 @@ interface MentorTableProps {}
 export const MentorTable: React.FC<MentorTableProps> = () => {
   const classes = useStyles();
 
-  const { data, loading } = useMentorsQuery();
+  const { data, loading } = useMentorsQuery({
+    variables: { industries: [], skills: [] },
+  });
 
   if (loading) {
     return (

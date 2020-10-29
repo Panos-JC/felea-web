@@ -56,7 +56,9 @@ export const NewSession: React.FC<NewSessionProps> = () => {
     Inputs
   >();
 
-  const { data: mentors, loading: mentorsLoading } = useMentorsQuery();
+  const { data: mentors, loading: mentorsLoading } = useMentorsQuery({
+    variables: { skills: [], industries: [] },
+  });
   const {
     data: individuals,
     loading: individualsLoading,
