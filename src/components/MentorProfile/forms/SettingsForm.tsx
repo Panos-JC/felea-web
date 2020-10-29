@@ -25,6 +25,7 @@ import { LoadingButton } from "../../loadingButton/LoadingButton";
 const useStyles = makeStyles((theme) => ({
   settings: {
     padding: 20,
+    marginBottom: theme.spacing(2),
   },
   group: {
     display: "flex",

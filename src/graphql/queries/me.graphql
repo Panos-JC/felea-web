@@ -14,9 +14,18 @@ query Me {
       location
       languages
       rate
+      facebook
+      twitter
+      instagram
+      linkedin
+      medium
     }
     individual {
       id
+      firstName
+      lastName
+    }
+    admin {
       firstName
       lastName
     }

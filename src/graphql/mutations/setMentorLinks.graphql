@@ -1,0 +1,14 @@
+mutation SetMentorLinks($links: SocialLinksInput!) {
+  setMentorLinks(links: $links) {
+    error {
+      message
+    }
+    mentor {
+      facebook
+      medium
+      linkedin
+      twitter
+      instagram
+    }
+  }
+}

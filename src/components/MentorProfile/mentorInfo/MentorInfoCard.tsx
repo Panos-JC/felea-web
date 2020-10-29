@@ -10,7 +10,13 @@ import {
   MicNoneOutlined,
   VideocamOutlined,
 } from "@material-ui/icons";
-import { Twitter, Linkedin, Facebook } from "react-feather";
+import {
+  RiLinkedinBoxLine,
+  RiMediumLine,
+  RiFacebookBoxLine,
+  RiTwitterLine,
+  RiInstagramLine,
+} from "react-icons/ri";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -72,6 +78,8 @@ const useStyles = makeStyles((theme) => ({
   icons: {},
   icon: {
     marginRight: 5,
+    fontSize: 25,
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -84,6 +92,11 @@ interface MentorInfoCardProps {
   location?: string | null;
   languages?: string | null;
   loading: boolean;
+  facebookLink?: string | null | undefined;
+  instagramLink?: string | null | undefined;
+  twitterLink?: string | null | undefined;
+  mediumLink?: string | null | undefined;
+  linkedinLink?: string | null | undefined;
 }
 
 export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
@@ -95,6 +108,11 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
   location,
   languages,
   loading,
+  facebookLink,
+  instagramLink,
+  twitterLink,
+  mediumLink,
+  linkedinLink,
 }) => {
   const classes = useStyles();
 
@@ -168,9 +186,34 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
           </div>
 
           <div className={classes.icons}>
-            <Facebook className={classes.icon} />
-            <Twitter className={classes.icon} />
-            <Linkedin className={classes.icon} />
+            {mediumLink && (
+              <a href={mediumLink}>
+                <RiMediumLine className={classes.icon} />
+              </a>
+            )}
+
+            {facebookLink && (
+              <a href={facebookLink}>
+                <RiFacebookBoxLine className={classes.icon} />
+              </a>
+            )}
+
+            {twitterLink && (
+              <a href={twitterLink}>
+                <RiTwitterLine className={classes.icon} />
+              </a>
+            )}
+
+            {instagramLink && (
+              <a href={instagramLink}>
+                <RiInstagramLine className={classes.icon} />
+              </a>
+            )}
+            {linkedinLink && (
+              <a href={linkedinLink}>
+                <RiLinkedinBoxLine className={classes.icon} />
+              </a>
+            )}
           </div>
         </div>
       </div>

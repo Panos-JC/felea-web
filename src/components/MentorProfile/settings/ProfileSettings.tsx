@@ -8,8 +8,9 @@ import {
 } from "@material-ui/core";
 import { Person, VpnKey } from "@material-ui/icons";
 import React from "react";
-import { Layout } from "../layout/Layout";
-import { SettingsForm } from "./forms/SettingsForm";
+import { Layout } from "../../layout/Layout";
+import { SettingsForm } from "../forms/SettingsForm";
+import { SocialLinksForm } from "../forms/SocialLinksForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -81,6 +82,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
         </Grid>
         <Grid item xs={8}>
           <SettingsForm />
+          <SocialLinksForm />
         </Grid>
       </Grid>
     </Layout>
