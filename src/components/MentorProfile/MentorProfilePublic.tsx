@@ -37,7 +37,6 @@ export const MentorProfilePublic: React.FC<MentorProfilePublicProps> = () => {
         data.expertisesById && (
           <>
             <MentorInfoCard
-              loading={mentorLoading}
               firstName={mentorData.mentor.info.firstName}
               lastName={mentorData.mentor.info.lastName}
               avatar={mentorData.mentor.info.user.avatar}
@@ -45,11 +44,11 @@ export const MentorProfilePublic: React.FC<MentorProfilePublicProps> = () => {
               rate={mentorData.mentor.info.rate}
               location={mentorData.mentor.info.location}
               languages={mentorData.mentor.info.languages}
-              sessions={10000}
+              sessions={mentorData.mentor.sessionCount}
               rating={mentorData.mentor.avg}
             />
-            <Bio editable={false} bio={mentorData?.mentor.info.bio} />
-            <ExpertiseList data={data.expertisesById} loading={loading} />
+            <Bio editable={false} bio={mentorData.mentor.info.bio} />
+            <ExpertiseList data={data.expertisesById} />
             <WorkExperienceList editable={false} id={parseInt(id)} />
             <ReviewsList id={parseInt(id)} />
           </>

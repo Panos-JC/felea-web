@@ -96,14 +96,13 @@ interface MentorInfoCardProps {
   rate?: string | null;
   location?: string | null;
   languages?: string | null;
-  loading: boolean;
   facebookLink?: string | null | undefined;
   instagramLink?: string | null | undefined;
   twitterLink?: string | null | undefined;
   mediumLink?: string | null | undefined;
   linkedinLink?: string | null | undefined;
-  sessions?: number | null | undefined;
-  rating?: number | undefined;
+  sessions: number;
+  rating: number;
 }
 
 interface ParamTypes {
@@ -118,7 +117,6 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
   rate,
   location,
   languages,
-  loading,
   facebookLink,
   instagramLink,
   twitterLink,
@@ -133,8 +131,6 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
 
   // Remote state
   const { data, loading: meLoading } = useMeQuery();
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <Card className={classes.card}>

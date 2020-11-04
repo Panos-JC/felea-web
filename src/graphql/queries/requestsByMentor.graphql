@@ -11,6 +11,9 @@ query RequestsByMentor {
       declined {
         ...SessionRequestFragment
       }
+      completed {
+        ...SessionRequestFragment
+      }
     }
   }
 }

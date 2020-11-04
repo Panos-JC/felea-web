@@ -76,6 +76,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({
                 id={expertise.id}
                 skill={expertise.skill.name}
                 description={expertise.description}
+                editable={editable}
               />
             </Grid>
           ))

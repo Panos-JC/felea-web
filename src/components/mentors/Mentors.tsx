@@ -114,17 +114,18 @@ export const Mentors: React.FC<MentorsProps> = () => {
           {data &&
             data.mentors.map((mentor) => (
               <MentorCard
-                key={mentor.id}
-                mentorId={mentor.id}
-                firstName={mentor.firstName}
-                title={mentor.title}
-                rate={mentor.rate}
-                lastName={mentor.lastName}
-                bio={mentor.bio}
-                sessions={100}
-                expertises={mentor.expertises}
-                location={mentor.location}
-                languages={mentor.languages}
+                key={mentor.mentor.id}
+                mentorId={mentor.mentor.id}
+                firstName={mentor.mentor.firstName}
+                title={mentor.mentor.title}
+                rate={mentor.mentor.rate}
+                lastName={mentor.mentor.lastName}
+                bio={mentor.mentor.bio}
+                sessions={mentor.sessions}
+                expertises={mentor.mentor.expertises}
+                location={mentor.mentor.location}
+                languages={mentor.mentor.languages}
+                rating={mentor.avg}
               />
             ))}
         </Grid>

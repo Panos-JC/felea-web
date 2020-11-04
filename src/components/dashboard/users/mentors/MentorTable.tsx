@@ -78,7 +78,7 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
         {data &&
           data.mentors &&
           data.mentors.map((mentor) => (
-            <TableRow hover key={mentor.id}>
+            <TableRow hover key={mentor.mentor.id}>
               <TableCell>
                 <div className={classes.nameCell}>
                   <Avatar className={classes.avatar}>JD</Avatar>
@@ -90,9 +90,11 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
                       to="/management/customers/1"
                       variant="h6"
                     >
-                      {`${mentor.firstName} ${mentor.lastName}`}
+                      {`${mentor.mentor.firstName} ${mentor.mentor.lastName}`}
                     </Link>
-                    <div className={classes.email}>{mentor.user.email}</div>
+                    <div className={classes.email}>
+                      {mentor.mentor.user.email}
+                    </div>
                   </div>
                 </div>
               </TableCell>

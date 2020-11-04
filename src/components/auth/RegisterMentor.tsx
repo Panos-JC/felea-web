@@ -90,11 +90,6 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
     } else if (data?.registerMentor.user) {
       history.push(`/mentor/${data.registerMentor.user.id}`);
     }
-
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(password);
   };
 
   return (

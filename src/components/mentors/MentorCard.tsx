@@ -89,6 +89,7 @@ interface MentorCardProps {
   languages: string | null | undefined;
   title: string | null | undefined;
   rate: string | null | undefined;
+  rating: number;
   expertises: ({
     __typename?: "Expertise" | undefined;
   } & {
@@ -109,6 +110,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
   expertises,
   location,
   languages,
+  rating,
 }) => {
   const classes = useStyles();
   return (
@@ -163,7 +165,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           <span>sessions</span>
         </div>
         <div className={classes.stat}>
-          <strong>4.9</strong>
+          <strong>{rating}</strong>
           <StarBorder color="primary" />
         </div>
       </div>

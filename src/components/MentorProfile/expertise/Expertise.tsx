@@ -47,12 +47,14 @@ interface ExpertiseProps {
   id: number;
   skill: string;
   description: string;
+  editable: boolean;
 }
 
 export const Expertise: React.FC<ExpertiseProps> = ({
   id,
   skill,
   description,
+  editable,
 }) => {
   const classes = useStyles();
 
@@ -75,20 +77,24 @@ export const Expertise: React.FC<ExpertiseProps> = ({
         <Typography className={classes.title} variant="subtitle2">
           {skill}
         </Typography>
-        <IconButton
-          onClick={() => setEdit(!edit)}
-          className={classes.editBtn}
-          size="small"
-        >
-          <Edit fontSize="inherit" />
-        </IconButton>
-        <IconButton
-          onClick={handleDelete}
-          className={classes.deleteBtn}
-          size="small"
-        >
-          <Delete fontSize="inherit" />
-        </IconButton>
+        {editable && (
+          <>
+            <IconButton
+              onClick={() => setEdit(!edit)}
+              className={classes.editBtn}
+              size="small"
+            >
+              <Edit fontSize="inherit" />
+            </IconButton>
+            <IconButton
+              onClick={handleDelete}
+              className={classes.deleteBtn}
+              size="small"
+            >
+              <Delete fontSize="inherit" />
+            </IconButton>
+          </>
+        )}
       </div>
 
       <Typography className={classes.text}>{description}</Typography>

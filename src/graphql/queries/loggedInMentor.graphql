@@ -1,5 +1,5 @@
-query Mentor($mentorId: Int!) {
-  mentor(mentorId: $mentorId) {
+query LoggedInMentor {
+  loggedInMentor {
     avg
     sessionCount
     info {
