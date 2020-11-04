@@ -1,15 +1,29 @@
 query Mentor($mentorId: Int!) {
   mentor(mentorId: $mentorId) {
-    id
-    firstName
-    lastName
-    title
-    rate
-    bio
-    location
-    languages
-    user {
-      avatar
+    avg
+    info {
+      id
+      firstName
+      lastName
+      title
+      rate
+      bio
+      location
+      languages
+      user {
+        avatar
+      }
+      expertises {
+        description
+        skill {
+          name
+        }
+      }
+      workExperience {
+        industries {
+          name
+        }
+      }
     }
   }
 }
