@@ -1,5 +1,5 @@
 // import { makeStyles } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Layout } from "../layout/Layout";
 import { MentorCard } from "./MentorCard";
 import { useMentorsQuery } from "../../generated/graphql";
@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import { SkillFilters } from "./SkillFilters";
-import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   spinner: {
@@ -122,7 +121,7 @@ export const Mentors: React.FC<MentorsProps> = () => {
                 rate={mentor.rate}
                 lastName={mentor.lastName}
                 bio={mentor.bio}
-                sessions={mentor.sessionCount}
+                sessions={100}
                 expertises={mentor.expertises}
                 location={mentor.location}
                 languages={mentor.languages}

@@ -1,7 +1,13 @@
 import { makeStyles, Fab, Grid } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { useState } from "react";
-import { useExpertisesQuery } from "../../../generated/graphql";
+import {
+  Expertise as ExpertiseType,
+  ExpertisesByIdQuery,
+  ExpertisesQuery,
+  Skill,
+  useExpertisesQuery,
+} from "../../../generated/graphql";
 import { NewSkillForm } from "../forms/NewSkillForm";
 import { GeneralCard } from "../generalCard/GeneralCard";
 import { Expertise } from "./Expertise";
@@ -21,26 +27,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ExpertiseListProps {
-  mentorId: number;
+  data?: ({
+    __typename?: "Expertise" | undefined;
+  } & Pick<ExpertiseType, "id" | "description"> & {
+      skill: {
+        __typename?: "Skill" | undefined;
+      } & Pick<Skill, "id" | "name">;
+    })[];
+  loading?: boolean;
+  editable?: boolean;
 }
 
-export const ExpertiseList: React.FC<ExpertiseListProps> = ({ mentorId }) => {
+export const ExpertiseList: React.FC<ExpertiseListProps> = ({
+  data,
+  loading,
+  editable = false,
+}) => {
   const classes = useStyles();
 
   const [edit, setEdit] = useState<boolean>(false);
 
-  const { data, loading } = useExpertisesQuery();
-
   return (
     <GeneralCard title="Expertise">
-      <Fab
-        onClick={() => setEdit(!edit)}
-        className={classes.fab}
-        size="small"
-        color="primary"
-      >
-        <Add className={`${classes.icon} ${edit && classes.rotate}`} />
-      </Fab>
+      {editable && (
+        <Fab
+          onClick={() => setEdit(!edit)}
+          className={classes.fab}
+          size="small"
+          color="primary"
+        >
+          <Add className={`${classes.icon} ${edit && classes.rotate}`} />
+        </Fab>
+      )}
 
       <Grid container spacing={2}>
         {edit && (
@@ -52,8 +70,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({ mentorId }) => {
           <div>Loading...</div>
         ) : (
           data &&
-          data.expertises &&
-          data.expertises.map((expertise) => (
+          data.map((expertise) => (
             <Grid item xs={12}>
               <Expertise
                 id={expertise.id}

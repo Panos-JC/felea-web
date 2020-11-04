@@ -18,6 +18,8 @@ import {
   RiInstagramLine,
 } from "react-icons/ri";
 import React from "react";
+import { useMeQuery } from "../../../generated/graphql";
+import { Link, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -81,6 +83,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 25,
     color: theme.palette.text.secondary,
   },
+  link: {
+    textDecoration: "none",
+  },
 }));
 
 interface MentorInfoCardProps {
@@ -97,6 +102,12 @@ interface MentorInfoCardProps {
   twitterLink?: string | null | undefined;
   mediumLink?: string | null | undefined;
   linkedinLink?: string | null | undefined;
+  sessions?: number | null | undefined;
+  rating?: number | undefined;
+}
+
+interface ParamTypes {
+  id: string;
 }
 
 export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
@@ -113,8 +124,15 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
   twitterLink,
   mediumLink,
   linkedinLink,
+  sessions,
+  rating,
 }) => {
   const classes = useStyles();
+
+  const { id } = useParams<ParamTypes>();
+
+  // Remote state
+  const { data, loading: meLoading } = useMeQuery();
 
   if (loading) return <div>Loading...</div>;
 
@@ -154,7 +172,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
           </span>
           <span className={classes.stat}>
             <Typography className={classes.statNumber} variant="subtitle1">
-              23
+              {sessions}
             </Typography>
             <Typography className={classes.subtitle} variant="subtitle2">
               Sessionss
@@ -162,7 +180,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
           </span>
           <span className={classes.stat}>
             <Typography className={classes.statNumber} variant="subtitle1">
-              4.97
+              {rating}
               <GradeOutlined color="primary" />
             </Typography>
             <Typography className={classes.subtitle} variant="subtitle2">
@@ -172,9 +190,17 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
         </div>
         <div className={classes.actions}>
           <div className={classes.actionButtonContainer}>
-            <Button variant="contained" color="primary" disableElevation>
-              Contact
-            </Button>
+            {data &&
+              data.me &&
+              data.me.individual &&
+              data.me.individual.premium && (
+                <Link to={`/mentor/${id}/new-request`} className={classes.link}>
+                  <Button variant="contained" color="primary" disableElevation>
+                    Contact
+                  </Button>
+                </Link>
+              )}
+
             <Button
               style={{ marginLeft: 10 }}
               variant="outlined"
