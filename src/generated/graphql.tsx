@@ -21,13 +21,15 @@ export type Query = {
   individuals: Array<Individual>;
   industries: Array<Industry>;
   mentor: MentorInfoResponse;
-  mentors: Array<Mentor>;
+  loggedInMentor: MentorInfoResponse;
+  mentors: Array<MentorsResponse>;
   reviewsById: Array<Review>;
   skills: Array<Skill>;
   me?: Maybe<Users>;
   workExperiences: Array<WorkExperience>;
   requestsByMentor: RequestsByMentorResponse;
   sessionRequests: Array<SessionRequest>;
+  sessionRequestById: SessionRequestByIdResponse;
 };
 
 
@@ -54,6 +56,11 @@ export type QueryReviewsByIdArgs = {
 
 export type QueryWorkExperiencesArgs = {
   mentorId: Scalars['Int'];
+};
+
+
+export type QuerySessionRequestByIdArgs = {
+  requestId: Scalars['Int'];
 };
 
 export type Admin = {
@@ -97,6 +104,7 @@ export type Mentor = {
   workExperience: Array<WorkExperience>;
   expertises: Array<Expertise>;
   reviews: Array<Review>;
+  sessionRequests: Array<SessionRequest>;
   sessionCount?: Maybe<Scalars['Int']>;
 };
 
@@ -163,25 +171,6 @@ export type Individual = {
   user: Users;
 };
 
-export type MentorInfoResponse = {
-  __typename?: 'MentorInfoResponse';
-  avg: Scalars['Float'];
-  info: Mentor;
-};
-
-export type RequestsByMentorResponse = {
-  __typename?: 'RequestsByMentorResponse';
-  requests?: Maybe<RequestsTypes>;
-  errorMsg?: Maybe<Scalars['String']>;
-};
-
-export type RequestsTypes = {
-  __typename?: 'RequestsTypes';
-  pending: Array<SessionRequest>;
-  accepted: Array<SessionRequest>;
-  declined: Array<SessionRequest>;
-};
-
 export type SessionRequest = {
   __typename?: 'SessionRequest';
   id: Scalars['Int'];
@@ -198,6 +187,51 @@ export type SessionRequest = {
   mentor: Mentor;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type MentorInfoResponse = {
+  __typename?: 'MentorInfoResponse';
+  avg: Scalars['Float'];
+  sessionCount: Scalars['Float'];
+  info: Mentor;
+};
+
+export type MentorsResponse = {
+  __typename?: 'MentorsResponse';
+  mentor: Mentor;
+  sessions: Scalars['Float'];
+  avg: Scalars['Float'];
+};
+
+export type RequestsByMentorResponse = {
+  __typename?: 'RequestsByMentorResponse';
+  requests?: Maybe<RequestsTypes>;
+  errorMsg?: Maybe<Scalars['String']>;
+};
+
+export type RequestsTypes = {
+  __typename?: 'RequestsTypes';
+  pending: Array<SessionRequest>;
+  accepted: Array<SessionRequest>;
+  declined: Array<SessionRequest>;
+  completed: Array<SessionRequest>;
+};
+
+export type SessionRequestByIdResponse = {
+  __typename?: 'SessionRequestByIdResponse';
+  data?: Maybe<SessionRequestByIdData>;
+  errorMsg?: Maybe<Scalars['String']>;
+};
+
+export type SessionRequestByIdData = {
+  __typename?: 'SessionRequestByIdData';
+  individual: Individual;
+  mentor: Mentor;
+  ammount: Scalars['Float'];
+  status: Scalars['String'];
+  paymentStatus: Scalars['String'];
+  date: Scalars['DateTime'];
+  message: Scalars['String'];
 };
 
 export type Mutation = {
@@ -218,6 +252,7 @@ export type Mutation = {
   createSessionRequest: CreateRequestResponse;
   acceptRequest: RequestActionResponse;
   declineRequest: RequestActionResponse;
+  setRequestComplete: SetRequestCompleteResponse;
 };
 
 
@@ -294,6 +329,11 @@ export type MutationAcceptRequestArgs = {
 
 
 export type MutationDeclineRequestArgs = {
+  requestId: Scalars['Int'];
+};
+
+
+export type MutationSetRequestCompleteArgs = {
   requestId: Scalars['Int'];
 };
 
@@ -400,6 +440,12 @@ export type RequestActionResponse = {
   errorMsg?: Maybe<Scalars['String']>;
   accepted?: Maybe<Scalars['Boolean']>;
   declined?: Maybe<Scalars['Boolean']>;
+};
+
+export type SetRequestCompleteResponse = {
+  __typename?: 'SetRequestCompleteResponse';
+  complete?: Maybe<Scalars['Boolean']>;
+  errorMsg?: Maybe<Scalars['String']>;
 };
 
 export type SessionRequestFragmentFragment = (
@@ -692,6 +738,19 @@ export type SetMentorLinksMutation = (
   ) }
 );
 
+export type SetRequestCompleteMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type SetRequestCompleteMutation = (
+  { __typename?: 'Mutation' }
+  & { setRequestComplete: (
+    { __typename?: 'SetRequestCompleteResponse' }
+    & Pick<SetRequestCompleteResponse, 'errorMsg' | 'complete'>
+  ) }
+);
+
 export type AdminsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -765,6 +824,25 @@ export type IndustriesQuery = (
   )> }
 );
 
+export type LoggedInMentorQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LoggedInMentorQuery = (
+  { __typename?: 'Query' }
+  & { loggedInMentor: (
+    { __typename?: 'MentorInfoResponse' }
+    & Pick<MentorInfoResponse, 'avg' | 'sessionCount'>
+    & { info: (
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
+      & { user: (
+        { __typename?: 'Users' }
+        & Pick<Users, 'avatar'>
+      ) }
+    ) }
+  ) }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -795,27 +873,14 @@ export type MentorQuery = (
   { __typename?: 'Query' }
   & { mentor: (
     { __typename?: 'MentorInfoResponse' }
-    & Pick<MentorInfoResponse, 'avg'>
+    & Pick<MentorInfoResponse, 'avg' | 'sessionCount'>
     & { info: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'rate' | 'bio' | 'location' | 'languages'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'avatar'>
-      ), expertises: Array<(
-        { __typename?: 'Expertise' }
-        & Pick<Expertise, 'description'>
-        & { skill: (
-          { __typename?: 'Skill' }
-          & Pick<Skill, 'name'>
-        ) }
-      )>, workExperience: Array<(
-        { __typename?: 'WorkExperience' }
-        & { industries?: Maybe<Array<(
-          { __typename?: 'Industry' }
-          & Pick<Industry, 'name'>
-        )>> }
-      )> }
+      ) }
     ) }
   ) }
 );
@@ -829,24 +894,28 @@ export type MentorsQueryVariables = Exact<{
 export type MentorsQuery = (
   { __typename?: 'Query' }
   & { mentors: Array<(
-    { __typename?: 'Mentor' }
-    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate' | 'bio'>
-    & { user: (
-      { __typename?: 'Users' }
-      & Pick<Users, 'email' | 'avatar'>
-    ), expertises: Array<(
-      { __typename?: 'Expertise' }
-      & { skill: (
-        { __typename?: 'Skill' }
-        & Pick<Skill, 'name'>
-      ) }
-    )>, workExperience: Array<(
-      { __typename?: 'WorkExperience' }
-      & { industries?: Maybe<Array<(
-        { __typename?: 'Industry' }
-        & Pick<Industry, 'name'>
-      )>> }
-    )> }
+    { __typename?: 'MentorsResponse' }
+    & Pick<MentorsResponse, 'avg' | 'sessions'>
+    & { mentor: (
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate'>
+      & { user: (
+        { __typename?: 'Users' }
+        & Pick<Users, 'avatar' | 'email'>
+      ), expertises: Array<(
+        { __typename?: 'Expertise' }
+        & { skill: (
+          { __typename?: 'Skill' }
+          & Pick<Skill, 'name'>
+        ) }
+      )>, workExperience: Array<(
+        { __typename?: 'WorkExperience' }
+        & { industries?: Maybe<Array<(
+          { __typename?: 'Industry' }
+          & Pick<Industry, 'name'>
+        )>> }
+      )> }
+    ) }
   )> }
 );
 
@@ -867,6 +936,9 @@ export type RequestsByMentorQuery = (
         { __typename?: 'SessionRequest' }
         & SessionRequestFragmentFragment
       )>, declined: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragmentFragment
+      )>, completed: Array<(
         { __typename?: 'SessionRequest' }
         & SessionRequestFragmentFragment
       )> }
@@ -893,6 +965,38 @@ export type ReviewsByIdQuery = (
       ) }
     ) }
   )> }
+);
+
+export type SessionRequestByIdQueryVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type SessionRequestByIdQuery = (
+  { __typename?: 'Query' }
+  & { sessionRequestById: (
+    { __typename?: 'SessionRequestByIdResponse' }
+    & Pick<SessionRequestByIdResponse, 'errorMsg'>
+    & { data?: Maybe<(
+      { __typename?: 'SessionRequestByIdData' }
+      & Pick<SessionRequestByIdData, 'ammount' | 'status' | 'paymentStatus' | 'date' | 'message'>
+      & { individual: (
+        { __typename?: 'Individual' }
+        & Pick<Individual, 'firstName' | 'lastName'>
+        & { user: (
+          { __typename?: 'Users' }
+          & Pick<Users, 'email'>
+        ) }
+      ), mentor: (
+        { __typename?: 'Mentor' }
+        & Pick<Mentor, 'firstName' | 'lastName'>
+        & { user: (
+          { __typename?: 'Users' }
+          & Pick<Users, 'email'>
+        ) }
+      ) }
+    )> }
+  ) }
 );
 
 export type SessionRequestsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1582,6 +1686,39 @@ export function useSetMentorLinksMutation(baseOptions?: Apollo.MutationHookOptio
 export type SetMentorLinksMutationHookResult = ReturnType<typeof useSetMentorLinksMutation>;
 export type SetMentorLinksMutationResult = Apollo.MutationResult<SetMentorLinksMutation>;
 export type SetMentorLinksMutationOptions = Apollo.BaseMutationOptions<SetMentorLinksMutation, SetMentorLinksMutationVariables>;
+export const SetRequestCompleteDocument = gql`
+    mutation SetRequestComplete($requestId: Int!) {
+  setRequestComplete(requestId: $requestId) {
+    errorMsg
+    complete
+  }
+}
+    `;
+export type SetRequestCompleteMutationFn = Apollo.MutationFunction<SetRequestCompleteMutation, SetRequestCompleteMutationVariables>;
+
+/**
+ * __useSetRequestCompleteMutation__
+ *
+ * To run a mutation, you first call `useSetRequestCompleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetRequestCompleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setRequestCompleteMutation, { data, loading, error }] = useSetRequestCompleteMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useSetRequestCompleteMutation(baseOptions?: Apollo.MutationHookOptions<SetRequestCompleteMutation, SetRequestCompleteMutationVariables>) {
+        return Apollo.useMutation<SetRequestCompleteMutation, SetRequestCompleteMutationVariables>(SetRequestCompleteDocument, baseOptions);
+      }
+export type SetRequestCompleteMutationHookResult = ReturnType<typeof useSetRequestCompleteMutation>;
+export type SetRequestCompleteMutationResult = Apollo.MutationResult<SetRequestCompleteMutation>;
+export type SetRequestCompleteMutationOptions = Apollo.BaseMutationOptions<SetRequestCompleteMutation, SetRequestCompleteMutationVariables>;
 export const AdminsDocument = gql`
     query Admins {
   admins {
@@ -1769,6 +1906,57 @@ export function useIndustriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type IndustriesQueryHookResult = ReturnType<typeof useIndustriesQuery>;
 export type IndustriesLazyQueryHookResult = ReturnType<typeof useIndustriesLazyQuery>;
 export type IndustriesQueryResult = Apollo.QueryResult<IndustriesQuery, IndustriesQueryVariables>;
+export const LoggedInMentorDocument = gql`
+    query LoggedInMentor {
+  loggedInMentor {
+    avg
+    sessionCount
+    info {
+      id
+      firstName
+      lastName
+      title
+      location
+      languages
+      bio
+      rate
+      medium
+      facebook
+      linkedin
+      twitter
+      instagram
+      user {
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useLoggedInMentorQuery__
+ *
+ * To run a query within a React component, call `useLoggedInMentorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLoggedInMentorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLoggedInMentorQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLoggedInMentorQuery(baseOptions?: Apollo.QueryHookOptions<LoggedInMentorQuery, LoggedInMentorQueryVariables>) {
+        return Apollo.useQuery<LoggedInMentorQuery, LoggedInMentorQueryVariables>(LoggedInMentorDocument, baseOptions);
+      }
+export function useLoggedInMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LoggedInMentorQuery, LoggedInMentorQueryVariables>) {
+          return Apollo.useLazyQuery<LoggedInMentorQuery, LoggedInMentorQueryVariables>(LoggedInMentorDocument, baseOptions);
+        }
+export type LoggedInMentorQueryHookResult = ReturnType<typeof useLoggedInMentorQuery>;
+export type LoggedInMentorLazyQueryHookResult = ReturnType<typeof useLoggedInMentorLazyQuery>;
+export type LoggedInMentorQueryResult = Apollo.QueryResult<LoggedInMentorQuery, LoggedInMentorQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -1834,28 +2022,23 @@ export const MentorDocument = gql`
     query Mentor($mentorId: Int!) {
   mentor(mentorId: $mentorId) {
     avg
+    sessionCount
     info {
       id
       firstName
       lastName
       title
-      rate
-      bio
       location
       languages
+      bio
+      rate
+      medium
+      facebook
+      linkedin
+      twitter
+      instagram
       user {
         avatar
-      }
-      expertises {
-        description
-        skill {
-          name
-        }
-      }
-      workExperience {
-        industries {
-          name
-        }
       }
     }
   }
@@ -1890,26 +2073,30 @@ export type MentorQueryResult = Apollo.QueryResult<MentorQuery, MentorQueryVaria
 export const MentorsDocument = gql`
     query Mentors($skills: [String!]!, $industries: [String!]!) {
   mentors(skills: $skills, industries: $industries) {
-    id
-    firstName
-    lastName
-    title
-    location
-    languages
-    rate
-    bio
-    user {
-      email
-      avatar
-    }
-    expertises {
-      skill {
-        name
+    avg
+    sessions
+    mentor {
+      id
+      firstName
+      lastName
+      title
+      location
+      languages
+      bio
+      rate
+      user {
+        avatar
+        email
       }
-    }
-    workExperience {
-      industries {
-        name
+      expertises {
+        skill {
+          name
+        }
+      }
+      workExperience {
+        industries {
+          name
+        }
       }
     }
   }
@@ -1954,6 +2141,9 @@ export const RequestsByMentorDocument = gql`
         ...SessionRequestFragment
       }
       declined {
+        ...SessionRequestFragment
+      }
+      completed {
         ...SessionRequestFragment
       }
     }
@@ -2028,6 +2218,60 @@ export function useReviewsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type ReviewsByIdQueryHookResult = ReturnType<typeof useReviewsByIdQuery>;
 export type ReviewsByIdLazyQueryHookResult = ReturnType<typeof useReviewsByIdLazyQuery>;
 export type ReviewsByIdQueryResult = Apollo.QueryResult<ReviewsByIdQuery, ReviewsByIdQueryVariables>;
+export const SessionRequestByIdDocument = gql`
+    query SessionRequestById($requestId: Int!) {
+  sessionRequestById(requestId: $requestId) {
+    errorMsg
+    data {
+      individual {
+        firstName
+        lastName
+        user {
+          email
+        }
+      }
+      mentor {
+        firstName
+        lastName
+        user {
+          email
+        }
+      }
+      ammount
+      status
+      paymentStatus
+      date
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useSessionRequestByIdQuery__
+ *
+ * To run a query within a React component, call `useSessionRequestByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSessionRequestByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSessionRequestByIdQuery({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useSessionRequestByIdQuery(baseOptions?: Apollo.QueryHookOptions<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>) {
+        return Apollo.useQuery<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>(SessionRequestByIdDocument, baseOptions);
+      }
+export function useSessionRequestByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>) {
+          return Apollo.useLazyQuery<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>(SessionRequestByIdDocument, baseOptions);
+        }
+export type SessionRequestByIdQueryHookResult = ReturnType<typeof useSessionRequestByIdQuery>;
+export type SessionRequestByIdLazyQueryHookResult = ReturnType<typeof useSessionRequestByIdLazyQuery>;
+export type SessionRequestByIdQueryResult = Apollo.QueryResult<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>;
 export const SessionRequestsDocument = gql`
     query SessionRequests {
   sessionRequests {

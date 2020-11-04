@@ -14,8 +14,9 @@ import {
 import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useSessionsQuery } from "../../../generated/graphql";
 import moment from "moment";
+import { useSessionRequestsQuery } from "../../../../generated/graphql";
+import { SessionTag } from "../sessionTag/SessionTag";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -27,13 +28,21 @@ const useStyles = makeStyles((theme) => ({
     width: 42,
     marginRight: theme.spacing(1),
   },
-  warn: {
-    background: fade(theme.palette.error.light, 0.4),
+  successChip: {
+    backgroundColor: fade(theme.palette.success.light, 0.5),
+    color: theme.palette.success.dark,
+  },
+  warnChip: {
+    backgroundColor: fade(theme.palette.warning.light, 0.5),
+    color: theme.palette.warning.dark,
+  },
+  errorChip: {
+    backgroundColor: fade(theme.palette.error.light, 0.5),
     color: theme.palette.error.dark,
   },
-  success: {
-    background: fade(theme.palette.success.light, 0.4),
-    color: theme.palette.success.dark,
+  completeChip: {
+    backgroundColor: fade(theme.palette.secondary.light, 0.5),
+    color: theme.palette.secondary.dark,
   },
   link: {
     fontSize: 14,
@@ -54,7 +63,7 @@ interface SessionsTableProps {}
 export const SessionsTable: React.FC<SessionsTableProps> = () => {
   const classes = useStyles();
 
-  const { data, loading } = useSessionsQuery();
+  const { data, loading } = useSessionRequestsQuery();
 
   if (loading) {
     return (
@@ -71,15 +80,16 @@ export const SessionsTable: React.FC<SessionsTableProps> = () => {
           <TableCell>Id</TableCell>
           <TableCell>Mentor</TableCell>
           <TableCell>User</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Ammount</TableCell>
           <TableCell>Date</TableCell>
-          <TableCell>Created by</TableCell>
           <TableCell align="right">Actions</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {data &&
-          data.sessions &&
-          data.sessions.map((session) => (
+          data.sessionRequests &&
+          data.sessionRequests.map((session) => (
             <TableRow hover key={session.id}>
               <TableCell>{session.id}</TableCell>
               <TableCell>
@@ -127,13 +137,26 @@ export const SessionsTable: React.FC<SessionsTableProps> = () => {
                 </div>
               </TableCell>
               <TableCell>
-                {moment(session.date).format("MMMM Do YYYY")}
+                <SessionTag status={session.status} />
               </TableCell>
-              <TableCell>{`${session.creator.firstName} ${session.creator.lastName}`}</TableCell>
+              <TableCell>{session.ammount / 100}&euro;</TableCell>
+              <TableCell>
+                {moment(new Date(parseInt(session.createdAt))).format(
+                  "MMMM Do YYYY"
+                )}
+              </TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="secondary">
-                  <ArrowForwardIcon />
-                </IconButton>
+                <Link
+                  className={classes.link}
+                  color="inherit"
+                  component={RouterLink}
+                  to={`/dashboard/sessions/${session.id}`}
+                  variant="h6"
+                >
+                  <IconButton size="small" color="secondary">
+                    <ArrowForwardIcon />
+                  </IconButton>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

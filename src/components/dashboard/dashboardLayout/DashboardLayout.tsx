@@ -24,6 +24,7 @@ import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { useLogoutMutation, useMeQuery } from "../../../generated/graphql";
 import { ProtectedRoute } from "../../../router/ProtectedRoute";
+import { SessionPage } from "../sessions/sessionPage/SessionPage";
 import { Sessions } from "../sessions/Sessions";
 import { Admins } from "../users/admins/Admins";
 import { Individuals } from "../users/individuals/Individuals";
@@ -265,6 +266,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           exact
         />
         <ProtectedRoute path="/dashboard/sessions" component={Sessions} exact />
+        <ProtectedRoute
+          path="/dashboard/sessions/:id"
+          component={SessionPage}
+          exact
+        />
 
         {children}
       </main>

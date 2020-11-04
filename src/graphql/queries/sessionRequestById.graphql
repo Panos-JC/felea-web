@@ -1,0 +1,26 @@
+query SessionRequestById($requestId: Int!) {
+  sessionRequestById(requestId: $requestId) {
+    errorMsg
+    data {
+      individual {
+        firstName
+        lastName
+        user {
+          email
+        }
+      }
+      mentor {
+        firstName
+        lastName
+        user {
+          email
+        }
+      }
+      ammount
+      status
+      paymentStatus
+      date
+      message
+    }
+  }
+}

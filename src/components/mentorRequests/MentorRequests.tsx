@@ -53,7 +53,7 @@ export const MentorRequests: React.FC<MentorRequestsProps> = () => {
   };
 
   return (
-    <Layout maxWidth="sm">
+    <Layout maxWidth="md">
       <Paper>
         <Tabs
           className={classes.tabs}
@@ -66,6 +66,7 @@ export const MentorRequests: React.FC<MentorRequestsProps> = () => {
           <Tab label="Pending" />
           <Tab label="Accepted" />
           <Tab label="Declined" />
+          <Tab label="Completed" />
         </Tabs>
       </Paper>
       {loading ? (
@@ -126,7 +127,7 @@ export const MentorRequests: React.FC<MentorRequestsProps> = () => {
               data.requestsByMentor &&
               data.requestsByMentor.requests &&
               data.requestsByMentor.requests.accepted.length === 0 && (
-                <div>No declined requests</div>
+                <div>No accepted requests</div>
               )}
           </TabPanel>
           <TabPanel value={value} index={2}>
@@ -155,6 +156,34 @@ export const MentorRequests: React.FC<MentorRequestsProps> = () => {
               data.requestsByMentor.requests &&
               data.requestsByMentor.requests.declined.length === 0 && (
                 <div>No declined requests</div>
+              )}
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            {data &&
+              data.requestsByMentor &&
+              data.requestsByMentor.requests &&
+              data.requestsByMentor.requests.completed.map((request) => (
+                <RequestCard
+                  key={request.id}
+                  id={request.id}
+                  avatar={request.individual.user.avatar}
+                  firstName={request.individual.firstName}
+                  lastName={request.individual.lastName}
+                  email={request.email}
+                  objective={request.objective}
+                  headline={request.headline}
+                  message={request.message}
+                  tool={request.communicationTool}
+                  toolId={request.communicationToolId}
+                  premium={request.individual.premium}
+                  date={request.createdAt}
+                />
+              ))}
+            {data &&
+              data.requestsByMentor &&
+              data.requestsByMentor.requests &&
+              data.requestsByMentor.requests.completed.length === 0 && (
+                <div>No completed sessions</div>
               )}
           </TabPanel>
         </>

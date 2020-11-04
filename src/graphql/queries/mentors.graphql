@@ -1,25 +1,29 @@
 query Mentors($skills: [String!]!, $industries: [String!]!) {
   mentors(skills: $skills, industries: $industries) {
-    id
-    firstName
-    lastName
-    title
-    location
-    languages
-    rate
-    bio
-    user {
-      email
-      avatar
-    }
-    expertises {
-      skill {
-        name
+    avg
+    sessions
+    mentor {
+      id
+      firstName
+      lastName
+      title
+      location
+      languages
+      bio
+      rate
+      user {
+        avatar
+        email
       }
-    }
-    workExperience {
-      industries {
-        name
+      expertises {
+        skill {
+          name
+        }
+      }
+      workExperience {
+        industries {
+          name
+        }
       }
     }
   }

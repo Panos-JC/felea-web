@@ -1,0 +1,6 @@
+mutation SetRequestComplete($requestId: Int!) {
+  setRequestComplete(requestId: $requestId) {
+    errorMsg
+    complete
+  }
+}
