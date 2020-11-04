@@ -6,13 +6,17 @@ import { Register } from "../components/auth/Register";
 import { RegisterMentor } from "../components/auth/RegisterMentor";
 import { MentorProfilePrivate } from "../components/MentorProfile/MentorProfilePrivate";
 import { MentorProfilePublic } from "../components/MentorProfile/MentorProfilePublic";
-import { ProfileSettings } from "../components/MentorProfile/ProfileSettings";
+import { ProfileSettings } from "../components/MentorProfile/settings/ProfileSettings";
 import { Mentors } from "../components/mentors/Mentors";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { RegisterAdmin } from "../components/auth/RegisterAdmin";
 import { DashboardLayout } from "../components/dashboard/dashboardLayout/DashboardLayout";
-import { Sessions } from "../components/sessions/Sessions";
-import { SessionPage } from "../components/sessions/SessionPage";
+import { RegisterIndividual } from "../components/auth/RegisterIndividual";
+import { Subscription } from "../components/account/Subscription";
+import { SessionRequest } from "../components/sessionRequest/SessionRequest";
+import { MentorRequests } from "../components/mentorRequests/MentorRequests";
+import { SessionRequestSuccess } from "../components/sessionRequest/success/SessionRequestSuccess";
+import { NotFound } from "../components/404/NotFound";
 
 interface RoutesProps {}
 
@@ -24,6 +28,20 @@ export const Routes: React.FC<RoutesProps> = () => {
         component={MentorProfilePublic}
         exact
       />
+      <ProtectedRoute
+        path="/mentor/:id/new-request"
+        component={SessionRequest}
+        exact
+      />
+
+      <ProtectedRoute
+        path="/new-request/success"
+        component={SessionRequestSuccess}
+        exact
+      />
+
+      <ProtectedRoute path="/requests" component={MentorRequests} exact />
+
       <ProtectedRoute path="/mentors" component={Mentors} exact />
       <ProtectedRoute path="/profile" component={MentorProfilePrivate} exact />
       <ProtectedRoute
@@ -32,12 +50,11 @@ export const Routes: React.FC<RoutesProps> = () => {
         exact
       />
 
-      <ProtectedRoute path="/sessions" component={Sessions} exact />
-      <ProtectedRoute path="/sessions/:id" component={SessionPage} exact />
-
       <ProtectedRoute path="/dashboard" component={DashboardLayout} />
 
       <ProtectedRoute path="/" component={Home} exact />
+
+      <Route path="/subscribe" component={Subscription} />
 
       <Route path="/login">
         <Login />
@@ -51,6 +68,10 @@ export const Routes: React.FC<RoutesProps> = () => {
       <Route path="/admin-register">
         <RegisterAdmin />
       </Route>
+      <Route path="/guest-register">
+        <RegisterIndividual />
+      </Route>
+      <Route component={NotFound} />
 
       {/* <Redirect from="/" to="/mentorProfile" /> */}
     </Switch>

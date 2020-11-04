@@ -1,0 +1,6 @@
+mutation DeclineRequest($requestId: Int!) {
+  declineRequest(requestId: $requestId) {
+    errorMsg
+    declined
+  }
+}

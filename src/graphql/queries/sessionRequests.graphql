@@ -1,0 +1,30 @@
+query SessionRequests {
+  sessionRequests {
+    id
+    objective
+    headline
+    message
+    communicationTool
+    communicationToolId
+    email
+    status
+    ammount
+    createdAt
+    mentor {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+    individual {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+  }
+}

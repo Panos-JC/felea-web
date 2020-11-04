@@ -1,0 +1,16 @@
+query RequestsByMentor {
+  requestsByMentor {
+    errorMsg
+    requests {
+      pending {
+        ...SessionRequestFragment
+      }
+      accepted {
+        ...SessionRequestFragment
+      }
+      declined {
+        ...SessionRequestFragment
+      }
+    }
+  }
+}

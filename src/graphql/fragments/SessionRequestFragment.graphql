@@ -1,0 +1,20 @@
+fragment SessionRequestFragment on SessionRequest {
+  id
+  objective
+  headline
+  communicationTool
+  communicationToolId
+  email
+  message
+  status
+  createdAt
+  individual {
+    firstName
+    lastName
+    premium
+    user {
+      email
+      avatar
+    }
+  }
+}

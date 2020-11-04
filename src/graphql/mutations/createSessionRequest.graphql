@@ -1,0 +1,9 @@
+mutation CreateSessionRequest($input: SessionRequestInput!) {
+  createSessionRequest(input: $input) {
+    errorMsg
+    sessionRequest {
+      id
+      headline
+    }
+  }
+}

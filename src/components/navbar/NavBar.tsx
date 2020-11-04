@@ -7,8 +7,9 @@ import {
   Menu,
   MenuItem,
   IconButton,
+  ListItemIcon,
 } from "@material-ui/core";
-import { AccountCircle } from "@material-ui/icons";
+import { AccountCircle, PowerSettingsNew, Settings } from "@material-ui/icons";
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useMeQuery, useLogoutMutation } from "../../generated/graphql";
@@ -17,16 +18,25 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
+  navigation: {
+    display: "inline-flex",
+    marginRight: 15,
+  },
   avatar: {
     "&:hover": {
       cursor: "pointer",
     },
+  },
+  button: {
+    textTransform: "none",
+    fontSize: 16,
   },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
+    fontWeight: 500,
   },
   link: {
     textDecoration: "none",
@@ -62,16 +72,34 @@ export const NavBar: React.FC<NavBarProps> = () => {
 
   const body = (
     <div>
-      {data?.me?.individual && (
-        <Link to="/mentors" className={classes.link}>
-          <Button
-            className={classes.menuButton}
-            color="primary"
-            variant="outlined"
-          >
-            Browse Mentors
-          </Button>
-        </Link>
+      {data && data.me && data.me.individual && (
+        <>
+          <Link to="/mentors" className={classes.link}>
+            <Button
+              className={classes.menuButton}
+              color="primary"
+              variant="contained"
+              disableElevation
+            >
+              Browse Mentors
+            </Button>
+          </Link>
+        </>
+      )}
+
+      {data && data.me && data.me.mentor && (
+        <div className={classes.navigation}>
+          <Link to="/requests" className={classes.link}>
+            <Button
+              className={classes.button}
+              variant="contained"
+              color="primary"
+              disableElevation
+            >
+              Requests
+            </Button>
+          </Link>
+        </div>
       )}
 
       <IconButton
@@ -100,6 +128,9 @@ export const NavBar: React.FC<NavBarProps> = () => {
       >
         {data?.me?.mentor && (
           <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <AccountCircle />
+            </ListItemIcon>
             <Link className={classes.link} to="/profile">
               Profile
             </Link>
@@ -107,12 +138,20 @@ export const NavBar: React.FC<NavBarProps> = () => {
         )}
         {data?.me?.mentor && (
           <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
             <Link className={classes.link} to={`/setings/profile`}>
               Settings
             </Link>
           </MenuItem>
         )}
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <PowerSettingsNew />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
       </Menu>
     </div>
   );
@@ -120,10 +159,10 @@ export const NavBar: React.FC<NavBarProps> = () => {
   return (
     <AppBar elevation={2} position="static" color="primary">
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
+        <Typography variant="h4" className={classes.title}>
           Felea
         </Typography>
-        {data?.me ? body : <Button>Login</Button>}
+        {data && data.me ? body : <Button>Login</Button>}
       </Toolbar>
     </AppBar>
   );

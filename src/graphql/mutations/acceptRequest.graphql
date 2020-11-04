@@ -1,0 +1,6 @@
+mutation AcceptRequest($requestId: Int!) {
+  acceptRequest(requestId: $requestId) {
+    errorMsg
+    accepted
+  }
+}

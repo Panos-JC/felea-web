@@ -20,14 +20,14 @@ export type Query = {
   expertisesById: Array<Expertise>;
   individuals: Array<Individual>;
   industries: Array<Industry>;
-  mentor: Mentor;
+  mentor: MentorInfoResponse;
   mentors: Array<Mentor>;
   reviewsById: Array<Review>;
-  sessions: Array<Session>;
-  mentorSessions: Array<Session>;
   skills: Array<Skill>;
   me?: Maybe<Users>;
   workExperiences: Array<WorkExperience>;
+  requestsByMentor: RequestsByMentorResponse;
+  sessionRequests: Array<SessionRequest>;
 };
 
 
@@ -95,8 +95,8 @@ export type Mentor = {
   instagram?: Maybe<Scalars['String']>;
   user: Users;
   workExperience: Array<WorkExperience>;
-  sessions: Array<Session>;
   expertises: Array<Expertise>;
+  reviews: Array<Review>;
   sessionCount?: Maybe<Scalars['Int']>;
 };
 
@@ -120,28 +120,6 @@ export type Industry = {
   nameLowercase: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
-};
-
-export type Session = {
-  __typename?: 'Session';
-  id: Scalars['Int'];
-  date: Scalars['DateTime'];
-  individual: Individual;
-  mentor: Mentor;
-  creator: Admin;
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
-
-export type Individual = {
-  __typename?: 'Individual';
-  id: Scalars['Int'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  premium: Scalars['Boolean'];
-  user: Users;
-  sessions: Array<Session>;
 };
 
 export type Expertise = {
@@ -172,21 +150,74 @@ export type Review = {
   individual: Individual;
 };
 
+
+export type Individual = {
+  __typename?: 'Individual';
+  id: Scalars['Int'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  premium: Scalars['Boolean'];
+  stripeCustomerId: Scalars['String'];
+  stripePaymentMethodId: Scalars['String'];
+  subscriptionId: Scalars['String'];
+  user: Users;
+};
+
+export type MentorInfoResponse = {
+  __typename?: 'MentorInfoResponse';
+  avg: Scalars['Float'];
+  info: Mentor;
+};
+
+export type RequestsByMentorResponse = {
+  __typename?: 'RequestsByMentorResponse';
+  requests?: Maybe<RequestsTypes>;
+  errorMsg?: Maybe<Scalars['String']>;
+};
+
+export type RequestsTypes = {
+  __typename?: 'RequestsTypes';
+  pending: Array<SessionRequest>;
+  accepted: Array<SessionRequest>;
+  declined: Array<SessionRequest>;
+};
+
+export type SessionRequest = {
+  __typename?: 'SessionRequest';
+  id: Scalars['Int'];
+  objective: Scalars['String'];
+  headline: Scalars['String'];
+  communicationTool: Scalars['String'];
+  email: Scalars['String'];
+  communicationToolId: Scalars['String'];
+  message: Scalars['String'];
+  status: Scalars['String'];
+  ammount: Scalars['Float'];
+  stripePaymentIntentId: Scalars['String'];
+  individual: Individual;
+  mentor: Mentor;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createExpertise: ExpertiseResponse;
   deleteExpertise: DeleteResponse;
+  createSubscription: Individual;
   setMentorDetails: MentorResponse;
   setMentorLinks: MentorResponse;
   setBio: MentorResponse;
   createReview: ReviewResponse;
-  createSession: SessionResponse;
   registerIndividual: UserResponse;
   registerMentor: UserResponse;
   registerAdmin: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
   createWorkExperience: WorkExperience;
+  createSessionRequest: CreateRequestResponse;
+  acceptRequest: RequestActionResponse;
+  declineRequest: RequestActionResponse;
 };
 
 
@@ -198,6 +229,11 @@ export type MutationCreateExpertiseArgs = {
 
 export type MutationDeleteExpertiseArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationCreateSubscriptionArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -218,11 +254,6 @@ export type MutationSetBioArgs = {
 
 export type MutationCreateReviewArgs = {
   input: ReviewInput;
-};
-
-
-export type MutationCreateSessionArgs = {
-  input: SessionInput;
 };
 
 
@@ -249,6 +280,21 @@ export type MutationLoginArgs = {
 
 export type MutationCreateWorkExperienceArgs = {
   input: WorkExperienceInput;
+};
+
+
+export type MutationCreateSessionRequestArgs = {
+  input: SessionRequestInput;
+};
+
+
+export type MutationAcceptRequestArgs = {
+  requestId: Scalars['Int'];
+};
+
+
+export type MutationDeclineRequestArgs = {
+  requestId: Scalars['Int'];
 };
 
 export type ExpertiseResponse = {
@@ -303,24 +349,6 @@ export type ReviewInput = {
   mentorId: Scalars['Float'];
 };
 
-export type SessionResponse = {
-  __typename?: 'SessionResponse';
-  error?: Maybe<SessionError>;
-  session?: Maybe<Session>;
-};
-
-export type SessionError = {
-  __typename?: 'SessionError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
-export type SessionInput = {
-  mentorId: Scalars['Float'];
-  userId: Scalars['Float'];
-  date: Scalars['DateTime'];
-};
-
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -348,6 +376,57 @@ export type WorkExperienceInput = {
   untill: Scalars['String'];
   industries: Array<Scalars['String']>;
 };
+
+export type CreateRequestResponse = {
+  __typename?: 'CreateRequestResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  sessionRequest?: Maybe<SessionRequest>;
+};
+
+export type SessionRequestInput = {
+  objective: Scalars['String'];
+  headline: Scalars['String'];
+  email: Scalars['String'];
+  communicationTool: Scalars['String'];
+  communicationToolId: Scalars['String'];
+  message: Scalars['String'];
+  ammount: Scalars['Float'];
+  mentorId: Scalars['Float'];
+  token: Scalars['String'];
+};
+
+export type RequestActionResponse = {
+  __typename?: 'RequestActionResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  accepted?: Maybe<Scalars['Boolean']>;
+  declined?: Maybe<Scalars['Boolean']>;
+};
+
+export type SessionRequestFragmentFragment = (
+  { __typename?: 'SessionRequest' }
+  & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'email' | 'message' | 'status' | 'createdAt'>
+  & { individual: (
+    { __typename?: 'Individual' }
+    & Pick<Individual, 'firstName' | 'lastName' | 'premium'>
+    & { user: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'email' | 'avatar'>
+    ) }
+  ) }
+);
+
+export type AcceptRequestMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type AcceptRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { acceptRequest: (
+    { __typename?: 'RequestActionResponse' }
+    & Pick<RequestActionResponse, 'errorMsg' | 'accepted'>
+  ) }
+);
 
 export type RegisterAdminMutationVariables = Exact<{
   options: RegisterInput;
@@ -407,22 +486,33 @@ export type CreateReviewMutation = (
   ) }
 );
 
-export type CreateSessionMutationVariables = Exact<{
-  input: SessionInput;
+export type CreateSessionRequestMutationVariables = Exact<{
+  input: SessionRequestInput;
 }>;
 
 
-export type CreateSessionMutation = (
+export type CreateSessionRequestMutation = (
   { __typename?: 'Mutation' }
-  & { createSession: (
-    { __typename?: 'SessionResponse' }
-    & { error?: Maybe<(
-      { __typename?: 'SessionError' }
-      & Pick<SessionError, 'field' | 'message'>
-    )>, session?: Maybe<(
-      { __typename?: 'Session' }
-      & Pick<Session, 'id'>
+  & { createSessionRequest: (
+    { __typename?: 'CreateRequestResponse' }
+    & Pick<CreateRequestResponse, 'errorMsg'>
+    & { sessionRequest?: Maybe<(
+      { __typename?: 'SessionRequest' }
+      & Pick<SessionRequest, 'id' | 'headline'>
     )> }
+  ) }
+);
+
+export type CreateSubscriptionMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type CreateSubscriptionMutation = (
+  { __typename?: 'Mutation' }
+  & { createSubscription: (
+    { __typename?: 'Individual' }
+    & Pick<Individual, 'id' | 'firstName' | 'lastName'>
   ) }
 );
 
@@ -436,6 +526,19 @@ export type CreateWorkExperienceMutation = (
   & { createWorkExperience: (
     { __typename?: 'WorkExperience' }
     & Pick<WorkExperience, 'role' | 'companyName' | 'description' | 'from' | 'untill'>
+  ) }
+);
+
+export type DeclineRequestMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type DeclineRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { declineRequest: (
+    { __typename?: 'RequestActionResponse' }
+    & Pick<RequestActionResponse, 'errorMsg' | 'declined'>
   ) }
 );
 
@@ -619,6 +722,23 @@ export type ExpertisesQuery = (
   )> }
 );
 
+export type ExpertisesByIdQueryVariables = Exact<{
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type ExpertisesByIdQuery = (
+  { __typename?: 'Query' }
+  & { expertisesById: Array<(
+    { __typename?: 'Expertise' }
+    & Pick<Expertise, 'id' | 'description'>
+    & { skill: (
+      { __typename?: 'Skill' }
+      & Pick<Skill, 'id' | 'name'>
+    ) }
+  )> }
+);
+
 export type IndividualsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -658,7 +778,7 @@ export type MeQuery = (
       & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'bio' | 'title' | 'location' | 'languages' | 'rate' | 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'medium'>
     )>, individual?: Maybe<(
       { __typename?: 'Individual' }
-      & Pick<Individual, 'id' | 'firstName' | 'lastName'>
+      & Pick<Individual, 'id' | 'firstName' | 'lastName' | 'premium'>
     )>, admin?: Maybe<(
       { __typename?: 'Admin' }
       & Pick<Admin, 'firstName' | 'lastName'>
@@ -674,31 +794,30 @@ export type MentorQueryVariables = Exact<{
 export type MentorQuery = (
   { __typename?: 'Query' }
   & { mentor: (
-    { __typename?: 'Mentor' }
-    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'rate' | 'bio' | 'location' | 'languages'>
-    & { user: (
-      { __typename?: 'Users' }
-      & Pick<Users, 'avatar'>
+    { __typename?: 'MentorInfoResponse' }
+    & Pick<MentorInfoResponse, 'avg'>
+    & { info: (
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'rate' | 'bio' | 'location' | 'languages'>
+      & { user: (
+        { __typename?: 'Users' }
+        & Pick<Users, 'avatar'>
+      ), expertises: Array<(
+        { __typename?: 'Expertise' }
+        & Pick<Expertise, 'description'>
+        & { skill: (
+          { __typename?: 'Skill' }
+          & Pick<Skill, 'name'>
+        ) }
+      )>, workExperience: Array<(
+        { __typename?: 'WorkExperience' }
+        & { industries?: Maybe<Array<(
+          { __typename?: 'Industry' }
+          & Pick<Industry, 'name'>
+        )>> }
+      )> }
     ) }
   ) }
-);
-
-export type MentorSessionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MentorSessionsQuery = (
-  { __typename?: 'Query' }
-  & { mentorSessions: Array<(
-    { __typename?: 'Session' }
-    & Pick<Session, 'id' | 'date'>
-    & { mentor: (
-      { __typename?: 'Mentor' }
-      & Pick<Mentor, 'firstName' | 'lastName'>
-    ), individual: (
-      { __typename?: 'Individual' }
-      & Pick<Individual, 'firstName' | 'lastName'>
-    ) }
-  )> }
 );
 
 export type MentorsQueryVariables = Exact<{
@@ -711,7 +830,7 @@ export type MentorsQuery = (
   { __typename?: 'Query' }
   & { mentors: Array<(
     { __typename?: 'Mentor' }
-    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate' | 'bio' | 'sessionCount'>
+    & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate' | 'bio'>
     & { user: (
       { __typename?: 'Users' }
       & Pick<Users, 'email' | 'avatar'>
@@ -729,6 +848,30 @@ export type MentorsQuery = (
       )>> }
     )> }
   )> }
+);
+
+export type RequestsByMentorQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RequestsByMentorQuery = (
+  { __typename?: 'Query' }
+  & { requestsByMentor: (
+    { __typename?: 'RequestsByMentorResponse' }
+    & Pick<RequestsByMentorResponse, 'errorMsg'>
+    & { requests?: Maybe<(
+      { __typename?: 'RequestsTypes' }
+      & { pending: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragmentFragment
+      )>, accepted: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragmentFragment
+      )>, declined: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragmentFragment
+      )> }
+    )> }
+  ) }
 );
 
 export type ReviewsByIdQueryVariables = Exact<{
@@ -752,31 +895,24 @@ export type ReviewsByIdQuery = (
   )> }
 );
 
-export type SessionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type SessionRequestsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SessionsQuery = (
+export type SessionRequestsQuery = (
   { __typename?: 'Query' }
-  & { sessions: Array<(
-    { __typename?: 'Session' }
-    & Pick<Session, 'id' | 'date'>
-    & { individual: (
-      { __typename?: 'Individual' }
-      & Pick<Individual, 'firstName' | 'lastName'>
-      & { user: (
-        { __typename?: 'Users' }
-        & Pick<Users, 'email' | 'avatar'>
-      ) }
-    ), creator: (
-      { __typename?: 'Admin' }
-      & Pick<Admin, 'firstName' | 'lastName'>
-      & { user: (
-        { __typename?: 'Users' }
-        & Pick<Users, 'email' | 'avatar'>
-      ) }
-    ), mentor: (
+  & { sessionRequests: Array<(
+    { __typename?: 'SessionRequest' }
+    & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'message' | 'communicationTool' | 'communicationToolId' | 'email' | 'status' | 'ammount' | 'createdAt'>
+    & { mentor: (
       { __typename?: 'Mentor' }
       & Pick<Mentor, 'firstName' | 'lastName'>
+      & { user: (
+        { __typename?: 'Users' }
+        & Pick<Users, 'email' | 'avatar'>
+      ) }
+    ), individual: (
+      { __typename?: 'Individual' }
+      & Pick<Individual, 'firstName' | 'lastName'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'email' | 'avatar'>
@@ -813,7 +949,61 @@ export type WorkExperiencesQuery = (
   )> }
 );
 
+export const SessionRequestFragmentFragmentDoc = gql`
+    fragment SessionRequestFragment on SessionRequest {
+  id
+  objective
+  headline
+  communicationTool
+  communicationToolId
+  email
+  message
+  status
+  createdAt
+  individual {
+    firstName
+    lastName
+    premium
+    user {
+      email
+      avatar
+    }
+  }
+}
+    `;
+export const AcceptRequestDocument = gql`
+    mutation AcceptRequest($requestId: Int!) {
+  acceptRequest(requestId: $requestId) {
+    errorMsg
+    accepted
+  }
+}
+    `;
+export type AcceptRequestMutationFn = Apollo.MutationFunction<AcceptRequestMutation, AcceptRequestMutationVariables>;
 
+/**
+ * __useAcceptRequestMutation__
+ *
+ * To run a mutation, you first call `useAcceptRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptRequestMutation, { data, loading, error }] = useAcceptRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useAcceptRequestMutation(baseOptions?: Apollo.MutationHookOptions<AcceptRequestMutation, AcceptRequestMutationVariables>) {
+        return Apollo.useMutation<AcceptRequestMutation, AcceptRequestMutationVariables>(AcceptRequestDocument, baseOptions);
+      }
+export type AcceptRequestMutationHookResult = ReturnType<typeof useAcceptRequestMutation>;
+export type AcceptRequestMutationResult = Apollo.MutationResult<AcceptRequestMutation>;
+export type AcceptRequestMutationOptions = Apollo.BaseMutationOptions<AcceptRequestMutation, AcceptRequestMutationVariables>;
 export const RegisterAdminDocument = gql`
     mutation RegisterAdmin($options: RegisterInput!) {
   registerAdmin(options: $options) {
@@ -933,44 +1123,76 @@ export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
 export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
 export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
-export const CreateSessionDocument = gql`
-    mutation CreateSession($input: SessionInput!) {
-  createSession(input: $input) {
-    error {
-      field
-      message
-    }
-    session {
+export const CreateSessionRequestDocument = gql`
+    mutation CreateSessionRequest($input: SessionRequestInput!) {
+  createSessionRequest(input: $input) {
+    errorMsg
+    sessionRequest {
       id
+      headline
     }
   }
 }
     `;
-export type CreateSessionMutationFn = Apollo.MutationFunction<CreateSessionMutation, CreateSessionMutationVariables>;
+export type CreateSessionRequestMutationFn = Apollo.MutationFunction<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>;
 
 /**
- * __useCreateSessionMutation__
+ * __useCreateSessionRequestMutation__
  *
- * To run a mutation, you first call `useCreateSessionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSessionMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateSessionRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSessionRequestMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createSessionMutation, { data, loading, error }] = useCreateSessionMutation({
+ * const [createSessionRequestMutation, { data, loading, error }] = useCreateSessionRequestMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateSessionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSessionMutation, CreateSessionMutationVariables>) {
-        return Apollo.useMutation<CreateSessionMutation, CreateSessionMutationVariables>(CreateSessionDocument, baseOptions);
+export function useCreateSessionRequestMutation(baseOptions?: Apollo.MutationHookOptions<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>) {
+        return Apollo.useMutation<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>(CreateSessionRequestDocument, baseOptions);
       }
-export type CreateSessionMutationHookResult = ReturnType<typeof useCreateSessionMutation>;
-export type CreateSessionMutationResult = Apollo.MutationResult<CreateSessionMutation>;
-export type CreateSessionMutationOptions = Apollo.BaseMutationOptions<CreateSessionMutation, CreateSessionMutationVariables>;
+export type CreateSessionRequestMutationHookResult = ReturnType<typeof useCreateSessionRequestMutation>;
+export type CreateSessionRequestMutationResult = Apollo.MutationResult<CreateSessionRequestMutation>;
+export type CreateSessionRequestMutationOptions = Apollo.BaseMutationOptions<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>;
+export const CreateSubscriptionDocument = gql`
+    mutation CreateSubscription($token: String!) {
+  createSubscription(token: $token) {
+    id
+    firstName
+    lastName
+  }
+}
+    `;
+export type CreateSubscriptionMutationFn = Apollo.MutationFunction<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>;
+
+/**
+ * __useCreateSubscriptionMutation__
+ *
+ * To run a mutation, you first call `useCreateSubscriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSubscriptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSubscriptionMutation, { data, loading, error }] = useCreateSubscriptionMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useCreateSubscriptionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>) {
+        return Apollo.useMutation<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>(CreateSubscriptionDocument, baseOptions);
+      }
+export type CreateSubscriptionMutationHookResult = ReturnType<typeof useCreateSubscriptionMutation>;
+export type CreateSubscriptionMutationResult = Apollo.MutationResult<CreateSubscriptionMutation>;
+export type CreateSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>;
 export const CreateWorkExperienceDocument = gql`
     mutation CreateWorkExperience($input: WorkExperienceInput!) {
   createWorkExperience(input: $input) {
@@ -1007,6 +1229,39 @@ export function useCreateWorkExperienceMutation(baseOptions?: Apollo.MutationHoo
 export type CreateWorkExperienceMutationHookResult = ReturnType<typeof useCreateWorkExperienceMutation>;
 export type CreateWorkExperienceMutationResult = Apollo.MutationResult<CreateWorkExperienceMutation>;
 export type CreateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>;
+export const DeclineRequestDocument = gql`
+    mutation DeclineRequest($requestId: Int!) {
+  declineRequest(requestId: $requestId) {
+    errorMsg
+    declined
+  }
+}
+    `;
+export type DeclineRequestMutationFn = Apollo.MutationFunction<DeclineRequestMutation, DeclineRequestMutationVariables>;
+
+/**
+ * __useDeclineRequestMutation__
+ *
+ * To run a mutation, you first call `useDeclineRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeclineRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [declineRequestMutation, { data, loading, error }] = useDeclineRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useDeclineRequestMutation(baseOptions?: Apollo.MutationHookOptions<DeclineRequestMutation, DeclineRequestMutationVariables>) {
+        return Apollo.useMutation<DeclineRequestMutation, DeclineRequestMutationVariables>(DeclineRequestDocument, baseOptions);
+      }
+export type DeclineRequestMutationHookResult = ReturnType<typeof useDeclineRequestMutation>;
+export type DeclineRequestMutationResult = Apollo.MutationResult<DeclineRequestMutation>;
+export type DeclineRequestMutationOptions = Apollo.BaseMutationOptions<DeclineRequestMutation, DeclineRequestMutationVariables>;
 export const DeleteExpertiseDocument = gql`
     mutation DeleteExpertise($id: Int!) {
   deleteExpertise(id: $id) {
@@ -1403,6 +1658,44 @@ export function useExpertisesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type ExpertisesQueryHookResult = ReturnType<typeof useExpertisesQuery>;
 export type ExpertisesLazyQueryHookResult = ReturnType<typeof useExpertisesLazyQuery>;
 export type ExpertisesQueryResult = Apollo.QueryResult<ExpertisesQuery, ExpertisesQueryVariables>;
+export const ExpertisesByIdDocument = gql`
+    query ExpertisesById($mentorId: Int!) {
+  expertisesById(mentorId: $mentorId) {
+    id
+    description
+    skill {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useExpertisesByIdQuery__
+ *
+ * To run a query within a React component, call `useExpertisesByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExpertisesByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExpertisesByIdQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useExpertisesByIdQuery(baseOptions?: Apollo.QueryHookOptions<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>) {
+        return Apollo.useQuery<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>(ExpertisesByIdDocument, baseOptions);
+      }
+export function useExpertisesByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>) {
+          return Apollo.useLazyQuery<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>(ExpertisesByIdDocument, baseOptions);
+        }
+export type ExpertisesByIdQueryHookResult = ReturnType<typeof useExpertisesByIdQuery>;
+export type ExpertisesByIdLazyQueryHookResult = ReturnType<typeof useExpertisesByIdLazyQuery>;
+export type ExpertisesByIdQueryResult = Apollo.QueryResult<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>;
 export const IndividualsDocument = gql`
     query Individuals {
   individuals {
@@ -1503,6 +1796,7 @@ export const MeDocument = gql`
       id
       firstName
       lastName
+      premium
     }
     admin {
       firstName
@@ -1539,16 +1833,30 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const MentorDocument = gql`
     query Mentor($mentorId: Int!) {
   mentor(mentorId: $mentorId) {
-    id
-    firstName
-    lastName
-    title
-    rate
-    bio
-    location
-    languages
-    user {
-      avatar
+    avg
+    info {
+      id
+      firstName
+      lastName
+      title
+      rate
+      bio
+      location
+      languages
+      user {
+        avatar
+      }
+      expertises {
+        description
+        skill {
+          name
+        }
+      }
+      workExperience {
+        industries {
+          name
+        }
+      }
     }
   }
 }
@@ -1579,47 +1887,6 @@ export function useMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Men
 export type MentorQueryHookResult = ReturnType<typeof useMentorQuery>;
 export type MentorLazyQueryHookResult = ReturnType<typeof useMentorLazyQuery>;
 export type MentorQueryResult = Apollo.QueryResult<MentorQuery, MentorQueryVariables>;
-export const MentorSessionsDocument = gql`
-    query MentorSessions {
-  mentorSessions {
-    id
-    date
-    mentor {
-      firstName
-      lastName
-    }
-    individual {
-      firstName
-      lastName
-    }
-  }
-}
-    `;
-
-/**
- * __useMentorSessionsQuery__
- *
- * To run a query within a React component, call `useMentorSessionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMentorSessionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMentorSessionsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMentorSessionsQuery(baseOptions?: Apollo.QueryHookOptions<MentorSessionsQuery, MentorSessionsQueryVariables>) {
-        return Apollo.useQuery<MentorSessionsQuery, MentorSessionsQueryVariables>(MentorSessionsDocument, baseOptions);
-      }
-export function useMentorSessionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MentorSessionsQuery, MentorSessionsQueryVariables>) {
-          return Apollo.useLazyQuery<MentorSessionsQuery, MentorSessionsQueryVariables>(MentorSessionsDocument, baseOptions);
-        }
-export type MentorSessionsQueryHookResult = ReturnType<typeof useMentorSessionsQuery>;
-export type MentorSessionsLazyQueryHookResult = ReturnType<typeof useMentorSessionsLazyQuery>;
-export type MentorSessionsQueryResult = Apollo.QueryResult<MentorSessionsQuery, MentorSessionsQueryVariables>;
 export const MentorsDocument = gql`
     query Mentors($skills: [String!]!, $industries: [String!]!) {
   mentors(skills: $skills, industries: $industries) {
@@ -1645,7 +1912,6 @@ export const MentorsDocument = gql`
         name
       }
     }
-    sessionCount
   }
 }
     `;
@@ -1676,6 +1942,49 @@ export function useMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MentorsQueryHookResult = ReturnType<typeof useMentorsQuery>;
 export type MentorsLazyQueryHookResult = ReturnType<typeof useMentorsLazyQuery>;
 export type MentorsQueryResult = Apollo.QueryResult<MentorsQuery, MentorsQueryVariables>;
+export const RequestsByMentorDocument = gql`
+    query RequestsByMentor {
+  requestsByMentor {
+    errorMsg
+    requests {
+      pending {
+        ...SessionRequestFragment
+      }
+      accepted {
+        ...SessionRequestFragment
+      }
+      declined {
+        ...SessionRequestFragment
+      }
+    }
+  }
+}
+    ${SessionRequestFragmentFragmentDoc}`;
+
+/**
+ * __useRequestsByMentorQuery__
+ *
+ * To run a query within a React component, call `useRequestsByMentorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRequestsByMentorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRequestsByMentorQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRequestsByMentorQuery(baseOptions?: Apollo.QueryHookOptions<RequestsByMentorQuery, RequestsByMentorQueryVariables>) {
+        return Apollo.useQuery<RequestsByMentorQuery, RequestsByMentorQueryVariables>(RequestsByMentorDocument, baseOptions);
+      }
+export function useRequestsByMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RequestsByMentorQuery, RequestsByMentorQueryVariables>) {
+          return Apollo.useLazyQuery<RequestsByMentorQuery, RequestsByMentorQueryVariables>(RequestsByMentorDocument, baseOptions);
+        }
+export type RequestsByMentorQueryHookResult = ReturnType<typeof useRequestsByMentorQuery>;
+export type RequestsByMentorLazyQueryHookResult = ReturnType<typeof useRequestsByMentorLazyQuery>;
+export type RequestsByMentorQueryResult = Apollo.QueryResult<RequestsByMentorQuery, RequestsByMentorQueryVariables>;
 export const ReviewsByIdDocument = gql`
     query ReviewsById($mentorId: Int!) {
   reviewsById(mentorId: $mentorId) {
@@ -1719,28 +2028,28 @@ export function useReviewsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type ReviewsByIdQueryHookResult = ReturnType<typeof useReviewsByIdQuery>;
 export type ReviewsByIdLazyQueryHookResult = ReturnType<typeof useReviewsByIdLazyQuery>;
 export type ReviewsByIdQueryResult = Apollo.QueryResult<ReviewsByIdQuery, ReviewsByIdQueryVariables>;
-export const SessionsDocument = gql`
-    query Sessions {
-  sessions {
+export const SessionRequestsDocument = gql`
+    query SessionRequests {
+  sessionRequests {
     id
-    date
-    individual {
-      firstName
-      lastName
-      user {
-        email
-        avatar
-      }
-    }
-    creator {
-      firstName
-      lastName
-      user {
-        email
-        avatar
-      }
-    }
+    objective
+    headline
+    message
+    communicationTool
+    communicationToolId
+    email
+    status
+    ammount
+    createdAt
     mentor {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+    individual {
       firstName
       lastName
       user {
@@ -1753,29 +2062,29 @@ export const SessionsDocument = gql`
     `;
 
 /**
- * __useSessionsQuery__
+ * __useSessionRequestsQuery__
  *
- * To run a query within a React component, call `useSessionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSessionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSessionRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSessionRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSessionsQuery({
+ * const { data, loading, error } = useSessionRequestsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useSessionsQuery(baseOptions?: Apollo.QueryHookOptions<SessionsQuery, SessionsQueryVariables>) {
-        return Apollo.useQuery<SessionsQuery, SessionsQueryVariables>(SessionsDocument, baseOptions);
+export function useSessionRequestsQuery(baseOptions?: Apollo.QueryHookOptions<SessionRequestsQuery, SessionRequestsQueryVariables>) {
+        return Apollo.useQuery<SessionRequestsQuery, SessionRequestsQueryVariables>(SessionRequestsDocument, baseOptions);
       }
-export function useSessionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionsQuery, SessionsQueryVariables>) {
-          return Apollo.useLazyQuery<SessionsQuery, SessionsQueryVariables>(SessionsDocument, baseOptions);
+export function useSessionRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionRequestsQuery, SessionRequestsQueryVariables>) {
+          return Apollo.useLazyQuery<SessionRequestsQuery, SessionRequestsQueryVariables>(SessionRequestsDocument, baseOptions);
         }
-export type SessionsQueryHookResult = ReturnType<typeof useSessionsQuery>;
-export type SessionsLazyQueryHookResult = ReturnType<typeof useSessionsLazyQuery>;
-export type SessionsQueryResult = Apollo.QueryResult<SessionsQuery, SessionsQueryVariables>;
+export type SessionRequestsQueryHookResult = ReturnType<typeof useSessionRequestsQuery>;
+export type SessionRequestsLazyQueryHookResult = ReturnType<typeof useSessionRequestsLazyQuery>;
+export type SessionRequestsQueryResult = Apollo.QueryResult<SessionRequestsQuery, SessionRequestsQueryVariables>;
 export const SkillsDocument = gql`
     query Skills {
   skills {
