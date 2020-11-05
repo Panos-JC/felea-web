@@ -18,6 +18,7 @@ import { useHistory, useParams } from "react-router-dom";
 import {
   SessionRequestInput,
   useCreateSessionRequestMutation,
+  useExpertisesByIdQuery,
   useMentorQuery,
 } from "../../../generated/graphql";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
@@ -112,6 +113,10 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
   const { data, loading } = useMentorQuery({
     variables: { mentorId: parseInt(id) },
   });
+  const {
+    data: expertisesData,
+    loading: expertisesLoading,
+  } = useExpertisesByIdQuery({ variables: { mentorId: parseInt(id) } });
   const [
     createSessionRequest,
     { data: sessionRequestData, loading: sessionRequestLoading },
@@ -201,7 +206,7 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
                     <Controller
                       as={
                         <Select label="Objective">
-                          {data.mentor.info.expertises.map((expertise) => (
+                          {expertisesData?.expertisesById.map((expertise) => (
                             <MenuItem
                               key={expertise.skill.name}
                               value={expertise.skill.name}
@@ -213,7 +218,9 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
                       }
                       name="objective"
                       control={control}
-                      defaultValue={data.mentor.info.expertises[0].skill.name}
+                      defaultValue={
+                        expertisesData?.expertisesById[0].skill.name
+                      }
                     />
                   </FormControl>
                 </div>
