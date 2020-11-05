@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   ReviewInput,
+  ReviewsByIdDocument,
   useCreateReviewMutation,
 } from "../../../generated/graphql";
 
@@ -53,7 +54,12 @@ export const CreateReviewForm: React.FC<CreateReviewFormProps> = ({ id }) => {
 
     console.log(input);
 
-    await createReview({ variables: { input } });
+    await createReview({
+      variables: { input },
+      refetchQueries: [
+        { query: ReviewsByIdDocument, variables: { mentorId: id } },
+      ],
+    });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
