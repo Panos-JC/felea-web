@@ -23,6 +23,7 @@ export type Query = {
   mentor: MentorInfoResponse;
   loggedInMentor: MentorInfoResponse;
   mentors: Array<MentorsResponse>;
+  isProfileComplete: IsProfileCompleteResponse;
   reviewsById: Array<Review>;
   skills: Array<Skill>;
   me?: Maybe<Users>;
@@ -90,6 +91,7 @@ export type Mentor = {
   id: Scalars['Int'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  profileComplete: Scalars['Boolean'];
   title?: Maybe<Scalars['String']>;
   location?: Maybe<Scalars['String']>;
   languages?: Maybe<Scalars['String']>;
@@ -191,7 +193,7 @@ export type SessionRequest = {
 
 export type MentorInfoResponse = {
   __typename?: 'MentorInfoResponse';
-  avg: Scalars['Float'];
+  avg?: Maybe<Scalars['Float']>;
   sessionCount: Scalars['Float'];
   info: Mentor;
 };
@@ -200,7 +202,13 @@ export type MentorsResponse = {
   __typename?: 'MentorsResponse';
   mentor: Mentor;
   sessions: Scalars['Float'];
-  avg: Scalars['Float'];
+  avg?: Maybe<Scalars['Float']>;
+};
+
+export type IsProfileCompleteResponse = {
+  __typename?: 'IsProfileCompleteResponse';
+  messages: Array<Scalars['String']>;
+  isComplete: Scalars['Boolean'];
 };
 
 export type RequestsByMentorResponse = {
@@ -236,6 +244,7 @@ export type SessionRequestByIdData = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  generateMentor: GenerateMentorResponse;
   createExpertise: ExpertiseResponse;
   deleteExpertise: DeleteResponse;
   createSubscription: Individual;
@@ -253,6 +262,11 @@ export type Mutation = {
   acceptRequest: RequestActionResponse;
   declineRequest: RequestActionResponse;
   setRequestComplete: SetRequestCompleteResponse;
+};
+
+
+export type MutationGenerateMentorArgs = {
+  email: Scalars['String'];
 };
 
 
@@ -298,6 +312,7 @@ export type MutationRegisterIndividualArgs = {
 
 
 export type MutationRegisterMentorArgs = {
+  token: Scalars['String'];
   options: RegisterInput;
 };
 
@@ -335,6 +350,12 @@ export type MutationDeclineRequestArgs = {
 
 export type MutationSetRequestCompleteArgs = {
   requestId: Scalars['Int'];
+};
+
+export type GenerateMentorResponse = {
+  __typename?: 'GenerateMentorResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  emailSent?: Maybe<Scalars['Boolean']>;
 };
 
 export type ExpertiseResponse = {
@@ -601,6 +622,19 @@ export type DeleteExpertiseMutation = (
   ) }
 );
 
+export type GenerateMentorMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type GenerateMentorMutation = (
+  { __typename?: 'Mutation' }
+  & { generateMentor: (
+    { __typename?: 'GenerateMentorResponse' }
+    & Pick<GenerateMentorResponse, 'errorMsg' | 'emailSent'>
+  ) }
+);
+
 export type RegisterIndividualMutationVariables = Exact<{
   options: RegisterInput;
 }>;
@@ -660,6 +694,7 @@ export type LogoutMutation = (
 
 export type MentorRegisterMutationVariables = Exact<{
   options: RegisterInput;
+  token: Scalars['String'];
 }>;
 
 
@@ -824,6 +859,17 @@ export type IndustriesQuery = (
   )> }
 );
 
+export type IsProfileCompleteQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsProfileCompleteQuery = (
+  { __typename?: 'Query' }
+  & { isProfileComplete: (
+    { __typename?: 'IsProfileCompleteResponse' }
+    & Pick<IsProfileCompleteResponse, 'messages' | 'isComplete'>
+  ) }
+);
+
 export type LoggedInMentorQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -834,7 +880,7 @@ export type LoggedInMentorQuery = (
     & Pick<MentorInfoResponse, 'avg' | 'sessionCount'>
     & { info: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate' | 'profileComplete' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'avatar'>
@@ -1399,6 +1445,39 @@ export function useDeleteExpertiseMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteExpertiseMutationHookResult = ReturnType<typeof useDeleteExpertiseMutation>;
 export type DeleteExpertiseMutationResult = Apollo.MutationResult<DeleteExpertiseMutation>;
 export type DeleteExpertiseMutationOptions = Apollo.BaseMutationOptions<DeleteExpertiseMutation, DeleteExpertiseMutationVariables>;
+export const GenerateMentorDocument = gql`
+    mutation GenerateMentor($email: String!) {
+  generateMentor(email: $email) {
+    errorMsg
+    emailSent
+  }
+}
+    `;
+export type GenerateMentorMutationFn = Apollo.MutationFunction<GenerateMentorMutation, GenerateMentorMutationVariables>;
+
+/**
+ * __useGenerateMentorMutation__
+ *
+ * To run a mutation, you first call `useGenerateMentorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateMentorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generateMentorMutation, { data, loading, error }] = useGenerateMentorMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useGenerateMentorMutation(baseOptions?: Apollo.MutationHookOptions<GenerateMentorMutation, GenerateMentorMutationVariables>) {
+        return Apollo.useMutation<GenerateMentorMutation, GenerateMentorMutationVariables>(GenerateMentorDocument, baseOptions);
+      }
+export type GenerateMentorMutationHookResult = ReturnType<typeof useGenerateMentorMutation>;
+export type GenerateMentorMutationResult = Apollo.MutationResult<GenerateMentorMutation>;
+export type GenerateMentorMutationOptions = Apollo.BaseMutationOptions<GenerateMentorMutation, GenerateMentorMutationVariables>;
 export const RegisterIndividualDocument = gql`
     mutation RegisterIndividual($options: RegisterInput!) {
   registerIndividual(options: $options) {
@@ -1523,8 +1602,8 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const MentorRegisterDocument = gql`
-    mutation MentorRegister($options: RegisterInput!) {
-  registerMentor(options: $options) {
+    mutation MentorRegister($options: RegisterInput!, $token: String!) {
+  registerMentor(options: $options, token: $token) {
     errors {
       field
       message
@@ -1555,6 +1634,7 @@ export type MentorRegisterMutationFn = Apollo.MutationFunction<MentorRegisterMut
  * const [mentorRegisterMutation, { data, loading, error }] = useMentorRegisterMutation({
  *   variables: {
  *      options: // value for 'options'
+ *      token: // value for 'token'
  *   },
  * });
  */
@@ -1906,6 +1986,39 @@ export function useIndustriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type IndustriesQueryHookResult = ReturnType<typeof useIndustriesQuery>;
 export type IndustriesLazyQueryHookResult = ReturnType<typeof useIndustriesLazyQuery>;
 export type IndustriesQueryResult = Apollo.QueryResult<IndustriesQuery, IndustriesQueryVariables>;
+export const IsProfileCompleteDocument = gql`
+    query IsProfileComplete {
+  isProfileComplete {
+    messages
+    isComplete
+  }
+}
+    `;
+
+/**
+ * __useIsProfileCompleteQuery__
+ *
+ * To run a query within a React component, call `useIsProfileCompleteQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsProfileCompleteQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsProfileCompleteQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsProfileCompleteQuery(baseOptions?: Apollo.QueryHookOptions<IsProfileCompleteQuery, IsProfileCompleteQueryVariables>) {
+        return Apollo.useQuery<IsProfileCompleteQuery, IsProfileCompleteQueryVariables>(IsProfileCompleteDocument, baseOptions);
+      }
+export function useIsProfileCompleteLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsProfileCompleteQuery, IsProfileCompleteQueryVariables>) {
+          return Apollo.useLazyQuery<IsProfileCompleteQuery, IsProfileCompleteQueryVariables>(IsProfileCompleteDocument, baseOptions);
+        }
+export type IsProfileCompleteQueryHookResult = ReturnType<typeof useIsProfileCompleteQuery>;
+export type IsProfileCompleteLazyQueryHookResult = ReturnType<typeof useIsProfileCompleteLazyQuery>;
+export type IsProfileCompleteQueryResult = Apollo.QueryResult<IsProfileCompleteQuery, IsProfileCompleteQueryVariables>;
 export const LoggedInMentorDocument = gql`
     query LoggedInMentor {
   loggedInMentor {
@@ -1920,6 +2033,7 @@ export const LoggedInMentorDocument = gql`
       languages
       bio
       rate
+      profileComplete
       medium
       facebook
       linkedin
