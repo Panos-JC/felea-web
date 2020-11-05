@@ -167,6 +167,7 @@ export const SessionInfo: React.FC<SessionInfoProps> = () => {
               size="small"
               disabled={
                 data.sessionRequestById.data.status === "complete" ||
+                data.sessionRequestById.data.status === "pending" ||
                 data.sessionRequestById.data.status === "declined" ||
                 reqCompleteLoading
               }

@@ -46,7 +46,7 @@ export const SessionTag: React.FC<SessionTagProps> = ({ status }) => {
         );
       case "pending":
         return (
-          <Chip label="Declined" size="small" className={classes.warnChip} />
+          <Chip label="Pending" size="small" className={classes.warnChip} />
         );
       case "complete":
         return (
