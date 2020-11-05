@@ -6,6 +6,7 @@ import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Industry,
+  IsProfileCompleteDocument,
   useCreateWorkExperienceMutation,
   useIndustriesQuery,
   WorkExperienceInput,
@@ -68,6 +69,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
       variables: { input },
       refetchQueries: [
         { query: WorkExperiencesDocument, variables: { mentorId } },
+        { query: IsProfileCompleteDocument },
       ],
     });
 

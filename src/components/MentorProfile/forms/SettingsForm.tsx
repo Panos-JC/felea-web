@@ -16,6 +16,7 @@ import { Alert } from "@material-ui/lab";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  IsProfileCompleteDocument,
   MeDocument,
   useMeQuery,
   useSetMentorDetailsMutation,
@@ -92,7 +93,10 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
     console.log("formData ", formData);
     const { errors, data } = await setMentorDetails({
       variables: { options: { ...formData } },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [
+        { query: MeDocument },
+        { query: IsProfileCompleteDocument },
+      ],
     });
 
     // handle snackbar

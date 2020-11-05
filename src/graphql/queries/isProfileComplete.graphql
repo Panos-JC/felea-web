@@ -1,0 +1,6 @@
+query IsProfileComplete {
+  isProfileComplete {
+    messages
+    isComplete
+  }
+}

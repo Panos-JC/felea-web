@@ -11,6 +11,7 @@ query LoggedInMentor {
       languages
       bio
       rate
+      profileComplete
       medium
       facebook
       linkedin

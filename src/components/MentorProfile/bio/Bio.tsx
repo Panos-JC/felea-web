@@ -13,6 +13,7 @@ import { Edit } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import {
+  IsProfileCompleteDocument,
   MeDocument,
   MentorDocument,
   useSetBioMutation,
@@ -57,7 +58,10 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
   const handleSubmit = async () => {
     const response = await setBio({
       variables: { bio: bioState! },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [
+        { query: MeDocument },
+        { query: IsProfileCompleteDocument },
+      ],
     });
     setDialogOpen(false);
   };

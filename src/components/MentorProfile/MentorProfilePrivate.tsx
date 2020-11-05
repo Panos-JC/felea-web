@@ -5,11 +5,13 @@ import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
 import { WorkExperienceList } from "./workExperience/WorkExperienceList";
 import {
   useExpertisesQuery,
+  useIsProfileCompleteQuery,
   useLoggedInMentorQuery,
 } from "../../generated/graphql";
 import { ExpertiseList } from "./expertise/ExpertiseList";
 import { ReviewsList } from "./reviews/ReviewsList";
 import { Loading } from "../loading/Loading";
+import { Alert } from "@material-ui/lab";
 
 interface MentorProfilePrivateProps {}
 
@@ -20,6 +22,10 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
     data: experiencesData,
     loading: experiencesLoading,
   } = useExpertisesQuery();
+  const {
+    data: profileCompleteData,
+    loading: profileCompleteLoading,
+  } = useIsProfileCompleteQuery();
 
   return (
     <Layout maxWidth="md">
@@ -31,6 +37,25 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
         experiencesData &&
         experiencesData.expertises && (
           <>
+            {profileCompleteData &&
+              !profileCompleteData.isProfileComplete.isComplete && (
+                <Alert
+                  style={{ marginTop: 20 }}
+                  severity="info"
+                  variant="filled"
+                  elevation={1}
+                >
+                  Your profile is not complete.
+                  <ul>
+                    {profileCompleteData.isProfileComplete.messages.map(
+                      (message) => (
+                        <li>{message}</li>
+                      )
+                    )}
+                  </ul>
+                </Alert>
+              )}
+
             <MentorInfoCard
               firstName={data.loggedInMentor.info.firstName}
               lastName={data.loggedInMentor.info.lastName}

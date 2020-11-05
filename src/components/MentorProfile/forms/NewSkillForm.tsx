@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   ExpertisesDocument,
+  IsProfileCompleteDocument,
   Skill,
   useCreateExpertiseMutation,
   useSkillsQuery,
@@ -50,7 +51,10 @@ export const NewSkillForm: React.FC<NewSkillFormProps> = ({ setEdit }) => {
         skillId: formData.skill.id,
         description: formData.description,
       },
-      refetchQueries: [{ query: ExpertisesDocument }],
+      refetchQueries: [
+        { query: ExpertisesDocument },
+        { query: IsProfileCompleteDocument },
+      ],
     });
 
     if (!createExpLoading && setEdit) {
