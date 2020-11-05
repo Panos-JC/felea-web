@@ -29,6 +29,7 @@ import { Sessions } from "../sessions/Sessions";
 import { Admins } from "../users/admins/Admins";
 import { Individuals } from "../users/individuals/Individuals";
 import { Mentors } from "../users/mentors/Mentors";
+import { NewMentor } from "../users/mentors/newMentor/NewMentor";
 
 const drawerWidth = 240;
 
@@ -253,6 +254,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <ProtectedRoute
           path="/dashboard/users/mentors"
           component={Mentors}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/mentors/new"
+          component={NewMentor}
           exact
         />
         <ProtectedRoute

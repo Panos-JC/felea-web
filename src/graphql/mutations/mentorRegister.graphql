@@ -1,5 +1,5 @@
-mutation MentorRegister($options: RegisterInput!) {
-  registerMentor(options: $options) {
+mutation MentorRegister($options: RegisterInput!, $token: String!) {
+  registerMentor(options: $options, token: $token) {
     errors {
       field
       message

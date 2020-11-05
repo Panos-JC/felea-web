@@ -1,0 +1,6 @@
+mutation GenerateMentor($email: String!) {
+  generateMentor(email: $email) {
+    errorMsg
+    emailSent
+  }
+}

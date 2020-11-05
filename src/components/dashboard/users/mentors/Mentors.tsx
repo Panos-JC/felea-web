@@ -8,7 +8,11 @@ interface MentorsProps {}
 export const Mentors: React.FC<MentorsProps> = () => {
   return (
     <>
-      <PageTitle title="Mentors" action="Add New Mentor" />
+      <PageTitle
+        title="Mentors"
+        action="Add New Mentor"
+        to="/dashboard/users/mentors/new"
+      />
       <Card>
         <MentorTable />
       </Card>

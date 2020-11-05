@@ -9,10 +9,11 @@ import {
   Button,
 } from "@material-ui/core";
 import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
+import { Alert } from "@material-ui/lab";
 
 import React from "react";
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import {
   FieldError,
   RegisterInput,
@@ -39,10 +40,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type Params = {
+  token: string;
+};
+
 interface RegisterMentorProps {}
 
 export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
   const classes = useStyles();
+
+  const { token } = useParams<Params>();
 
   const [mentorRegister, { loading }] = useMentorRegisterMutation();
 
@@ -83,7 +90,7 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
       password,
     };
 
-    const { data } = await mentorRegister({ variables: { options } });
+    const { data } = await mentorRegister({ variables: { options, token } });
 
     if (data?.registerMentor.errors) {
       setErrors(data.registerMentor.errors[0]);
@@ -104,6 +111,13 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
         </Typography>
         <form onSubmit={handleSubmit} className={classes.form} noValidate>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              {errors && errors.field === "token" && (
+                <Alert severity="error" variant="filled">
+                  {errors.message}
+                </Alert>
+              )}
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 error={errors?.field === "firstName" ? true : false}
