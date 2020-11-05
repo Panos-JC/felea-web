@@ -102,7 +102,7 @@ interface MentorInfoCardProps {
   mediumLink?: string | null | undefined;
   linkedinLink?: string | null | undefined;
   sessions: number;
-  rating: number;
+  rating: number | null | undefined;
 }
 
 interface ParamTypes {
@@ -176,7 +176,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
           </span>
           <span className={classes.stat}>
             <Typography className={classes.statNumber} variant="subtitle1">
-              {rating}
+              {rating || "_"}
               <GradeOutlined color="primary" />
             </Typography>
             <Typography className={classes.subtitle} variant="subtitle2">
