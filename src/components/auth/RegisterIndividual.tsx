@@ -10,9 +10,11 @@ import {
 } from "@material-ui/core";
 import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
 import {
+  FieldError,
   RegisterInput,
   useRegisterIndividualMutation,
 } from "../../generated/graphql";
@@ -42,6 +44,7 @@ type Inputs = {
   lastName: string;
   email: string;
   password: string;
+  code?: string;
 };
 
 interface RegisterIndividualProps {}
@@ -51,9 +54,14 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
 
   const history = useHistory();
 
-  const [registerIndividual, { loading }] = useRegisterIndividualMutation();
+  const [errors, setErrors] = useState<FieldError>();
 
-  const { register, handleSubmit, errors } = useForm<Inputs>();
+  const [
+    registerIndividual,
+    { data, loading },
+  ] = useRegisterIndividualMutation();
+
+  const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
     const options: RegisterInput = {
@@ -61,10 +69,16 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
       lastName: formData.lastName,
       email: formData.email,
       password: formData.password,
+      code: formData.code,
     };
+
     const { data: response } = await registerIndividual({
-      variables: { options: formData },
+      variables: { options },
     });
+
+    if (response?.registerIndividual.errors) {
+      setErrors(response.registerIndividual.errors[0]);
+    }
 
     if (response && response.registerIndividual.user) {
       history.push("/login");
@@ -90,8 +104,10 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 inputRef={register}
-                error={errors.firstName ? true : false}
-                helperText={errors.firstName ? "" : null}
+                error={errors?.field === "firstName" ? true : false}
+                helperText={
+                  errors?.field === "firstName" ? errors.message : null
+                }
                 autoComplete="fname"
                 name="firstName"
                 variant="outlined"
@@ -105,6 +121,10 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 inputRef={register}
+                error={errors?.field === "lastName" ? true : false}
+                helperText={
+                  errors?.field === "lastName" ? errors.message : null
+                }
                 variant="outlined"
                 required
                 fullWidth
@@ -117,6 +137,8 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
             <Grid item xs={12}>
               <TextField
                 inputRef={register}
+                error={errors?.field === "email" ? true : false}
+                helperText={errors?.field === "email" ? errors.message : null}
                 variant="outlined"
                 required
                 fullWidth
@@ -128,7 +150,24 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                error={errors?.field === "code" ? true : false}
+                helperText={errors?.field === "code" ? errors.message : null}
                 inputRef={register}
+                variant="outlined"
+                fullWidth
+                id="code"
+                label="Code"
+                name="code"
+                autoComplete="off"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                inputRef={register}
+                error={errors?.field === "password" ? true : false}
+                helperText={
+                  errors?.field === "password" ? errors.message : null
+                }
                 variant="outlined"
                 required
                 fullWidth

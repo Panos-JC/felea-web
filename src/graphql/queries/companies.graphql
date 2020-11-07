@@ -1,0 +1,14 @@
+query Companies {
+  companies {
+    id
+    name
+    boughtAccounts
+    remainingAccounts
+    code
+    createdAt
+    admin {
+      firstName
+      lastName
+    }
+  }
+}

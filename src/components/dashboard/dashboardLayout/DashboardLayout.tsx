@@ -19,6 +19,7 @@ import {
   ExpandLess,
   ExpandMore,
   PersonOutlineOutlined,
+  Business,
 } from "@material-ui/icons";
 import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
@@ -27,6 +28,8 @@ import { ProtectedRoute } from "../../../router/ProtectedRoute";
 import { SessionPage } from "../sessions/sessionPage/SessionPage";
 import { Sessions } from "../sessions/Sessions";
 import { Admins } from "../users/admins/Admins";
+import { Companies } from "../users/companies/Companies";
+import { NewCompany } from "../users/companies/newCompany/NewCompany";
 import { Individuals } from "../users/individuals/Individuals";
 import { Mentors } from "../users/mentors/Mentors";
 import { NewMentor } from "../users/mentors/newMentor/NewMentor";
@@ -244,6 +247,21 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                     </Button>
                   </NavLink>
                 </ListItem>
+                <ListItem className={`${classes.li} ${classes.nested}`}>
+                  <NavLink
+                    to="/dashboard/users/companies"
+                    className={classes.navLink}
+                    activeClassName={classes.active}
+                  >
+                    <Button
+                      className={classes.button}
+                      size="large"
+                      startIcon={<Business />}
+                    >
+                      Companies
+                    </Button>
+                  </NavLink>
+                </ListItem>
               </List>
             </Collapse>
           </List>
@@ -269,6 +287,16 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <ProtectedRoute
           path="/dashboard/users/admins"
           component={Admins}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/companies"
+          component={Companies}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/companies/new"
+          component={NewCompany}
           exact
         />
         <ProtectedRoute path="/dashboard/sessions" component={Sessions} exact />
