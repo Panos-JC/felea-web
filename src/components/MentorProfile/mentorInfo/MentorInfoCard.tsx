@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 interface MentorInfoCardProps {
   firstName?: string;
   lastName?: string;
-  avatar?: string;
+  avatar?: string | null | undefined;
   title?: string | null;
   rate?: string | null;
   location?: string | null;
@@ -135,7 +135,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
   return (
     <Card className={classes.card}>
       <div className={classes.cardHead}>
-        <Avatar className={classes.avatar} src={avatar}></Avatar>
+        <Avatar className={classes.avatar} src={avatar || ""}></Avatar>
         <Typography className={classes.title} variant="h5">
           {`${firstName} ${lastName}`}
         </Typography>

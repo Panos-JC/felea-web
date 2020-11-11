@@ -17,7 +17,7 @@ import {
 
 interface RequestCardProps {
   id: number;
-  avatar: string;
+  avatar: string | null | undefined;
   firstName: string;
   lastName: string;
   email: string;
@@ -75,36 +75,33 @@ export const RequestCard: React.FC<RequestCardProps> = ({
   return (
     <Card className={classes.card}>
       <div className={classes.head}>
-        <Avatar className={classes.avatar} src={avatar} />
+        <Avatar className={classes.avatar} src={avatar || ""} />
         <div className={classes.titles}>
           <Typography className={classes.name} variant="subtitle2">
             {`${firstName} ${lastName}`}
           </Typography>
           <Typography className={classes.headline}>
-            Subject: {headline}
+            Subject: {objective}
           </Typography>
           <Typography className={classes.date}>
             {moment(new Date(parseInt(date))).format("MMM Do YY")}
           </Typography>
         </div>
-        {premium ? (
+        {/* {premium ? (
           <Chip label="Premium" size="small" className={classes.chipSuccess} />
         ) : (
           <Chip label="Free" size="small" className={classes.chipWarning} />
-        )}
+        )} */}
       </div>
       <Divider style={{ marginTop: 20, marginBottom: 20 }} />
       <div>
-        <Typography className={classes.title} variant="h5">
-          {objective}
-        </Typography>
         <Typography variant="h6">{headline}</Typography>
         <Typography className={classes.message} variant="body2">
           {message}
         </Typography>
         <Divider style={{ marginTop: 20, marginBottom: 20 }} />
         <div className={classes.infoWrapper}>
-          <div>
+          <div className={classes.info}>
             <Typography className={classes.headline}>
               Preferred communication tool
             </Typography>
@@ -112,7 +109,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               {tool} - ID: {toolId}
             </Typography>
           </div>
-          <div>
+          <div className={classes.info}>
             <Typography className={classes.headline}>Email</Typography>
             <Typography className={classes.date}>{email}</Typography>
           </div>

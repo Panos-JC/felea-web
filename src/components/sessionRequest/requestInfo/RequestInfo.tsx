@@ -192,7 +192,7 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
               <div className={classes.mentorSection}>
                 <Avatar
                   className={classes.avatar}
-                  src={data.mentor.info.user.avatar}
+                  src={data.mentor.info.user.avatar || ""}
                 />
                 <div>
                   <Typography>Mentor</Typography>
@@ -303,7 +303,7 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
             </Typography>
             <Button
               className={classes.actionBtn}
-              disabled={!data.mentor.info.rate}
+              disabled={!data.mentor.info.rate || sessionRequestLoading}
               type="submit"
               variant="contained"
               color="primary"

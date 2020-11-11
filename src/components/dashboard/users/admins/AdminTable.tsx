@@ -80,7 +80,10 @@ export const AdminTable: React.FC<AdminTableProps> = () => {
             <TableRow hover key={admin.id}>
               <TableCell>
                 <div className={classes.nameCell}>
-                  <Avatar src={admin.user.avatar} className={classes.avatar}>
+                  <Avatar
+                    src={admin.user.avatar || ""}
+                    className={classes.avatar}
+                  >
                     JD
                   </Avatar>
                   <div>
@@ -106,7 +109,6 @@ export const AdminTable: React.FC<AdminTableProps> = () => {
                   }
                 />
               </TableCell>
-              <TableCell>23</TableCell>
               <TableCell align="right">
                 <IconButton size="small" color="secondary">
                   <ArrowForwardIcon />

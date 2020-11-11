@@ -68,7 +68,7 @@ export const ReviewsList: React.FC<ReviewsListProps> = ({ id }) => {
           <Grid container>
             <Grid item xs={2}>
               <div className={classes.reviewer}>
-                <Avatar src={meData.me.avatar} />
+                <Avatar src={meData.me.avatar || ""} />
                 <Typography variant="subtitle2">{`${meData.me.individual.firstName} ${meData.me.individual.lastName}`}</Typography>
                 {/* <Typography className={classes.subtitle} variant="caption">
             2 sessions

@@ -136,7 +136,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               className={classes.navBtn}
               color="secondary"
               endIcon={
-                <Avatar src={data.me.avatar} className={classes.avatar} />
+                <Avatar src={data.me.avatar || ""} className={classes.avatar} />
               }
             >
               Hi {data.me.admin.firstName}

@@ -96,7 +96,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = () => {
                 <div className={classes.nameCell}>
                   <Avatar
                     className={classes.avatar}
-                    src={session.mentor.user.avatar}
+                    src={session.mentor.user.avatar || ""}
                   />
                   <div>
                     <Link
@@ -118,7 +118,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = () => {
                 <div className={classes.nameCell}>
                   <Avatar
                     className={classes.avatar}
-                    src={session.mentor.user.avatar}
+                    src={session.individual.user.avatar || ""}
                   />
                   <div>
                     <Link

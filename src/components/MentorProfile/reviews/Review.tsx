@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 interface ReviewProps {
   firstName: string;
   lastName: string;
-  avatar: string;
+  avatar: string | null | undefined;
   message: string;
   date: string;
 }
@@ -39,7 +39,7 @@ export const Review: React.FC<ReviewProps> = ({
     <Grid container className={classes.container}>
       <Grid item xs={2}>
         <div className={classes.reviewer}>
-          <Avatar src={avatar} />
+          <Avatar src={avatar || ""} />
           <Typography variant="subtitle2">{`${firstName} ${lastName}`}</Typography>
           {/* <Typography className={classes.subtitle} variant="caption">
             2 sessions

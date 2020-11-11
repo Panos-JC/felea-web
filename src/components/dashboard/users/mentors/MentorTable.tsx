@@ -14,7 +14,7 @@ import { fade } from "@material-ui/core/styles";
 import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useMentorsQuery } from "../../../../generated/graphql";
+import { useAllMentorsQuery } from "../../../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -53,9 +53,7 @@ interface MentorTableProps {}
 export const MentorTable: React.FC<MentorTableProps> = () => {
   const classes = useStyles();
 
-  const { data, loading } = useMentorsQuery({
-    variables: { industries: [], skills: [] },
-  });
+  const { data, loading } = useAllMentorsQuery();
 
   if (loading) {
     return (
@@ -76,12 +74,15 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
       </TableHead>
       <TableBody>
         {data &&
-          data.mentors &&
-          data.mentors.map((mentor) => (
+          data.allMentors &&
+          data.allMentors.map((mentor) => (
             <TableRow hover key={mentor.mentor.id}>
               <TableCell>
                 <div className={classes.nameCell}>
-                  <Avatar className={classes.avatar}>JD</Avatar>
+                  <Avatar
+                    className={classes.avatar}
+                    src={mentor.mentor.user.avatar || ""}
+                  />
                   <div>
                     <Link
                       className={classes.link}
@@ -98,7 +99,7 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
                   </div>
                 </div>
               </TableCell>
-              <TableCell>23</TableCell>
+              <TableCell>{mentor.sessions}</TableCell>
               <TableCell align="right">
                 <IconButton size="small" color="secondary">
                   <ArrowForwardIcon />

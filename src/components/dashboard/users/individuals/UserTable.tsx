@@ -71,7 +71,6 @@ export const UserTable: React.FC<UserTableProps> = () => {
           <TableCell>Name</TableCell>
           <TableCell>Status</TableCell>
           <TableCell>Active</TableCell>
-          <TableCell>Sessions</TableCell>
           <TableCell align="right">Actions</TableCell>
         </TableRow>
       </TableHead>
@@ -83,7 +82,7 @@ export const UserTable: React.FC<UserTableProps> = () => {
               <TableCell>
                 <div className={classes.nameCell}>
                   <Avatar
-                    src={individual.user.avatar}
+                    src={individual.user.avatar || ""}
                     className={classes.avatar}
                   >
                     JD
@@ -120,7 +119,6 @@ export const UserTable: React.FC<UserTableProps> = () => {
                   }
                 />
               </TableCell>
-              <TableCell>23</TableCell>
               <TableCell align="right">
                 <IconButton size="small" color="secondary">
                   <ArrowForwardIcon />
