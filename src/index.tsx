@@ -6,7 +6,8 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  // uri: "http://localhost:4000/graphql",
+  uri: "https://fast-scrubland-39510.herokuapp.com/graphql",
   cache: new InMemoryCache(),
   credentials: "include",
 });
