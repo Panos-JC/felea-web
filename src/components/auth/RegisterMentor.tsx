@@ -95,7 +95,7 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
     if (data?.registerMentor.errors) {
       setErrors(data.registerMentor.errors[0]);
     } else if (data?.registerMentor.user) {
-      history.push(`/mentor/${data.registerMentor.user.id}`);
+      history.push(`/login`);
     }
   };
 
