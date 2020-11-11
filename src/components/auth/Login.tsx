@@ -18,6 +18,7 @@ import {
   MeDocument,
   useLoginMutation,
 } from "../../generated/graphql";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -94,6 +95,12 @@ export const Login: React.FC<loginProps> = () => {
           Sign in
         </Typography>
         <form onSubmit={handleSubmit} className={classes.form} noValidate>
+          {errors?.field === "general" && (
+            <Alert severity="error" variant="filled">
+              {errors.message}
+            </Alert>
+          )}
+
           <TextField
             error={errors?.field === "email" ? true : false}
             helperText={errors?.field === "email" ? errors.message : null}
