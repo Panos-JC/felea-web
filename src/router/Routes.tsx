@@ -12,7 +12,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { RegisterAdmin } from "../components/auth/RegisterAdmin";
 import { DashboardLayout } from "../components/dashboard/dashboardLayout/DashboardLayout";
 import { RegisterIndividual } from "../components/auth/RegisterIndividual";
-import { Subscription } from "../components/account/Subscription";
+// import { Subscription } from "../components/account/Subscription";
 import { SessionRequest } from "../components/sessionRequest/SessionRequest";
 import { MentorRequests } from "../components/mentorRequests/MentorRequests";
 import { SessionRequestSuccess } from "../components/sessionRequest/success/SessionRequestSuccess";
@@ -56,7 +56,7 @@ export const Routes: React.FC<RoutesProps> = () => {
 
       <ProtectedRoute path="/" component={Home} exact />
 
-      <Route path="/subscribe" component={Subscription} />
+      {/* <Route path="/subscribe" component={Subscription} /> */}
 
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
