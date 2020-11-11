@@ -10,7 +10,14 @@ import {
 import { LocationOnOutlined, StarBorder } from "@material-ui/icons";
 import React from "react";
 import { Link } from "react-router-dom";
-import { Skill } from "../../generated/graphql";
+import {
+  Industry,
+  Maybe,
+  Mentor,
+  MentorsResponse,
+  Skill,
+  Users,
+} from "../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -80,56 +87,64 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface MentorCardProps {
-  mentorId: number;
-  firstName: string;
-  lastName: string;
-  bio: string | null | undefined;
-  sessions: number | null | undefined;
-  location: string | null | undefined;
-  languages: string | null | undefined;
-  title: string | null | undefined;
-  rate: string | null | undefined;
-  rating: number | null | undefined;
-  expertises: ({
-    __typename?: "Expertise" | undefined;
-  } & {
-    skill: {
-      __typename?: "Skill" | undefined;
-    } & Pick<Skill, "name">;
-  })[];
+  mentor: { __typename?: "MentorsResponse" } & Pick<
+    MentorsResponse,
+    "avg" | "sessions"
+  > & {
+      mentor: { __typename?: "Mentor" } & Pick<
+        Mentor,
+        | "id"
+        | "firstName"
+        | "lastName"
+        | "title"
+        | "location"
+        | "languages"
+        | "bio"
+        | "rate"
+      > & {
+          user: { __typename?: "Users" } & Pick<Users, "avatar" | "email">;
+          expertises: Array<
+            { __typename?: "Expertise" } & {
+              skill: { __typename?: "Skill" } & Pick<Skill, "name">;
+            }
+          >;
+          workExperience: Array<
+            { __typename?: "WorkExperience" } & {
+              industries?: Maybe<
+                Array<{ __typename?: "Industry" } & Pick<Industry, "name">>
+              >;
+            }
+          >;
+        };
+    };
 }
 
-export const MentorCard: React.FC<MentorCardProps> = ({
-  mentorId,
-  firstName,
-  lastName,
-  title,
-  rate,
-  bio,
-  sessions,
-  expertises,
-  location,
-  languages,
-  rating,
-}) => {
+export const MentorCard: React.FC<MentorCardProps> = ({ mentor }) => {
   const classes = useStyles();
   return (
     <Card className={classes.card}>
       <div className={classes.headerWrapper}>
-        <Avatar className={classes.avatar} />
+        <Avatar
+          className={classes.avatar}
+          src={mentor.mentor.user.avatar || ""}
+        />
         <div className={classes.header}>
           <Typography variant="h5">
-            {firstName} {lastName}
+            {mentor.mentor.firstName} {mentor.mentor.lastName}
           </Typography>
 
-          {title && <Typography variant="caption">{title}</Typography>}
+          {mentor.mentor.title && (
+            <Typography variant="caption">{mentor.mentor.title}</Typography>
+          )}
 
           <div className={classes.headerInfo}>
             <Typography className={classes.infoItem}>
               <LocationOnOutlined className={classes.locationIcon} />
-              {location}
+              {mentor.mentor.location}
             </Typography>
-            <Typography className={classes.infoItem}>{languages}</Typography>
+            <Typography className={classes.infoItem}>
+              {mentor.mentor.languages}
+            </Typography>
           </div>
         </div>
         <div className={classes.actions}>
@@ -142,7 +157,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           >
             Contanct
           </Button>
-          <Link to={`/mentor/${mentorId}`} className={classes.link}>
+          <Link to={`/mentor/${mentor.mentor.id}`} className={classes.link}>
             <Button
               className={classes.action}
               color="primary"
@@ -157,26 +172,26 @@ export const MentorCard: React.FC<MentorCardProps> = ({
       <Divider />
       <div className={classes.stats}>
         <div className={classes.stat}>
-          <strong>&euro;{rate || "_"}</strong>
+          <strong>&euro;{mentor.mentor.rate || "_"}</strong>
           <span>/ h</span>
         </div>
         <div className={classes.stat}>
-          <strong>{sessions}</strong>
+          <strong>{mentor.sessions}</strong>
           <span>sessions</span>
         </div>
         <div className={classes.stat}>
-          <strong>{rating || "_"}</strong>
+          <strong>{mentor.avg || "_"}</strong>
           <StarBorder color="primary" />
         </div>
       </div>
       <Divider />
       <div>
         <Typography className={classes.bio} variant="body2">
-          {bio && bio.slice(0, 245)}...
+          {mentor.mentor.bio && mentor.mentor.bio.slice(0, 245)}...
         </Typography>
         <div className={classes.skills}>
-          {expertises &&
-            expertises.map((expertise, index) => (
+          {mentor.mentor.expertises &&
+            mentor.mentor.expertises.map((expertise, index) => (
               <Chip
                 key={index}
                 size="small"
