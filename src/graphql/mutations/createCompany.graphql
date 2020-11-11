@@ -1,0 +1,12 @@
+mutation CreateCompany($input: CreateCompanyInput!) {
+  createCompany(input: $input) {
+    errorMsg
+    company {
+      id
+      name
+      boughtAccounts
+      remainingAccounts
+      code
+    }
+  }
+}
