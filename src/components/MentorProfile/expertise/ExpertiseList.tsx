@@ -1,13 +1,7 @@
 import { makeStyles, Fab, Grid } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { useState } from "react";
-import {
-  Expertise as ExpertiseType,
-  ExpertisesByIdQuery,
-  ExpertisesQuery,
-  Skill,
-  useExpertisesQuery,
-} from "../../../generated/graphql";
+import { Expertise as ExpertiseType, Skill } from "../../../generated/graphql";
 import { NewSkillForm } from "../forms/NewSkillForm";
 import { GeneralCard } from "../generalCard/GeneralCard";
 import { Expertise } from "./Expertise";
