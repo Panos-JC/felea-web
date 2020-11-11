@@ -17,6 +17,8 @@ import { SessionRequest } from "../components/sessionRequest/SessionRequest";
 import { MentorRequests } from "../components/mentorRequests/MentorRequests";
 import { SessionRequestSuccess } from "../components/sessionRequest/success/SessionRequestSuccess";
 import { NotFound } from "../components/404/NotFound";
+import { ForgotPassword } from "../components/auth/ForgotPassword";
+import { ChangePassword } from "../components/auth/ChangePassword";
 
 interface RoutesProps {}
 
@@ -56,21 +58,13 @@ export const Routes: React.FC<RoutesProps> = () => {
 
       <Route path="/subscribe" component={Subscription} />
 
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route path="/register">
-        <Register />
-      </Route>
-      <Route path="/mentor-register">
-        <RegisterMentor />
-      </Route>
-      <Route path="/admin-register">
-        <RegisterAdmin />
-      </Route>
-      <Route path="/guest-register">
-        <RegisterIndividual />
-      </Route>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/mentor-register/:token" component={RegisterMentor} />
+      <Route path="/admin-register" component={RegisterAdmin} />
+      <Route path="/guest-register" component={RegisterIndividual} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/change-password/:token" component={ChangePassword} />
       <Route component={NotFound} />
 
       {/* <Redirect from="/" to="/mentorProfile" /> */}
