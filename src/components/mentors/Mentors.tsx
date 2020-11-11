@@ -1,22 +1,12 @@
-// import { makeStyles } from "@material-ui/core";
 import React, { useState } from "react";
 import { Layout } from "../layout/Layout";
 import { MentorCard } from "./MentorCard";
 import { useMentorsQuery } from "../../generated/graphql";
-import {
-  makeStyles,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@material-ui/core";
+import { makeStyles, Grid, Typography } from "@material-ui/core";
 import { SkillFilters } from "./SkillFilters";
+import { Loading } from "../loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
-  spinner: {
-    textAlign: "center",
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
   title: {
     fontSize: "1.5rem",
     lineHeight: 2,
@@ -51,7 +41,7 @@ export const Mentors: React.FC<MentorsProps> = () => {
   const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const [selectedIndustry, setSelectedIndustry] = useState<string[]>([]);
 
-  // Remote State
+  // GraphQL
   const { data, loading } = useMentorsQuery({
     variables: { skills: selectedSkill, industries: selectedIndustry },
   });
@@ -86,16 +76,6 @@ export const Mentors: React.FC<MentorsProps> = () => {
         <Grid item xs={3}>
           <Typography className={classes.title}>Find a mentor</Typography>
         </Grid>
-        <Grid item xs={9}>
-          {/* <Typography className={classes.title2}>
-            {selectedMentors
-              ? selectedMentors.length === 0
-                ? data && data.mentors.length
-                : selectedMentors.length
-              : 0}{" "}
-            mentors found
-          </Typography> */}
-        </Grid>
       </Grid>
 
       <Grid container spacing={3}>
@@ -106,28 +86,8 @@ export const Mentors: React.FC<MentorsProps> = () => {
           />
         </Grid>
         <Grid item xs={9}>
-          {loading ? (
-            <div className={classes.spinner}>
-              <CircularProgress />
-            </div>
-          ) : null}
-          {data &&
-            data.mentors.map((mentor) => (
-              <MentorCard
-                key={mentor.mentor.id}
-                mentorId={mentor.mentor.id}
-                firstName={mentor.mentor.firstName}
-                title={mentor.mentor.title}
-                rate={mentor.mentor.rate}
-                lastName={mentor.mentor.lastName}
-                bio={mentor.mentor.bio}
-                sessions={mentor.sessions}
-                expertises={mentor.mentor.expertises}
-                location={mentor.mentor.location}
-                languages={mentor.mentor.languages}
-                rating={mentor.avg}
-              />
-            ))}
+          {loading ? <Loading /> : null}
+          {data && data.mentors.map((mentor) => <MentorCard mentor={mentor} />)}
         </Grid>
       </Grid>
     </Layout>
