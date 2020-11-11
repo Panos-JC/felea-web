@@ -1,0 +1,11 @@
+mutation AddAvatar($avatarUrl: String!, $publicId: String!) {
+  addAvatar(avatarUrl: $avatarUrl, publicId: $publicId) {
+    errors {
+      field
+      message
+    }
+    user {
+      avatar
+    }
+  }
+}

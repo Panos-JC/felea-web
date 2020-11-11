@@ -6,11 +6,18 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { Person, VpnKey } from "@material-ui/icons";
-import React from "react";
+import { CloudUpload } from "@material-ui/icons";
+import React, { useState } from "react";
 import { Layout } from "../../layout/Layout";
 import { SettingsForm } from "../forms/SettingsForm";
 import { SocialLinksForm } from "../forms/SocialLinksForm";
+import axios from "axios";
+import { Loading } from "../../loading/Loading";
+import {
+  MeDocument,
+  useAddAvatarMutation,
+  useMeQuery,
+} from "../../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -38,8 +45,10 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.5,
     color: theme.palette.text.secondary,
   },
-  buttons: {},
-  button: { width: "100%", marginBottom: 10 },
+  button: { width: "100%" },
+  uploadInput: {
+    display: "none",
+  },
 }));
 
 interface ProfileSettingsProps {}
@@ -47,37 +56,86 @@ interface ProfileSettingsProps {}
 export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
   const classes = useStyles();
 
+  const [file, setFile] = useState<File>();
+
+  const { data, loading } = useMeQuery();
+  const [
+    addAvatar,
+    { data: avatarData, loading: avatarLoading },
+  ] = useAddAvatarMutation();
+
+  React.useEffect(() => {
+    console.log(file);
+  }, [file]);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target.files![0]);
+    const formData = new FormData();
+    formData.append("file", e.target.files![0]);
+    formData.append("upload_preset", "qw0fx1xw");
+
+    const cloudName = "dhhvqnkvr";
+
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+      formData
+    );
+
+    await addAvatar({
+      variables: {
+        avatarUrl: response.data.secure_url,
+        publicId: response.data.public_id,
+      },
+      refetchQueries: [{ query: MeDocument }],
+    });
+
+    console.log(response.data);
+  };
+
   return (
     <Layout maxWidth="md">
       <Grid container spacing={2} className={classes.container}>
         <Grid item xs={4}>
           <Card className={classes.infoCard}>
-            <div className={classes.info}>
-              <Avatar className={classes.avatar} alt="N" />
-              <Typography className={classes.avatarTitle} variant="subtitle2">
-                Change avatar
-              </Typography>
-              <Typography className={classes.avatarBody} variant="body2">
-                Images must be .jpg or .png with minimum size of 300x300 pixels.
-                Please upload square pictures to avoid distortion.
-              </Typography>
-            </div>
-            <div className={classes.buttons}>
-              <Button
-                color="secondary"
-                className={classes.button}
-                startIcon={<Person />}
-              >
-                Profile
-              </Button>
-              <Button
-                color="secondary"
-                className={classes.button}
-                startIcon={<VpnKey />}
-              >
-                Account
-              </Button>
-            </div>
+            {loading && <Loading />}
+            {data && data.me && (
+              <>
+                <div className={classes.info}>
+                  <Avatar
+                    className={classes.avatar}
+                    src={data.me.avatar || ""}
+                  />
+                  <Typography
+                    className={classes.avatarTitle}
+                    variant="subtitle2"
+                  >
+                    Change avatar
+                  </Typography>
+                  <Typography className={classes.avatarBody} variant="body2">
+                    Images must be .jpg or .png with maximum size of 10MB.
+                  </Typography>
+                </div>
+                <input
+                  type="file"
+                  id="upload-avatar"
+                  onChange={handleUpload}
+                  className={classes.uploadInput}
+                />
+                <label htmlFor="upload-avatar">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    size="small"
+                    component="span"
+                    disableElevation
+                    className={classes.button}
+                    startIcon={<CloudUpload />}
+                  >
+                    Upload Image
+                  </Button>
+                </label>
+              </>
+            )}
           </Card>
         </Grid>
         <Grid item xs={8}>
