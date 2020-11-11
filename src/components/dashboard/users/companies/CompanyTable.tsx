@@ -63,7 +63,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = () => {
         {data &&
           data.companies &&
           data.companies.map((company) => (
-            <TableRow hover>
+            <TableRow hover key={company.id}>
               <TableCell>{company.name}</TableCell>
               <TableCell>{company.boughtAccounts}</TableCell>
               <TableCell>
