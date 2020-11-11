@@ -9,7 +9,12 @@ import {
   IconButton,
   ListItemIcon,
 } from "@material-ui/core";
-import { AccountCircle, PowerSettingsNew, Settings } from "@material-ui/icons";
+import {
+  AccountCircle,
+  FolderOpen,
+  PowerSettingsNew,
+  Settings,
+} from "@material-ui/icons";
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useMeQuery, useLogoutMutation } from "../../generated/graphql";
@@ -94,6 +99,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
               className={classes.button}
               variant="contained"
               color="primary"
+              startIcon={<FolderOpen />}
               disableElevation
             >
               Requests
