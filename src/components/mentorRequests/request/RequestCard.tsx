@@ -1,11 +1,4 @@
-import {
-  Card,
-  Avatar,
-  Typography,
-  Chip,
-  Divider,
-  Button,
-} from "@material-ui/core";
+import { Card, Avatar, Typography, Divider, Button } from "@material-ui/core";
 import useStyles from "./RequestCardStyles";
 import moment from "moment";
 import React from "react";
@@ -59,14 +52,14 @@ export const RequestCard: React.FC<RequestCardProps> = ({
   ] = useDeclineRequestMutation();
 
   const handleAccept = async () => {
-    const { data } = await acceptRequest({
+    await acceptRequest({
       variables: { requestId: id },
       refetchQueries: [{ query: RequestsByMentorDocument }],
     });
   };
 
   const handleDecline = async () => {
-    const { data } = await declineRequest({
+    await declineRequest({
       variables: { requestId: id },
       refetchQueries: [{ query: RequestsByMentorDocument }],
     });

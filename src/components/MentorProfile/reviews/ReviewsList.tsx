@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Grid,
   makeStyles,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import React from "react";
@@ -47,7 +46,7 @@ export const ReviewsList: React.FC<ReviewsListProps> = ({ id }) => {
   const classes = useStyles();
 
   // Remote State
-  const { data: meData, loading: meLoading } = useMeQuery();
+  const { data: meData } = useMeQuery();
   const { data, loading } = useReviewsByIdQuery({
     variables: { mentorId: id },
   });

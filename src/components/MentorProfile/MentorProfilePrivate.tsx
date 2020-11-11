@@ -22,10 +22,7 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
     data: experiencesData,
     loading: experiencesLoading,
   } = useExpertisesQuery();
-  const {
-    data: profileCompleteData,
-    loading: profileCompleteLoading,
-  } = useIsProfileCompleteQuery();
+  const { data: profileCompleteData } = useIsProfileCompleteQuery();
 
   return (
     <Layout maxWidth="md">

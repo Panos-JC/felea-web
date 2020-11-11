@@ -55,7 +55,7 @@ export const SessionInfo: React.FC<SessionInfoProps> = () => {
   ] = useSetRequestCompleteMutation();
 
   const handleComplete = async () => {
-    const { data: reqCompleteData } = await setRequestComplte({
+    await setRequestComplte({
       variables: { requestId: parseInt(id) },
       refetchQueries: [
         {

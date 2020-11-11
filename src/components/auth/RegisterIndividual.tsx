@@ -56,10 +56,7 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
 
   const [errors, setErrors] = useState<FieldError>();
 
-  const [
-    registerIndividual,
-    { data, loading },
-  ] = useRegisterIndividualMutation();
+  const [registerIndividual, { loading }] = useRegisterIndividualMutation();
 
   const { register, handleSubmit } = useForm<Inputs>();
 

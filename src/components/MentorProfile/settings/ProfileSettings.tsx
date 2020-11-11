@@ -59,10 +59,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
   const [file, setFile] = useState<File>();
 
   const { data, loading } = useMeQuery();
-  const [
-    addAvatar,
-    { data: avatarData, loading: avatarLoading },
-  ] = useAddAvatarMutation();
+  const [addAvatar] = useAddAvatarMutation();
 
   React.useEffect(() => {
     console.log(file);

@@ -60,7 +60,7 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
   }, [editable]);
 
   const handleSubmit = async () => {
-    const response = await setBio({
+    await setBio({
       variables: { bio: bioState! },
       refetchQueries: [
         { query: MeDocument },

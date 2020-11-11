@@ -65,7 +65,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
 
     console.log(input);
 
-    const { data } = await createWorkExperience({
+    await createWorkExperience({
       variables: { input },
       refetchQueries: [
         { query: WorkExperiencesDocument, variables: { mentorId } },

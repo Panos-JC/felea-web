@@ -8,7 +8,6 @@ import {
   InputLabel,
   OutlinedInput,
   InputAdornment,
-  Button,
   makeStyles,
   Snackbar,
 } from "@material-ui/core";

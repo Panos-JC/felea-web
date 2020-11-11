@@ -1,11 +1,4 @@
-import {
-  Typography,
-  Tabs,
-  Tab,
-  Paper,
-  Box,
-  makeStyles,
-} from "@material-ui/core";
+import { Tabs, Tab, Paper, Box, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useRequestsByMentorQuery } from "../../generated/graphql";
 import { Layout } from "../layout/Layout";

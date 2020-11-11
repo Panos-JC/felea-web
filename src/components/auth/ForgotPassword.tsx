@@ -48,7 +48,7 @@ type Inputs = {
 
 interface ForgotPasswordProps {}
 
-export const ForgotPassword: React.FC<ForgotPasswordProps> = ({}) => {
+export const ForgotPassword: React.FC<ForgotPasswordProps> = () => {
   const classes = useStyles();
 
   const [sent, setSent] = useState<boolean>(false);

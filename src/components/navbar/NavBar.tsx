@@ -58,7 +58,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
 
   const history = useHistory();
 
-  const { data, loading } = useMeQuery();
+  const { data } = useMeQuery();
   const [logout] = useLogoutMutation();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {

@@ -5,7 +5,7 @@ import { CompanyTable } from "./CompanyTable";
 
 interface CompaniesProps {}
 
-export const Companies: React.FC<CompaniesProps> = ({}) => {
+export const Companies: React.FC<CompaniesProps> = () => {
   return (
     <>
       <PageTitle

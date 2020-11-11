@@ -4,42 +4,17 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Avatar,
-  Chip,
   IconButton,
-  makeStyles,
 } from "@material-ui/core";
 import { ArrowForward } from "@material-ui/icons";
 import moment from "moment";
 import React from "react";
-import { Link } from "react-router-dom";
 import { useCompaniesQuery } from "../../../../generated/graphql";
 import { Loading } from "../../../loading/Loading";
-
-const useStyles = makeStyles((theme) => ({
-  nameCell: {
-    display: "flex",
-    alignItems: "center",
-  },
-  avatar: {
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  },
-  link: {
-    fontSize: 14,
-  },
-  email: {
-    fontSize: "0.875rem",
-    color: theme.palette.text.secondary,
-  },
-}));
 
 interface CompanyTableProps {}
 
 export const CompanyTable: React.FC<CompanyTableProps> = () => {
-  const classes = useStyles();
-
   const { data, loading } = useCompaniesQuery();
 
   if (loading) {

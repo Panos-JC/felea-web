@@ -22,7 +22,7 @@ export const MentorProfilePublic: React.FC<MentorProfilePublicProps> = () => {
   const { data: mentorData, loading: mentorLoading } = useMentorQuery({
     variables: { mentorId: parseInt(id) },
   });
-  const { data, loading } = useExpertisesByIdQuery({
+  const { data } = useExpertisesByIdQuery({
     variables: { mentorId: parseInt(id) },
   });
 

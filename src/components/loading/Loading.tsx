@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface LoadingProps {}
 
-export const Loading: React.FC<LoadingProps> = ({}) => {
+export const Loading: React.FC<LoadingProps> = () => {
   const classes = useStyles();
   return (
     <div className={classes.spinner}>

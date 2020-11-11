@@ -5,7 +5,7 @@ import { UserTable } from "./UserTable";
 
 interface IndividualsProps {}
 
-export const Individuals: React.FC<IndividualsProps> = ({}) => {
+export const Individuals: React.FC<IndividualsProps> = () => {
   return (
     <>
       <PageTitle title="Individuals" />

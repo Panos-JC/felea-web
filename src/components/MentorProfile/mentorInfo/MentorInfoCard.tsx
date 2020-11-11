@@ -130,7 +130,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
   const { id } = useParams<ParamTypes>();
 
   // Remote state
-  const { data, loading: meLoading } = useMeQuery();
+  const { data } = useMeQuery();
 
   return (
     <Card className={classes.card}>

@@ -113,13 +113,12 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
   const { data, loading } = useMentorQuery({
     variables: { mentorId: parseInt(id) },
   });
-  const {
-    data: expertisesData,
-    loading: expertisesLoading,
-  } = useExpertisesByIdQuery({ variables: { mentorId: parseInt(id) } });
+  const { data: expertisesData } = useExpertisesByIdQuery({
+    variables: { mentorId: parseInt(id) },
+  });
   const [
     createSessionRequest,
-    { data: sessionRequestData, loading: sessionRequestLoading },
+    { loading: sessionRequestLoading },
   ] = useCreateSessionRequestMutation();
 
   // Form Handler
