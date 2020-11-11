@@ -48,8 +48,10 @@ const useStyles = makeStyles((theme) => ({
   },
   infoWrapper: {
     display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: "column",
+  },
+  info: {
+    marginBottom: theme.spacing(1),
   },
   declineBtn: {
     backgroundColor: theme.palette.error.main,
