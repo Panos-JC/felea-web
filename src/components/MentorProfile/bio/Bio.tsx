@@ -1,21 +1,15 @@
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
+  Fab,
   makeStyles,
   TextField,
   Typography,
 } from "@material-ui/core";
-import { Edit } from "@material-ui/icons";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { Add } from "@material-ui/icons";
+import React, { useEffect, useState } from "react";
 import {
   IsProfileCompleteDocument,
   MeDocument,
-  MentorDocument,
   useSetBioMutation,
 } from "../../../generated/graphql";
 import { GeneralCard } from "../generalCard/GeneralCard";
@@ -24,10 +18,19 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     position: "relative",
   },
-  editIcon: {
+  fab: {
     position: "absolute",
-    right: 0,
-    top: 0,
+    top: 50,
+    left: -20,
+  },
+  icon: {
+    transition: "all 0.3s",
+  },
+  rotate: {
+    transform: "rotate(45deg)",
+  },
+  button: {
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -40,7 +43,8 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
   const classes = useStyles();
 
   // state
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [edit, setEdit] = useState<boolean>(false);
+
   const [bioState, setBioState] = useState<string | null | undefined>("");
 
   // mutation
@@ -63,60 +67,53 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
         { query: IsProfileCompleteDocument },
       ],
     });
-    setDialogOpen(false);
+    setEdit(false);
   };
 
   return (
     <GeneralCard title="About">
+      {editable && (
+        <Fab
+          onClick={() => setEdit(!edit)}
+          className={classes.fab}
+          size="small"
+          color="primary"
+        >
+          <Add className={`${classes.icon} ${edit && classes.rotate}`} />
+        </Fab>
+      )}
       <div className={classes.wrapper}>
-        {editable && (
-          <IconButton
-            onClick={() => setDialogOpen(true)}
-            className={classes.editIcon}
-            size="small"
-            color="secondary"
-          >
-            <Edit />
-          </IconButton>
+        {edit && (
+          <form>
+            <TextField
+              fullWidth
+              autoComplete="off"
+              label="Bio"
+              name="bio"
+              multiline
+              rows={10}
+              placeholder="Write about your position"
+              variant="outlined"
+              value={bioState}
+              onChange={(e) => setBioState(e.target.value)}
+            />
+            <Button
+              className={classes.button}
+              onClick={handleSubmit}
+              variant="contained"
+              color="primary"
+              size="small"
+              disableElevation
+            >
+              Save
+            </Button>
+          </form>
         )}
+
         <Typography variant="body2" color="textSecondary">
           {bio}
         </Typography>
       </div>
-      <Dialog
-        fullWidth={true}
-        maxWidth={"md"}
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      >
-        <DialogTitle id="simple-dialog-title">Add bio</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            autoComplete="off"
-            label="Bio"
-            name="bio"
-            multiline
-            rows={10}
-            placeholder="Write about your position"
-            variant="outlined"
-            value={bioState}
-            onChange={(e) => setBioState(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setDialogOpen(false)}
-            autoFocus
-            color="primary"
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary" autoFocus>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
     </GeneralCard>
   );
 };
