@@ -1,0 +1,15 @@
+query AllMentors {
+  allMentors {
+    mentor {
+      id
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+    sessions
+    avg
+  }
+}
