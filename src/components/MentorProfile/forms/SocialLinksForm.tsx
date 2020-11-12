@@ -20,6 +20,7 @@ import {
   useMeQuery,
   useSetMentorLinksMutation,
 } from "../../../generated/graphql";
+import { Loading } from "../../loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   settings: {
@@ -60,7 +61,7 @@ export const SocialLinksForm: React.FC<SocialLinksFormProps> = () => {
     });
   };
 
-  if (meLoading) return <div>Loading...</div>;
+  if (meLoading) return <Loading />;
 
   return (
     <Card className={classes.settings}>
