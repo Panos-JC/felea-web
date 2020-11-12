@@ -10,6 +10,7 @@ import {
   InputAdornment,
   makeStyles,
   Snackbar,
+  Button,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import React, { useState } from "react";
@@ -20,7 +21,6 @@ import {
   useMeQuery,
   useSetMentorDetailsMutation,
 } from "../../../generated/graphql";
-import { LoadingButton } from "../../loadingButton/LoadingButton";
 
 const useStyles = makeStyles((theme) => ({
   settings: {
@@ -277,12 +277,15 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
         <Divider />
 
         <div className={classes.group}>
-          <LoadingButton
+          <Button
             type="submit"
+            variant="contained"
+            color="primary"
+            disabled={userDetailsLoading}
             disableElevation
-            loading={userDetailsLoading}
-            text="Save"
-          />
+          >
+            Save
+          </Button>
         </div>
       </form>
       <Snackbar
