@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
+import { Loading } from "../components/loading/Loading";
 import { useMeQuery } from "../generated/graphql";
 
 interface ProtectedRouteProps {
@@ -13,11 +14,21 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   path,
   exact = false,
 }) => {
-  const { data, loading } = useMeQuery();
+  const [loading, setLoading] = useState(true);
+  const { data, loading: dataLoading, error } = useMeQuery();
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    if (data?.me) {
+      setLoading(false);
+    } else if (error) {
+      // console.log(error);
+      setLoading(false);
+    }
+  }, [data, error]);
 
-  return data && data.me ? (
+  if (dataLoading || loading) return <Loading />;
+
+  return data?.me ? (
     <Route path={path} exact={exact}>
       <Component />
     </Route>
