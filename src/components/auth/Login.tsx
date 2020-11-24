@@ -1,16 +1,12 @@
 import {
   makeStyles,
-  Avatar,
   Button,
   Container,
   CssBaseline,
   Grid,
   TextField,
-  Typography,
 } from "@material-ui/core";
-import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import { Link } from "react-router-dom";
-
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
@@ -21,6 +17,9 @@ import {
 import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
+  logo: {
+    width: 150,
+  },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -88,12 +87,11 @@ export const Login: React.FC<loginProps> = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
+        <img
+          className={classes.logo}
+          src={process.env.PUBLIC_URL + "/logo1blue512.png"}
+          alt=""
+        />
         <form onSubmit={handleSubmit} className={classes.form} noValidate>
           {errors?.field === "general" && (
             <Alert severity="error" variant="filled">
