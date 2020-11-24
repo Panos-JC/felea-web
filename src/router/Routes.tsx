@@ -19,6 +19,7 @@ import { SessionRequestSuccess } from "../components/sessionRequest/success/Sess
 import { NotFound } from "../components/404/NotFound";
 import { ForgotPassword } from "../components/auth/ForgotPassword";
 import { ChangePassword } from "../components/auth/ChangePassword";
+import { Settings } from "../components/account/settings/Settings";
 
 interface RoutesProps {}
 
@@ -51,6 +52,7 @@ export const Routes: React.FC<RoutesProps> = () => {
         component={ProfileSettings}
         exact
       />
+      <ProtectedRoute path="/setings" component={Settings} exact />
 
       <ProtectedRoute path="/dashboard" component={DashboardLayout} />
 
