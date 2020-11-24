@@ -23,6 +23,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "react": "^16.13.1",
+    "react-cookie": "^4.0.3",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.9.5",
     "react-icons": "^3.11.0",
