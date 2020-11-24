@@ -12,6 +12,7 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  ListItemIcon,
 } from "@material-ui/core";
 import {
   PeopleOutline,
@@ -20,9 +21,11 @@ import {
   ExpandMore,
   PersonOutlineOutlined,
   Business,
+  Settings as SettingsIcon,
+  PowerSettingsNew,
 } from "@material-ui/icons";
 import React, { useState } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { Link, NavLink, useHistory } from "react-router-dom";
 import { useLogoutMutation, useMeQuery } from "../../../generated/graphql";
 import { ProtectedRoute } from "../../../router/ProtectedRoute";
 import { SessionPage } from "../sessions/sessionPage/SessionPage";
@@ -33,6 +36,7 @@ import { NewCompany } from "../users/companies/newCompany/NewCompany";
 import { Individuals } from "../users/individuals/Individuals";
 import { Mentors } from "../users/mentors/Mentors";
 import { NewMentor } from "../users/mentors/newMentor/NewMentor";
+import { Settings } from "../settings/Settings";
 
 const drawerWidth = 240;
 
@@ -94,6 +98,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.contrastText,
     textTransform: "none",
   },
+  link: {
+    textDecoration: "none",
+    color: theme.palette.text.primary,
+  },
 }));
 
 interface DashboardLayoutProps {}
@@ -113,6 +121,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   // History
   const history = useHistory();
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleLogout = () => {
     logout();
@@ -157,9 +169,20 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             open={Boolean(anchorEl)}
             onClose={() => setAnchorEl(null)}
           >
-            <MenuItem onClick={() => setAnchorEl(null)}>Profile</MenuItem>
-            <MenuItem onClick={() => setAnchorEl(null)}>My account</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <Link className={classes.link} to={`/dashboard/settings`}>
+                Settings
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <PowerSettingsNew />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>
@@ -269,6 +292,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       </Drawer>
       <main className={classes.content}>
         <Toolbar />
+        <ProtectedRoute path="/dashboard/settings" component={Settings} exact />
         <ProtectedRoute
           path="/dashboard/users/mentors"
           component={Mentors}
