@@ -3,7 +3,7 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    marginTop: 25,
+    marginBottom: 25,
     overflow: "inherit",
     position: "relative",
   },
