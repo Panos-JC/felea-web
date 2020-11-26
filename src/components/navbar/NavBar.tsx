@@ -152,6 +152,16 @@ export const NavBar: React.FC<NavBarProps> = () => {
             </Link>
           </MenuItem>
         )}
+        {data?.me?.individual && (
+          <MenuItem onClick={handleClose}>
+            <ListItemIcon>
+              <Settings />
+            </ListItemIcon>
+            <Link className={classes.link} to={`/setings`}>
+              Settings
+            </Link>
+          </MenuItem>
+        )}
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <PowerSettingsNew />
