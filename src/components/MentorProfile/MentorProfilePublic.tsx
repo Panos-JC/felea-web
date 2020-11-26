@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout } from "../layout/Layout";
 import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
-import { WorkExperienceList } from "./workExperience/WorkExperienceList";
+import { Experience } from "./experience/Experience";
 import {
   useExpertisesByIdQuery,
   useMentorQuery,
@@ -49,7 +49,7 @@ export const MentorProfilePublic: React.FC<MentorProfilePublicProps> = () => {
             />
             <Bio editable={false} bio={mentorData.mentor.info.bio} />
             <ExpertiseList data={data.expertisesById} />
-            <WorkExperienceList editable={false} id={parseInt(id)} />
+            <Experience editable={false} id={parseInt(id)} />
             <ReviewsList id={parseInt(id)} />
           </>
         )
