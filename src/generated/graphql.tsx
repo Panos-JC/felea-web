@@ -27,12 +27,14 @@ export type Query = {
   isProfileComplete: IsProfileCompleteResponse;
   reviewsById: Array<Review>;
   skills: Array<Skill>;
-  me?: Maybe<Users>;
-  workExperiences: Array<WorkExperience>;
+  workExperiences: WorkExperiencesResponse;
   requestsByMentor: RequestsByMentorResponse;
   sessionRequests: Array<SessionRequest>;
   sessionRequestById: SessionRequestByIdResponse;
   companies: Array<Company>;
+  me?: Maybe<Users>;
+  educations: EducationsResponse;
+  certificates: CertificatesResponse;
 };
 
 
@@ -58,12 +60,22 @@ export type QueryReviewsByIdArgs = {
 
 
 export type QueryWorkExperiencesArgs = {
-  mentorId: Scalars['Int'];
+  mentorId?: Maybe<Scalars['Int']>;
 };
 
 
 export type QuerySessionRequestByIdArgs = {
   requestId: Scalars['Int'];
+};
+
+
+export type QueryEducationsArgs = {
+  mentorId?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryCertificatesArgs = {
+  mentorId?: Maybe<Scalars['Int']>;
 };
 
 export type Admin = {
@@ -95,6 +107,7 @@ export type Mentor = {
   lastName: Scalars['String'];
   profileComplete: Scalars['Boolean'];
   title?: Maybe<Scalars['String']>;
+  motto?: Maybe<Scalars['String']>;
   location?: Maybe<Scalars['String']>;
   languages?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
@@ -226,6 +239,12 @@ export type IsProfileCompleteResponse = {
   isComplete: Scalars['Boolean'];
 };
 
+export type WorkExperiencesResponse = {
+  __typename?: 'WorkExperiencesResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  data?: Maybe<Array<WorkExperience>>;
+};
+
 export type RequestsByMentorResponse = {
   __typename?: 'RequestsByMentorResponse';
   requests?: Maybe<RequestsTypes>;
@@ -257,30 +276,79 @@ export type SessionRequestByIdData = {
   message: Scalars['String'];
 };
 
+export type EducationsResponse = {
+  __typename?: 'EducationsResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  data?: Maybe<Array<Education>>;
+};
+
+export type Education = {
+  __typename?: 'Education';
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  school: Scalars['String'];
+  startDate: Scalars['String'];
+  endDate: Scalars['String'];
+  description: Scalars['String'];
+  mentor: Mentor;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type CertificatesResponse = {
+  __typename?: 'CertificatesResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  data?: Maybe<Array<Certificate>>;
+};
+
+export type Certificate = {
+  __typename?: 'Certificate';
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  organization: Scalars['String'];
+  date: Scalars['String'];
+  description: Scalars['String'];
+  mentor: Mentor;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   generateMentor: GenerateMentorResponse;
   createExpertise: ExpertiseResponse;
   deleteExpertise: DeleteResponse;
   createSubscription: Individual;
-  setMentorDetails: MentorResponse;
-  setMentorLinks: MentorResponse;
-  setBio: MentorResponse;
   createReview: ReviewResponse;
-  forgotPassword: Scalars['Boolean'];
-  changePassword: UserResponse;
-  registerIndividual: UserResponse;
-  registerMentor: UserResponse;
-  registerAdmin: UserResponse;
-  login: UserResponse;
-  logout: Scalars['Boolean'];
-  addAvatar: UserResponse;
   createWorkExperience: WorkExperience;
+  updateWorkExperience: WorkExperienceResponse;
+  deleteWorkExperience: Scalars['Boolean'];
   createSessionRequest: CreateRequestResponse;
   acceptRequest: RequestActionResponse;
   declineRequest: RequestActionResponse;
   setRequestComplete: SetRequestCompleteResponse;
   createCompany: CreateCompanyResponse;
+  registerIndividual: UserResponse;
+  registerMentor: UserResponse;
+  registerAdmin: UserResponse;
+  addAvatar: UserResponse;
+  forgotPassword: Scalars['Boolean'];
+  changePassword: UserResponse;
+  changeKnownPassword: UserResponse;
+  login: UserResponse;
+  logout: Scalars['Boolean'];
+  updateIndividualInfo: UpdateIndividualInfoResponse;
+  updateAdminInfo: UpdateAdminInfoResponse;
+  createEducation: EducationResponse;
+  updateEducation: EducationResponse;
+  deleteEducation: Scalars['Boolean'];
+  createCertificate: CertificateResponse;
+  updateCertificate: CertificateResponse;
+  deleteCertificate: Scalars['Boolean'];
+  setMentorDetails: MentorResponse;
+  setMentorLinks: MentorResponse;
+  setBio: MentorResponse;
+  setMotto: MentorResponse;
 };
 
 
@@ -305,67 +373,24 @@ export type MutationCreateSubscriptionArgs = {
 };
 
 
-export type MutationSetMentorDetailsArgs = {
-  options: MentorDetailsInput;
-};
-
-
-export type MutationSetMentorLinksArgs = {
-  links: SocialLinksInput;
-};
-
-
-export type MutationSetBioArgs = {
-  bio: Scalars['String'];
-};
-
-
 export type MutationCreateReviewArgs = {
   input: ReviewInput;
 };
 
 
-export type MutationForgotPasswordArgs = {
-  email: Scalars['String'];
-};
-
-
-export type MutationChangePasswordArgs = {
-  newPassword: Scalars['String'];
-  token: Scalars['String'];
-};
-
-
-export type MutationRegisterIndividualArgs = {
-  options: RegisterInput;
-};
-
-
-export type MutationRegisterMentorArgs = {
-  token: Scalars['String'];
-  options: RegisterInput;
-};
-
-
-export type MutationRegisterAdminArgs = {
-  options: RegisterInput;
-};
-
-
-export type MutationLoginArgs = {
-  password: Scalars['String'];
-  email: Scalars['String'];
-};
-
-
-export type MutationAddAvatarArgs = {
-  publicId: Scalars['String'];
-  avatarUrl: Scalars['String'];
-};
-
-
 export type MutationCreateWorkExperienceArgs = {
   input: WorkExperienceInput;
+};
+
+
+export type MutationUpdateWorkExperienceArgs = {
+  input: WorkExperienceInput;
+  id: Scalars['Int'];
+};
+
+
+export type MutationDeleteWorkExperienceArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -393,6 +418,115 @@ export type MutationCreateCompanyArgs = {
   input: CreateCompanyInput;
 };
 
+
+export type MutationRegisterIndividualArgs = {
+  options: RegisterInput;
+};
+
+
+export type MutationRegisterMentorArgs = {
+  token: Scalars['String'];
+  options: RegisterInput;
+};
+
+
+export type MutationRegisterAdminArgs = {
+  options: RegisterInput;
+};
+
+
+export type MutationAddAvatarArgs = {
+  publicId: Scalars['String'];
+  avatarUrl: Scalars['String'];
+};
+
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
+};
+
+
+export type MutationChangeKnownPasswordArgs = {
+  newPassword: Scalars['String'];
+  oldPassword: Scalars['String'];
+};
+
+
+export type MutationLoginArgs = {
+  password: Scalars['String'];
+  email: Scalars['String'];
+};
+
+
+export type MutationUpdateIndividualInfoArgs = {
+  lastName: Scalars['String'];
+  firstName: Scalars['String'];
+};
+
+
+export type MutationUpdateAdminInfoArgs = {
+  lastName: Scalars['String'];
+  firstName: Scalars['String'];
+};
+
+
+export type MutationCreateEducationArgs = {
+  input: EducationInput;
+};
+
+
+export type MutationUpdateEducationArgs = {
+  id: Scalars['Int'];
+  input: EducationInput;
+};
+
+
+export type MutationDeleteEducationArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationCreateCertificateArgs = {
+  input: CertificateInput;
+};
+
+
+export type MutationUpdateCertificateArgs = {
+  id: Scalars['Int'];
+  input: CertificateInput;
+};
+
+
+export type MutationDeleteCertificateArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type MutationSetMentorDetailsArgs = {
+  options: MentorDetailsInput;
+};
+
+
+export type MutationSetMentorLinksArgs = {
+  links: SocialLinksInput;
+};
+
+
+export type MutationSetBioArgs = {
+  bio: Scalars['String'];
+};
+
+
+export type MutationSetMottoArgs = {
+  motto: Scalars['String'];
+};
+
 export type GenerateMentorResponse = {
   __typename?: 'GenerateMentorResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -411,34 +545,6 @@ export type DeleteResponse = {
   deleted?: Maybe<Scalars['Boolean']>;
 };
 
-export type MentorResponse = {
-  __typename?: 'MentorResponse';
-  error?: Maybe<ErrorMessage>;
-  mentor?: Maybe<Mentor>;
-};
-
-export type ErrorMessage = {
-  __typename?: 'ErrorMessage';
-  message: Scalars['String'];
-};
-
-export type MentorDetailsInput = {
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  title: Scalars['String'];
-  rate: Scalars['String'];
-  location: Scalars['String'];
-  languages: Scalars['String'];
-};
-
-export type SocialLinksInput = {
-  medium: Scalars['String'];
-  linkedin: Scalars['String'];
-  facebook: Scalars['String'];
-  twitter: Scalars['String'];
-  instagram: Scalars['String'];
-};
-
 export type ReviewResponse = {
   __typename?: 'ReviewResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -451,26 +557,6 @@ export type ReviewInput = {
   mentorId: Scalars['Float'];
 };
 
-export type UserResponse = {
-  __typename?: 'UserResponse';
-  errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<Users>;
-};
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
-};
-
-export type RegisterInput = {
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-  code?: Maybe<Scalars['String']>;
-};
-
 export type WorkExperienceInput = {
   role: Scalars['String'];
   companyName: Scalars['String'];
@@ -478,6 +564,12 @@ export type WorkExperienceInput = {
   from: Scalars['String'];
   untill: Scalars['String'];
   industries: Array<Scalars['String']>;
+};
+
+export type WorkExperienceResponse = {
+  __typename?: 'WorkExperienceResponse';
+  errorsMsg?: Maybe<Scalars['String']>;
+  workExperience?: Maybe<WorkExperience>;
 };
 
 export type CreateRequestResponse = {
@@ -521,6 +613,98 @@ export type CreateCompanyInput = {
   name: Scalars['String'];
   accounts: Scalars['Float'];
 };
+
+export type UserResponse = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<FieldError>>;
+  user?: Maybe<Users>;
+};
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type RegisterInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  code?: Maybe<Scalars['String']>;
+};
+
+export type UpdateIndividualInfoResponse = {
+  __typename?: 'UpdateIndividualInfoResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  individual?: Maybe<Individual>;
+};
+
+export type UpdateAdminInfoResponse = {
+  __typename?: 'UpdateAdminInfoResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  admin?: Maybe<Admin>;
+};
+
+export type EducationResponse = {
+  __typename?: 'EducationResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  education?: Maybe<Education>;
+};
+
+export type EducationInput = {
+  title: Scalars['String'];
+  school: Scalars['String'];
+  from: Scalars['String'];
+  untill: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type CertificateResponse = {
+  __typename?: 'CertificateResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  certificate?: Maybe<Certificate>;
+};
+
+export type CertificateInput = {
+  title: Scalars['String'];
+  organization: Scalars['String'];
+  date: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export type MentorResponse = {
+  __typename?: 'MentorResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  mentor?: Maybe<Mentor>;
+};
+
+export type MentorDetailsInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  title: Scalars['String'];
+  rate: Scalars['String'];
+  location: Scalars['String'];
+  languages: Scalars['String'];
+};
+
+export type SocialLinksInput = {
+  medium: Scalars['String'];
+  linkedin: Scalars['String'];
+  facebook: Scalars['String'];
+  twitter: Scalars['String'];
+  instagram: Scalars['String'];
+};
+
+export type CertificateFieldsFragment = (
+  { __typename?: 'Certificate' }
+  & Pick<Certificate, 'id' | 'title' | 'organization' | 'date' | 'description'>
+);
+
+export type EducationFieldsFragment = (
+  { __typename?: 'Education' }
+  & Pick<Education, 'id' | 'title' | 'school' | 'startDate' | 'endDate' | 'description'>
+);
 
 export type SessionRequestFragmentFragment = (
   { __typename?: 'SessionRequest' }
@@ -568,6 +752,24 @@ export type AddAvatarMutation = (
   ) }
 );
 
+export type UpdateAdminInfoMutationVariables = Exact<{
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+}>;
+
+
+export type UpdateAdminInfoMutation = (
+  { __typename?: 'Mutation' }
+  & { updateAdminInfo: (
+    { __typename?: 'UpdateAdminInfoResponse' }
+    & Pick<UpdateAdminInfoResponse, 'errorMsg'>
+    & { admin?: Maybe<(
+      { __typename?: 'Admin' }
+      & Pick<Admin, 'id'>
+    )> }
+  ) }
+);
+
 export type RegisterAdminMutationVariables = Exact<{
   options: RegisterInput;
 }>;
@@ -587,6 +789,51 @@ export type RegisterAdminMutation = (
         { __typename?: 'Admin' }
         & Pick<Admin, 'firstName' | 'lastName'>
       )> }
+    )> }
+  ) }
+);
+
+export type CreateCertificateMutationVariables = Exact<{
+  input: CertificateInput;
+}>;
+
+
+export type CreateCertificateMutation = (
+  { __typename?: 'Mutation' }
+  & { createCertificate: (
+    { __typename?: 'CertificateResponse' }
+    & Pick<CertificateResponse, 'errorMsg'>
+    & { certificate?: Maybe<(
+      { __typename?: 'Certificate' }
+      & CertificateFieldsFragment
+    )> }
+  ) }
+);
+
+export type DeleteCertificateMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteCertificateMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteCertificate'>
+);
+
+export type UpdateCertificateMutationVariables = Exact<{
+  id: Scalars['Int'];
+  input: CertificateInput;
+}>;
+
+
+export type UpdateCertificateMutation = (
+  { __typename?: 'Mutation' }
+  & { updateCertificate: (
+    { __typename?: 'CertificateResponse' }
+    & Pick<CertificateResponse, 'errorMsg'>
+    & { certificate?: Maybe<(
+      { __typename?: 'Certificate' }
+      & CertificateFieldsFragment
     )> }
   ) }
 );
@@ -693,19 +940,6 @@ export type CreateSubscriptionMutation = (
   ) }
 );
 
-export type CreateWorkExperienceMutationVariables = Exact<{
-  input: WorkExperienceInput;
-}>;
-
-
-export type CreateWorkExperienceMutation = (
-  { __typename?: 'Mutation' }
-  & { createWorkExperience: (
-    { __typename?: 'WorkExperience' }
-    & Pick<WorkExperience, 'role' | 'companyName' | 'description' | 'from' | 'untill'>
-  ) }
-);
-
 export type DeclineRequestMutationVariables = Exact<{
   requestId: Scalars['Int'];
 }>;
@@ -732,6 +966,51 @@ export type DeleteExpertiseMutation = (
   ) }
 );
 
+export type CreateEducationMutationVariables = Exact<{
+  input: EducationInput;
+}>;
+
+
+export type CreateEducationMutation = (
+  { __typename?: 'Mutation' }
+  & { createEducation: (
+    { __typename?: 'EducationResponse' }
+    & Pick<EducationResponse, 'errorMsg'>
+    & { education?: Maybe<(
+      { __typename?: 'Education' }
+      & Pick<Education, 'id'>
+    )> }
+  ) }
+);
+
+export type DeleteEducationMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteEducationMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteEducation'>
+);
+
+export type UpdateEducationMutationVariables = Exact<{
+  id: Scalars['Int'];
+  input: EducationInput;
+}>;
+
+
+export type UpdateEducationMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEducation: (
+    { __typename?: 'EducationResponse' }
+    & Pick<EducationResponse, 'errorMsg'>
+    & { education?: Maybe<(
+      { __typename?: 'Education' }
+      & EducationFieldsFragment
+    )> }
+  ) }
+);
+
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -752,6 +1031,24 @@ export type GenerateMentorMutation = (
   & { generateMentor: (
     { __typename?: 'GenerateMentorResponse' }
     & Pick<GenerateMentorResponse, 'errorMsg' | 'emailSent'>
+  ) }
+);
+
+export type UpdateIndividualInfoMutationVariables = Exact<{
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+}>;
+
+
+export type UpdateIndividualInfoMutation = (
+  { __typename?: 'Mutation' }
+  & { updateIndividualInfo: (
+    { __typename?: 'UpdateIndividualInfoResponse' }
+    & Pick<UpdateIndividualInfoResponse, 'errorMsg'>
+    & { individual?: Maybe<(
+      { __typename?: 'Individual' }
+      & Pick<Individual, 'id'>
+    )> }
   ) }
 );
 
@@ -812,6 +1109,23 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
+export type SetMottoMutationVariables = Exact<{
+  motto: Scalars['String'];
+}>;
+
+
+export type SetMottoMutation = (
+  { __typename?: 'Mutation' }
+  & { setMotto: (
+    { __typename?: 'MentorResponse' }
+    & Pick<MentorResponse, 'errorMsg'>
+    & { mentor?: Maybe<(
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'id'>
+    )> }
+  ) }
+);
+
 export type MentorRegisterMutationVariables = Exact<{
   options: RegisterInput;
   token: Scalars['String'];
@@ -845,10 +1159,8 @@ export type SetBioMutation = (
   { __typename?: 'Mutation' }
   & { setBio: (
     { __typename?: 'MentorResponse' }
-    & { error?: Maybe<(
-      { __typename?: 'ErrorMessage' }
-      & Pick<ErrorMessage, 'message'>
-    )>, mentor?: Maybe<(
+    & Pick<MentorResponse, 'errorMsg'>
+    & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
       & Pick<Mentor, 'firstName' | 'lastName' | 'bio'>
     )> }
@@ -864,10 +1176,8 @@ export type SetMentorDetailsMutation = (
   { __typename?: 'Mutation' }
   & { setMentorDetails: (
     { __typename?: 'MentorResponse' }
-    & { error?: Maybe<(
-      { __typename?: 'ErrorMessage' }
-      & Pick<ErrorMessage, 'message'>
-    )>, mentor?: Maybe<(
+    & Pick<MentorResponse, 'errorMsg'>
+    & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
       & Pick<Mentor, 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
     )> }
@@ -883,10 +1193,8 @@ export type SetMentorLinksMutation = (
   { __typename?: 'Mutation' }
   & { setMentorLinks: (
     { __typename?: 'MentorResponse' }
-    & { error?: Maybe<(
-      { __typename?: 'ErrorMessage' }
-      & Pick<ErrorMessage, 'message'>
-    )>, mentor?: Maybe<(
+    & Pick<MentorResponse, 'errorMsg'>
+    & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
       & Pick<Mentor, 'facebook' | 'medium' | 'linkedin' | 'twitter' | 'instagram'>
     )> }
@@ -903,6 +1211,67 @@ export type SetRequestCompleteMutation = (
   & { setRequestComplete: (
     { __typename?: 'SetRequestCompleteResponse' }
     & Pick<SetRequestCompleteResponse, 'errorMsg' | 'complete'>
+  ) }
+);
+
+export type ChangeKnownPasswordMutationVariables = Exact<{
+  oldPassword: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangeKnownPasswordMutation = (
+  { __typename?: 'Mutation' }
+  & { changeKnownPassword: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'Users' }
+      & Pick<Users, 'id'>
+    )> }
+  ) }
+);
+
+export type CreateWorkExperienceMutationVariables = Exact<{
+  input: WorkExperienceInput;
+}>;
+
+
+export type CreateWorkExperienceMutation = (
+  { __typename?: 'Mutation' }
+  & { createWorkExperience: (
+    { __typename?: 'WorkExperience' }
+    & Pick<WorkExperience, 'role' | 'companyName' | 'description' | 'from' | 'untill'>
+  ) }
+);
+
+export type DeleteWorkExperienceMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteWorkExperienceMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteWorkExperience'>
+);
+
+export type UpdateWorkExperienceMutationVariables = Exact<{
+  id: Scalars['Int'];
+  input: WorkExperienceInput;
+}>;
+
+
+export type UpdateWorkExperienceMutation = (
+  { __typename?: 'Mutation' }
+  & { updateWorkExperience: (
+    { __typename?: 'WorkExperienceResponse' }
+    & Pick<WorkExperienceResponse, 'errorsMsg'>
+    & { workExperience?: Maybe<(
+      { __typename?: 'WorkExperience' }
+      & Pick<WorkExperience, 'id' | 'role'>
+    )> }
   ) }
 );
 
@@ -940,6 +1309,23 @@ export type AllMentorsQuery = (
   )> }
 );
 
+export type CertificatesQueryVariables = Exact<{
+  mentorId?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type CertificatesQuery = (
+  { __typename?: 'Query' }
+  & { certificates: (
+    { __typename?: 'CertificatesResponse' }
+    & Pick<CertificatesResponse, 'errorMsg'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'Certificate' }
+      & CertificateFieldsFragment
+    )>> }
+  ) }
+);
+
 export type CompaniesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -953,6 +1339,23 @@ export type CompaniesQuery = (
       & Pick<Admin, 'firstName' | 'lastName'>
     ) }
   )> }
+);
+
+export type EducationsQueryVariables = Exact<{
+  mentorId?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type EducationsQuery = (
+  { __typename?: 'Query' }
+  & { educations: (
+    { __typename?: 'EducationsResponse' }
+    & Pick<EducationsResponse, 'errorMsg'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'Education' }
+      & EducationFieldsFragment
+    )>> }
+  ) }
 );
 
 export type ExpertisesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1034,7 +1437,7 @@ export type LoggedInMentorQuery = (
     & Pick<MentorInfoResponse, 'avg' | 'sessionCount'>
     & { info: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate' | 'profileComplete' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'avatar'>
@@ -1237,22 +1640,45 @@ export type SkillsQuery = (
 );
 
 export type WorkExperiencesQueryVariables = Exact<{
-  mentorId: Scalars['Int'];
+  mentorId?: Maybe<Scalars['Int']>;
 }>;
 
 
 export type WorkExperiencesQuery = (
   { __typename?: 'Query' }
-  & { workExperiences: Array<(
-    { __typename?: 'WorkExperience' }
-    & Pick<WorkExperience, 'id' | 'role' | 'companyName' | 'from' | 'untill' | 'createdAt' | 'updatedAt' | 'description'>
-    & { industries?: Maybe<Array<(
-      { __typename?: 'Industry' }
-      & Pick<Industry, 'name'>
+  & { workExperiences: (
+    { __typename?: 'WorkExperiencesResponse' }
+    & Pick<WorkExperiencesResponse, 'errorMsg'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'WorkExperience' }
+      & Pick<WorkExperience, 'id' | 'role' | 'companyName' | 'from' | 'untill' | 'createdAt' | 'updatedAt' | 'description'>
+      & { industries?: Maybe<Array<(
+        { __typename?: 'Industry' }
+        & Pick<Industry, 'name'>
+      )>> }
     )>> }
-  )> }
+  ) }
 );
 
+export const CertificateFieldsFragmentDoc = gql`
+    fragment CertificateFields on Certificate {
+  id
+  title
+  organization
+  date
+  description
+}
+    `;
+export const EducationFieldsFragmentDoc = gql`
+    fragment EducationFields on Education {
+  id
+  title
+  school
+  startDate
+  endDate
+  description
+}
+    `;
 export const SessionRequestFragmentFragmentDoc = gql`
     fragment SessionRequestFragment on SessionRequest {
   id
@@ -1347,6 +1773,42 @@ export function useAddAvatarMutation(baseOptions?: Apollo.MutationHookOptions<Ad
 export type AddAvatarMutationHookResult = ReturnType<typeof useAddAvatarMutation>;
 export type AddAvatarMutationResult = Apollo.MutationResult<AddAvatarMutation>;
 export type AddAvatarMutationOptions = Apollo.BaseMutationOptions<AddAvatarMutation, AddAvatarMutationVariables>;
+export const UpdateAdminInfoDocument = gql`
+    mutation UpdateAdminInfo($firstName: String!, $lastName: String!) {
+  updateAdminInfo(firstName: $firstName, lastName: $lastName) {
+    errorMsg
+    admin {
+      id
+    }
+  }
+}
+    `;
+export type UpdateAdminInfoMutationFn = Apollo.MutationFunction<UpdateAdminInfoMutation, UpdateAdminInfoMutationVariables>;
+
+/**
+ * __useUpdateAdminInfoMutation__
+ *
+ * To run a mutation, you first call `useUpdateAdminInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAdminInfoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAdminInfoMutation, { data, loading, error }] = useUpdateAdminInfoMutation({
+ *   variables: {
+ *      firstName: // value for 'firstName'
+ *      lastName: // value for 'lastName'
+ *   },
+ * });
+ */
+export function useUpdateAdminInfoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAdminInfoMutation, UpdateAdminInfoMutationVariables>) {
+        return Apollo.useMutation<UpdateAdminInfoMutation, UpdateAdminInfoMutationVariables>(UpdateAdminInfoDocument, baseOptions);
+      }
+export type UpdateAdminInfoMutationHookResult = ReturnType<typeof useUpdateAdminInfoMutation>;
+export type UpdateAdminInfoMutationResult = Apollo.MutationResult<UpdateAdminInfoMutation>;
+export type UpdateAdminInfoMutationOptions = Apollo.BaseMutationOptions<UpdateAdminInfoMutation, UpdateAdminInfoMutationVariables>;
 export const RegisterAdminDocument = gql`
     mutation RegisterAdmin($options: RegisterInput!) {
   registerAdmin(options: $options) {
@@ -1391,6 +1853,107 @@ export function useRegisterAdminMutation(baseOptions?: Apollo.MutationHookOption
 export type RegisterAdminMutationHookResult = ReturnType<typeof useRegisterAdminMutation>;
 export type RegisterAdminMutationResult = Apollo.MutationResult<RegisterAdminMutation>;
 export type RegisterAdminMutationOptions = Apollo.BaseMutationOptions<RegisterAdminMutation, RegisterAdminMutationVariables>;
+export const CreateCertificateDocument = gql`
+    mutation CreateCertificate($input: CertificateInput!) {
+  createCertificate(input: $input) {
+    errorMsg
+    certificate {
+      ...CertificateFields
+    }
+  }
+}
+    ${CertificateFieldsFragmentDoc}`;
+export type CreateCertificateMutationFn = Apollo.MutationFunction<CreateCertificateMutation, CreateCertificateMutationVariables>;
+
+/**
+ * __useCreateCertificateMutation__
+ *
+ * To run a mutation, you first call `useCreateCertificateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCertificateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCertificateMutation, { data, loading, error }] = useCreateCertificateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCertificateMutation(baseOptions?: Apollo.MutationHookOptions<CreateCertificateMutation, CreateCertificateMutationVariables>) {
+        return Apollo.useMutation<CreateCertificateMutation, CreateCertificateMutationVariables>(CreateCertificateDocument, baseOptions);
+      }
+export type CreateCertificateMutationHookResult = ReturnType<typeof useCreateCertificateMutation>;
+export type CreateCertificateMutationResult = Apollo.MutationResult<CreateCertificateMutation>;
+export type CreateCertificateMutationOptions = Apollo.BaseMutationOptions<CreateCertificateMutation, CreateCertificateMutationVariables>;
+export const DeleteCertificateDocument = gql`
+    mutation DeleteCertificate($id: Int!) {
+  deleteCertificate(id: $id)
+}
+    `;
+export type DeleteCertificateMutationFn = Apollo.MutationFunction<DeleteCertificateMutation, DeleteCertificateMutationVariables>;
+
+/**
+ * __useDeleteCertificateMutation__
+ *
+ * To run a mutation, you first call `useDeleteCertificateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCertificateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCertificateMutation, { data, loading, error }] = useDeleteCertificateMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCertificateMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCertificateMutation, DeleteCertificateMutationVariables>) {
+        return Apollo.useMutation<DeleteCertificateMutation, DeleteCertificateMutationVariables>(DeleteCertificateDocument, baseOptions);
+      }
+export type DeleteCertificateMutationHookResult = ReturnType<typeof useDeleteCertificateMutation>;
+export type DeleteCertificateMutationResult = Apollo.MutationResult<DeleteCertificateMutation>;
+export type DeleteCertificateMutationOptions = Apollo.BaseMutationOptions<DeleteCertificateMutation, DeleteCertificateMutationVariables>;
+export const UpdateCertificateDocument = gql`
+    mutation UpdateCertificate($id: Int!, $input: CertificateInput!) {
+  updateCertificate(id: $id, input: $input) {
+    errorMsg
+    certificate {
+      ...CertificateFields
+    }
+  }
+}
+    ${CertificateFieldsFragmentDoc}`;
+export type UpdateCertificateMutationFn = Apollo.MutationFunction<UpdateCertificateMutation, UpdateCertificateMutationVariables>;
+
+/**
+ * __useUpdateCertificateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCertificateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCertificateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCertificateMutation, { data, loading, error }] = useUpdateCertificateMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCertificateMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCertificateMutation, UpdateCertificateMutationVariables>) {
+        return Apollo.useMutation<UpdateCertificateMutation, UpdateCertificateMutationVariables>(UpdateCertificateDocument, baseOptions);
+      }
+export type UpdateCertificateMutationHookResult = ReturnType<typeof useUpdateCertificateMutation>;
+export type UpdateCertificateMutationResult = Apollo.MutationResult<UpdateCertificateMutation>;
+export type UpdateCertificateMutationOptions = Apollo.BaseMutationOptions<UpdateCertificateMutation, UpdateCertificateMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {
   changePassword(token: $token, newPassword: $newPassword) {
@@ -1615,42 +2178,6 @@ export function useCreateSubscriptionMutation(baseOptions?: Apollo.MutationHookO
 export type CreateSubscriptionMutationHookResult = ReturnType<typeof useCreateSubscriptionMutation>;
 export type CreateSubscriptionMutationResult = Apollo.MutationResult<CreateSubscriptionMutation>;
 export type CreateSubscriptionMutationOptions = Apollo.BaseMutationOptions<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>;
-export const CreateWorkExperienceDocument = gql`
-    mutation CreateWorkExperience($input: WorkExperienceInput!) {
-  createWorkExperience(input: $input) {
-    role
-    companyName
-    description
-    from
-    untill
-  }
-}
-    `;
-export type CreateWorkExperienceMutationFn = Apollo.MutationFunction<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>;
-
-/**
- * __useCreateWorkExperienceMutation__
- *
- * To run a mutation, you first call `useCreateWorkExperienceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWorkExperienceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createWorkExperienceMutation, { data, loading, error }] = useCreateWorkExperienceMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateWorkExperienceMutation(baseOptions?: Apollo.MutationHookOptions<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>) {
-        return Apollo.useMutation<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>(CreateWorkExperienceDocument, baseOptions);
-      }
-export type CreateWorkExperienceMutationHookResult = ReturnType<typeof useCreateWorkExperienceMutation>;
-export type CreateWorkExperienceMutationResult = Apollo.MutationResult<CreateWorkExperienceMutation>;
-export type CreateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>;
 export const DeclineRequestDocument = gql`
     mutation DeclineRequest($requestId: Int!) {
   declineRequest(requestId: $requestId) {
@@ -1717,6 +2244,107 @@ export function useDeleteExpertiseMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteExpertiseMutationHookResult = ReturnType<typeof useDeleteExpertiseMutation>;
 export type DeleteExpertiseMutationResult = Apollo.MutationResult<DeleteExpertiseMutation>;
 export type DeleteExpertiseMutationOptions = Apollo.BaseMutationOptions<DeleteExpertiseMutation, DeleteExpertiseMutationVariables>;
+export const CreateEducationDocument = gql`
+    mutation CreateEducation($input: EducationInput!) {
+  createEducation(input: $input) {
+    errorMsg
+    education {
+      id
+    }
+  }
+}
+    `;
+export type CreateEducationMutationFn = Apollo.MutationFunction<CreateEducationMutation, CreateEducationMutationVariables>;
+
+/**
+ * __useCreateEducationMutation__
+ *
+ * To run a mutation, you first call `useCreateEducationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEducationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEducationMutation, { data, loading, error }] = useCreateEducationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateEducationMutation(baseOptions?: Apollo.MutationHookOptions<CreateEducationMutation, CreateEducationMutationVariables>) {
+        return Apollo.useMutation<CreateEducationMutation, CreateEducationMutationVariables>(CreateEducationDocument, baseOptions);
+      }
+export type CreateEducationMutationHookResult = ReturnType<typeof useCreateEducationMutation>;
+export type CreateEducationMutationResult = Apollo.MutationResult<CreateEducationMutation>;
+export type CreateEducationMutationOptions = Apollo.BaseMutationOptions<CreateEducationMutation, CreateEducationMutationVariables>;
+export const DeleteEducationDocument = gql`
+    mutation DeleteEducation($id: Int!) {
+  deleteEducation(id: $id)
+}
+    `;
+export type DeleteEducationMutationFn = Apollo.MutationFunction<DeleteEducationMutation, DeleteEducationMutationVariables>;
+
+/**
+ * __useDeleteEducationMutation__
+ *
+ * To run a mutation, you first call `useDeleteEducationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEducationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEducationMutation, { data, loading, error }] = useDeleteEducationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteEducationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEducationMutation, DeleteEducationMutationVariables>) {
+        return Apollo.useMutation<DeleteEducationMutation, DeleteEducationMutationVariables>(DeleteEducationDocument, baseOptions);
+      }
+export type DeleteEducationMutationHookResult = ReturnType<typeof useDeleteEducationMutation>;
+export type DeleteEducationMutationResult = Apollo.MutationResult<DeleteEducationMutation>;
+export type DeleteEducationMutationOptions = Apollo.BaseMutationOptions<DeleteEducationMutation, DeleteEducationMutationVariables>;
+export const UpdateEducationDocument = gql`
+    mutation UpdateEducation($id: Int!, $input: EducationInput!) {
+  updateEducation(id: $id, input: $input) {
+    errorMsg
+    education {
+      ...EducationFields
+    }
+  }
+}
+    ${EducationFieldsFragmentDoc}`;
+export type UpdateEducationMutationFn = Apollo.MutationFunction<UpdateEducationMutation, UpdateEducationMutationVariables>;
+
+/**
+ * __useUpdateEducationMutation__
+ *
+ * To run a mutation, you first call `useUpdateEducationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEducationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEducationMutation, { data, loading, error }] = useUpdateEducationMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateEducationMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEducationMutation, UpdateEducationMutationVariables>) {
+        return Apollo.useMutation<UpdateEducationMutation, UpdateEducationMutationVariables>(UpdateEducationDocument, baseOptions);
+      }
+export type UpdateEducationMutationHookResult = ReturnType<typeof useUpdateEducationMutation>;
+export type UpdateEducationMutationResult = Apollo.MutationResult<UpdateEducationMutation>;
+export type UpdateEducationMutationOptions = Apollo.BaseMutationOptions<UpdateEducationMutation, UpdateEducationMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -1780,6 +2408,42 @@ export function useGenerateMentorMutation(baseOptions?: Apollo.MutationHookOptio
 export type GenerateMentorMutationHookResult = ReturnType<typeof useGenerateMentorMutation>;
 export type GenerateMentorMutationResult = Apollo.MutationResult<GenerateMentorMutation>;
 export type GenerateMentorMutationOptions = Apollo.BaseMutationOptions<GenerateMentorMutation, GenerateMentorMutationVariables>;
+export const UpdateIndividualInfoDocument = gql`
+    mutation UpdateIndividualInfo($firstName: String!, $lastName: String!) {
+  updateIndividualInfo(firstName: $firstName, lastName: $lastName) {
+    errorMsg
+    individual {
+      id
+    }
+  }
+}
+    `;
+export type UpdateIndividualInfoMutationFn = Apollo.MutationFunction<UpdateIndividualInfoMutation, UpdateIndividualInfoMutationVariables>;
+
+/**
+ * __useUpdateIndividualInfoMutation__
+ *
+ * To run a mutation, you first call `useUpdateIndividualInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIndividualInfoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIndividualInfoMutation, { data, loading, error }] = useUpdateIndividualInfoMutation({
+ *   variables: {
+ *      firstName: // value for 'firstName'
+ *      lastName: // value for 'lastName'
+ *   },
+ * });
+ */
+export function useUpdateIndividualInfoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIndividualInfoMutation, UpdateIndividualInfoMutationVariables>) {
+        return Apollo.useMutation<UpdateIndividualInfoMutation, UpdateIndividualInfoMutationVariables>(UpdateIndividualInfoDocument, baseOptions);
+      }
+export type UpdateIndividualInfoMutationHookResult = ReturnType<typeof useUpdateIndividualInfoMutation>;
+export type UpdateIndividualInfoMutationResult = Apollo.MutationResult<UpdateIndividualInfoMutation>;
+export type UpdateIndividualInfoMutationOptions = Apollo.BaseMutationOptions<UpdateIndividualInfoMutation, UpdateIndividualInfoMutationVariables>;
 export const RegisterIndividualDocument = gql`
     mutation RegisterIndividual($options: RegisterInput!) {
   registerIndividual(options: $options) {
@@ -1903,6 +2567,41 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const SetMottoDocument = gql`
+    mutation SetMotto($motto: String!) {
+  setMotto(motto: $motto) {
+    errorMsg
+    mentor {
+      id
+    }
+  }
+}
+    `;
+export type SetMottoMutationFn = Apollo.MutationFunction<SetMottoMutation, SetMottoMutationVariables>;
+
+/**
+ * __useSetMottoMutation__
+ *
+ * To run a mutation, you first call `useSetMottoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetMottoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setMottoMutation, { data, loading, error }] = useSetMottoMutation({
+ *   variables: {
+ *      motto: // value for 'motto'
+ *   },
+ * });
+ */
+export function useSetMottoMutation(baseOptions?: Apollo.MutationHookOptions<SetMottoMutation, SetMottoMutationVariables>) {
+        return Apollo.useMutation<SetMottoMutation, SetMottoMutationVariables>(SetMottoDocument, baseOptions);
+      }
+export type SetMottoMutationHookResult = ReturnType<typeof useSetMottoMutation>;
+export type SetMottoMutationResult = Apollo.MutationResult<SetMottoMutation>;
+export type SetMottoMutationOptions = Apollo.BaseMutationOptions<SetMottoMutation, SetMottoMutationVariables>;
 export const MentorRegisterDocument = gql`
     mutation MentorRegister($options: RegisterInput!, $token: String!) {
   registerMentor(options: $options, token: $token) {
@@ -1949,9 +2648,7 @@ export type MentorRegisterMutationOptions = Apollo.BaseMutationOptions<MentorReg
 export const SetBioDocument = gql`
     mutation SetBio($bio: String!) {
   setBio(bio: $bio) {
-    error {
-      message
-    }
+    errorMsg
     mentor {
       firstName
       lastName
@@ -1988,9 +2685,7 @@ export type SetBioMutationOptions = Apollo.BaseMutationOptions<SetBioMutation, S
 export const SetMentorDetailsDocument = gql`
     mutation SetMentorDetails($options: MentorDetailsInput!) {
   setMentorDetails(options: $options) {
-    error {
-      message
-    }
+    errorMsg
     mentor {
       firstName
       lastName
@@ -2030,9 +2725,7 @@ export type SetMentorDetailsMutationOptions = Apollo.BaseMutationOptions<SetMent
 export const SetMentorLinksDocument = gql`
     mutation SetMentorLinks($links: SocialLinksInput!) {
   setMentorLinks(links: $links) {
-    error {
-      message
-    }
+    errorMsg
     mentor {
       facebook
       medium
@@ -2101,6 +2794,148 @@ export function useSetRequestCompleteMutation(baseOptions?: Apollo.MutationHookO
 export type SetRequestCompleteMutationHookResult = ReturnType<typeof useSetRequestCompleteMutation>;
 export type SetRequestCompleteMutationResult = Apollo.MutationResult<SetRequestCompleteMutation>;
 export type SetRequestCompleteMutationOptions = Apollo.BaseMutationOptions<SetRequestCompleteMutation, SetRequestCompleteMutationVariables>;
+export const ChangeKnownPasswordDocument = gql`
+    mutation ChangeKnownPassword($oldPassword: String!, $newPassword: String!) {
+  changeKnownPassword(oldPassword: $oldPassword, newPassword: $newPassword) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+    }
+  }
+}
+    `;
+export type ChangeKnownPasswordMutationFn = Apollo.MutationFunction<ChangeKnownPasswordMutation, ChangeKnownPasswordMutationVariables>;
+
+/**
+ * __useChangeKnownPasswordMutation__
+ *
+ * To run a mutation, you first call `useChangeKnownPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeKnownPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeKnownPasswordMutation, { data, loading, error }] = useChangeKnownPasswordMutation({
+ *   variables: {
+ *      oldPassword: // value for 'oldPassword'
+ *      newPassword: // value for 'newPassword'
+ *   },
+ * });
+ */
+export function useChangeKnownPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ChangeKnownPasswordMutation, ChangeKnownPasswordMutationVariables>) {
+        return Apollo.useMutation<ChangeKnownPasswordMutation, ChangeKnownPasswordMutationVariables>(ChangeKnownPasswordDocument, baseOptions);
+      }
+export type ChangeKnownPasswordMutationHookResult = ReturnType<typeof useChangeKnownPasswordMutation>;
+export type ChangeKnownPasswordMutationResult = Apollo.MutationResult<ChangeKnownPasswordMutation>;
+export type ChangeKnownPasswordMutationOptions = Apollo.BaseMutationOptions<ChangeKnownPasswordMutation, ChangeKnownPasswordMutationVariables>;
+export const CreateWorkExperienceDocument = gql`
+    mutation CreateWorkExperience($input: WorkExperienceInput!) {
+  createWorkExperience(input: $input) {
+    role
+    companyName
+    description
+    from
+    untill
+  }
+}
+    `;
+export type CreateWorkExperienceMutationFn = Apollo.MutationFunction<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>;
+
+/**
+ * __useCreateWorkExperienceMutation__
+ *
+ * To run a mutation, you first call `useCreateWorkExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWorkExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWorkExperienceMutation, { data, loading, error }] = useCreateWorkExperienceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateWorkExperienceMutation(baseOptions?: Apollo.MutationHookOptions<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>) {
+        return Apollo.useMutation<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>(CreateWorkExperienceDocument, baseOptions);
+      }
+export type CreateWorkExperienceMutationHookResult = ReturnType<typeof useCreateWorkExperienceMutation>;
+export type CreateWorkExperienceMutationResult = Apollo.MutationResult<CreateWorkExperienceMutation>;
+export type CreateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<CreateWorkExperienceMutation, CreateWorkExperienceMutationVariables>;
+export const DeleteWorkExperienceDocument = gql`
+    mutation DeleteWorkExperience($id: Int!) {
+  deleteWorkExperience(id: $id)
+}
+    `;
+export type DeleteWorkExperienceMutationFn = Apollo.MutationFunction<DeleteWorkExperienceMutation, DeleteWorkExperienceMutationVariables>;
+
+/**
+ * __useDeleteWorkExperienceMutation__
+ *
+ * To run a mutation, you first call `useDeleteWorkExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWorkExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWorkExperienceMutation, { data, loading, error }] = useDeleteWorkExperienceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteWorkExperienceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWorkExperienceMutation, DeleteWorkExperienceMutationVariables>) {
+        return Apollo.useMutation<DeleteWorkExperienceMutation, DeleteWorkExperienceMutationVariables>(DeleteWorkExperienceDocument, baseOptions);
+      }
+export type DeleteWorkExperienceMutationHookResult = ReturnType<typeof useDeleteWorkExperienceMutation>;
+export type DeleteWorkExperienceMutationResult = Apollo.MutationResult<DeleteWorkExperienceMutation>;
+export type DeleteWorkExperienceMutationOptions = Apollo.BaseMutationOptions<DeleteWorkExperienceMutation, DeleteWorkExperienceMutationVariables>;
+export const UpdateWorkExperienceDocument = gql`
+    mutation UpdateWorkExperience($id: Int!, $input: WorkExperienceInput!) {
+  updateWorkExperience(id: $id, input: $input) {
+    errorsMsg
+    workExperience {
+      id
+      role
+    }
+  }
+}
+    `;
+export type UpdateWorkExperienceMutationFn = Apollo.MutationFunction<UpdateWorkExperienceMutation, UpdateWorkExperienceMutationVariables>;
+
+/**
+ * __useUpdateWorkExperienceMutation__
+ *
+ * To run a mutation, you first call `useUpdateWorkExperienceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWorkExperienceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWorkExperienceMutation, { data, loading, error }] = useUpdateWorkExperienceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWorkExperienceMutation(baseOptions?: Apollo.MutationHookOptions<UpdateWorkExperienceMutation, UpdateWorkExperienceMutationVariables>) {
+        return Apollo.useMutation<UpdateWorkExperienceMutation, UpdateWorkExperienceMutationVariables>(UpdateWorkExperienceDocument, baseOptions);
+      }
+export type UpdateWorkExperienceMutationHookResult = ReturnType<typeof useUpdateWorkExperienceMutation>;
+export type UpdateWorkExperienceMutationResult = Apollo.MutationResult<UpdateWorkExperienceMutation>;
+export type UpdateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<UpdateWorkExperienceMutation, UpdateWorkExperienceMutationVariables>;
 export const AdminsDocument = gql`
     query Admins {
   admins {
@@ -2182,6 +3017,42 @@ export function useAllMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type AllMentorsQueryHookResult = ReturnType<typeof useAllMentorsQuery>;
 export type AllMentorsLazyQueryHookResult = ReturnType<typeof useAllMentorsLazyQuery>;
 export type AllMentorsQueryResult = Apollo.QueryResult<AllMentorsQuery, AllMentorsQueryVariables>;
+export const CertificatesDocument = gql`
+    query Certificates($mentorId: Int) {
+  certificates(mentorId: $mentorId) {
+    errorMsg
+    data {
+      ...CertificateFields
+    }
+  }
+}
+    ${CertificateFieldsFragmentDoc}`;
+
+/**
+ * __useCertificatesQuery__
+ *
+ * To run a query within a React component, call `useCertificatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCertificatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCertificatesQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useCertificatesQuery(baseOptions?: Apollo.QueryHookOptions<CertificatesQuery, CertificatesQueryVariables>) {
+        return Apollo.useQuery<CertificatesQuery, CertificatesQueryVariables>(CertificatesDocument, baseOptions);
+      }
+export function useCertificatesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CertificatesQuery, CertificatesQueryVariables>) {
+          return Apollo.useLazyQuery<CertificatesQuery, CertificatesQueryVariables>(CertificatesDocument, baseOptions);
+        }
+export type CertificatesQueryHookResult = ReturnType<typeof useCertificatesQuery>;
+export type CertificatesLazyQueryHookResult = ReturnType<typeof useCertificatesLazyQuery>;
+export type CertificatesQueryResult = Apollo.QueryResult<CertificatesQuery, CertificatesQueryVariables>;
 export const CompaniesDocument = gql`
     query Companies {
   companies {
@@ -2223,6 +3094,42 @@ export function useCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type CompaniesQueryHookResult = ReturnType<typeof useCompaniesQuery>;
 export type CompaniesLazyQueryHookResult = ReturnType<typeof useCompaniesLazyQuery>;
 export type CompaniesQueryResult = Apollo.QueryResult<CompaniesQuery, CompaniesQueryVariables>;
+export const EducationsDocument = gql`
+    query Educations($mentorId: Int) {
+  educations(mentorId: $mentorId) {
+    errorMsg
+    data {
+      ...EducationFields
+    }
+  }
+}
+    ${EducationFieldsFragmentDoc}`;
+
+/**
+ * __useEducationsQuery__
+ *
+ * To run a query within a React component, call `useEducationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEducationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEducationsQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useEducationsQuery(baseOptions?: Apollo.QueryHookOptions<EducationsQuery, EducationsQueryVariables>) {
+        return Apollo.useQuery<EducationsQuery, EducationsQueryVariables>(EducationsDocument, baseOptions);
+      }
+export function useEducationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EducationsQuery, EducationsQueryVariables>) {
+          return Apollo.useLazyQuery<EducationsQuery, EducationsQueryVariables>(EducationsDocument, baseOptions);
+        }
+export type EducationsQueryHookResult = ReturnType<typeof useEducationsQuery>;
+export type EducationsLazyQueryHookResult = ReturnType<typeof useEducationsLazyQuery>;
+export type EducationsQueryResult = Apollo.QueryResult<EducationsQuery, EducationsQueryVariables>;
 export const ExpertisesDocument = gql`
     query Expertises {
   expertises {
@@ -2417,6 +3324,7 @@ export const LoggedInMentorDocument = gql`
       location
       languages
       bio
+      motto
       rate
       profileComplete
       medium
@@ -2862,18 +3770,21 @@ export type SkillsQueryHookResult = ReturnType<typeof useSkillsQuery>;
 export type SkillsLazyQueryHookResult = ReturnType<typeof useSkillsLazyQuery>;
 export type SkillsQueryResult = Apollo.QueryResult<SkillsQuery, SkillsQueryVariables>;
 export const WorkExperiencesDocument = gql`
-    query WorkExperiences($mentorId: Int!) {
+    query WorkExperiences($mentorId: Int) {
   workExperiences(mentorId: $mentorId) {
-    id
-    role
-    companyName
-    from
-    untill
-    createdAt
-    updatedAt
-    description
-    industries {
-      name
+    errorMsg
+    data {
+      id
+      role
+      companyName
+      from
+      untill
+      createdAt
+      updatedAt
+      description
+      industries {
+        name
+      }
     }
   }
 }
