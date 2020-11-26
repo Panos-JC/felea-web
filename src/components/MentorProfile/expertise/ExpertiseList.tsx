@@ -3,14 +3,14 @@ import { Add } from "@material-ui/icons";
 import React, { useState } from "react";
 import { Expertise as ExpertiseType, Skill } from "../../../generated/graphql";
 import { NewSkillForm } from "../forms/NewSkillForm";
-import { GeneralCard } from "../generalCard/GeneralCard";
+import { GeneralCard } from "../../generalCard/GeneralCard";
 import { Expertise } from "./Expertise";
 
 const useStyles = makeStyles((theme) => ({
   fab: {
     position: "absolute",
-    top: 50,
-    left: -20,
+    top: theme.spacing(3),
+    right: -theme.spacing(2),
   },
   icon: {
     transition: "all 0.3s",
