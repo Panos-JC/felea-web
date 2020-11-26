@@ -1,8 +1,6 @@
 mutation SetMentorDetails($options: MentorDetailsInput!) {
   setMentorDetails(options: $options) {
-    error {
-      message
-    }
+    errorMsg
     mentor {
       firstName
       lastName

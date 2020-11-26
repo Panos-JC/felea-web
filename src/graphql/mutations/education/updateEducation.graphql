@@ -1,0 +1,8 @@
+mutation UpdateEducation($id: Int!, $input: EducationInput!) {
+  updateEducation(id: $id, input: $input) {
+    errorMsg
+    education {
+      ...EducationFields
+    }
+  }
+}

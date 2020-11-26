@@ -1,0 +1,8 @@
+mutation UpdateIndividualInfo($firstName: String!, $lastName: String!) {
+  updateIndividualInfo(firstName: $firstName, lastName: $lastName) {
+    errorMsg
+    individual {
+      id
+    }
+  }
+}

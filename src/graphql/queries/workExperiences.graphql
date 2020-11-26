@@ -1,15 +1,18 @@
-query WorkExperiences($mentorId: Int!) {
+query WorkExperiences($mentorId: Int) {
   workExperiences(mentorId: $mentorId) {
-    id
-    role
-    companyName
-    from
-    untill
-    createdAt
-    updatedAt
-    description
-    industries {
-      name
+    errorMsg
+    data {
+      id
+      role
+      companyName
+      from
+      untill
+      createdAt
+      updatedAt
+      description
+      industries {
+        name
+      }
     }
   }
 }

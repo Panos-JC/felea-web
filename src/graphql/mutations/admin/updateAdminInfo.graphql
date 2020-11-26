@@ -1,0 +1,8 @@
+mutation UpdateAdminInfo($firstName: String!, $lastName: String!) {
+  updateAdminInfo(firstName: $firstName, lastName: $lastName) {
+    errorMsg
+    admin {
+      id
+    }
+  }
+}

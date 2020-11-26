@@ -1,0 +1,7 @@
+fragment CertificateFields on Certificate {
+  id
+  title
+  organization
+  date
+  description
+}

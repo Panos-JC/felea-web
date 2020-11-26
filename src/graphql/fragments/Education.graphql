@@ -1,0 +1,8 @@
+fragment EducationFields on Education {
+  id
+  title
+  school
+  startDate
+  endDate
+  description
+}

@@ -1,0 +1,9 @@
+mutation UpdateWorkExperience($id: Int!, $input: WorkExperienceInput!) {
+  updateWorkExperience(id: $id, input: $input) {
+    errorsMsg
+    workExperience {
+      id
+      role
+    }
+  }
+}

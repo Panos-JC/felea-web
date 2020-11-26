@@ -1,0 +1,8 @@
+mutation CreateCertificate($input: CertificateInput!) {
+  createCertificate(input: $input) {
+    errorMsg
+    certificate {
+      ...CertificateFields
+    }
+  }
+}

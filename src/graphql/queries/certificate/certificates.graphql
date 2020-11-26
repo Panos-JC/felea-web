@@ -1,0 +1,8 @@
+query Certificates($mentorId: Int) {
+  certificates(mentorId: $mentorId) {
+    errorMsg
+    data {
+      ...CertificateFields
+    }
+  }
+}

@@ -1,0 +1,8 @@
+mutation SetMotto($motto: String!) {
+  setMotto(motto: $motto) {
+    errorMsg
+    mentor {
+      id
+    }
+  }
+}

@@ -1,0 +1,8 @@
+mutation UpdateCertificate($id: Int!, $input: CertificateInput!) {
+  updateCertificate(id: $id, input: $input) {
+    errorMsg
+    certificate {
+      ...CertificateFields
+    }
+  }
+}

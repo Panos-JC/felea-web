@@ -1,0 +1,8 @@
+query Educations($mentorId: Int) {
+  educations(mentorId: $mentorId) {
+    errorMsg
+    data {
+      ...EducationFields
+    }
+  }
+}

@@ -1,8 +1,6 @@
 mutation SetBio($bio: String!) {
   setBio(bio: $bio) {
-    error {
-      message
-    }
+    errorMsg
     mentor {
       firstName
       lastName

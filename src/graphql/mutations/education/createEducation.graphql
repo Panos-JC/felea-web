@@ -1,0 +1,8 @@
+mutation CreateEducation($input: EducationInput!) {
+  createEducation(input: $input) {
+    errorMsg
+    education {
+      id
+    }
+  }
+}

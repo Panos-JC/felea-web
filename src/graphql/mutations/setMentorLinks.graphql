@@ -1,8 +1,6 @@
 mutation SetMentorLinks($links: SocialLinksInput!) {
   setMentorLinks(links: $links) {
-    error {
-      message
-    }
+    errorMsg
     mentor {
       facebook
       medium
