@@ -1,18 +1,15 @@
-import {
-  Button,
-  Fab,
-  makeStyles,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Button, Fab, makeStyles, Typography } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
+import { Editor, EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import React, { useEffect, useState } from "react";
 import {
   IsProfileCompleteDocument,
   MeDocument,
   useSetBioMutation,
 } from "../../../generated/graphql";
-import { GeneralCard } from "../generalCard/GeneralCard";
+import { GeneralCard } from "../../generalCard/GeneralCard";
+import "draft-js/dist/Draft.css";
+import { RichEditor } from "../../richEditor/RichEditor";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -20,8 +17,8 @@ const useStyles = makeStyles((theme) => ({
   },
   fab: {
     position: "absolute",
-    top: 50,
-    left: -20,
+    top: theme.spacing(3),
+    right: -theme.spacing(2),
   },
   icon: {
     transition: "all 0.3s",
@@ -44,24 +41,30 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
 
   // state
   const [edit, setEdit] = useState<boolean>(false);
+  const [editorState, setEditorState] = React.useState(() =>
+    EditorState.createEmpty()
+  );
 
-  const [bioState, setBioState] = useState<string | null | undefined>("");
+  const [editorDisplay, setEditorDisplay] = React.useState(() =>
+    EditorState.createEmpty()
+  );
 
-  // mutation
+  // GraphQL
   const [setBio] = useSetBioMutation();
 
-  // set state when component renders
   useEffect(() => {
-    setBioState(bio);
+    if (bio) {
+      const rawContent = convertFromRaw(JSON.parse(bio));
+      setEditorDisplay(EditorState.createWithContent(rawContent));
+      setEditorState(EditorState.createWithContent(rawContent));
+    }
   }, [bio]);
 
-  useEffect(() => {
-    console.log("editable ", editable);
-  }, [editable]);
+  const onSubmit = async () => {
+    const contentRaw = convertToRaw(editorState.getCurrentContent());
 
-  const handleSubmit = async () => {
     await setBio({
-      variables: { bio: bioState! },
+      variables: { bio: JSON.stringify(contentRaw) },
       refetchQueries: [
         { query: MeDocument },
         { query: IsProfileCompleteDocument },
@@ -85,21 +88,14 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
       <div className={classes.wrapper}>
         {edit && (
           <form>
-            <TextField
-              fullWidth
-              autoComplete="off"
-              label="Bio"
-              name="bio"
-              multiline
-              rows={10}
-              placeholder="Write about your position"
-              variant="outlined"
-              value={bioState}
-              onChange={(e) => setBioState(e.target.value)}
+            <label>Type Your Bio</label>
+            <RichEditor
+              editorState={editorState}
+              setEditorState={setEditorState}
             />
             <Button
               className={classes.button}
-              onClick={handleSubmit}
+              onClick={onSubmit}
               variant="contained"
               color="primary"
               size="small"
@@ -109,10 +105,15 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
             </Button>
           </form>
         )}
-
-        <Typography variant="body2" color="textSecondary">
-          {bio}
-        </Typography>
+        {!edit && (
+          <Typography variant="body2" color="textSecondary">
+            <Editor
+              readOnly
+              onChange={(editorState) => null}
+              editorState={editorDisplay}
+            />
+          </Typography>
+        )}
       </div>
     </GeneralCard>
   );

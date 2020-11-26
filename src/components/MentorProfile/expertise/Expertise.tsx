@@ -1,5 +1,6 @@
 import { IconButton, makeStyles, Typography } from "@material-ui/core";
 import { Delete, Edit } from "@material-ui/icons";
+import { convertFromRaw, Editor, EditorState } from "draft-js";
 import React, { useState } from "react";
 import {
   ExpertisesDocument,
@@ -97,7 +98,15 @@ export const Expertise: React.FC<ExpertiseProps> = ({
         )}
       </div>
 
-      <Typography className={classes.text}>{description}</Typography>
+      <Typography className={classes.text}>
+        <Editor
+          readOnly
+          onChange={(editorState) => null}
+          editorState={EditorState.createWithContent(
+            convertFromRaw(JSON.parse(description))
+          )}
+        />
+      </Typography>
     </div>
   );
 };
