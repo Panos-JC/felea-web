@@ -23,7 +23,8 @@ import { Link, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    marginTop: 25,
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   cardHead: {
     display: "flex",
