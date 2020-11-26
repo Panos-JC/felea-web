@@ -1,17 +1,14 @@
 import MomentUtils from "@date-io/moment";
-import { Grid, TextField, Button, makeStyles } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import { makeStyles, Grid, TextField, Button } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Industry,
-  IsProfileCompleteDocument,
-  useCreateWorkExperienceMutation,
-  useIndustriesQuery,
-  WorkExperienceInput,
-  WorkExperiencesDocument,
-} from "../../../generated/graphql";
+  EducationFieldsFragment,
+  EducationInput,
+  EducationsDocument,
+  useUpdateEducationMutation,
+} from "../../../../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
   form: { marginBottom: 20 },
@@ -21,64 +18,53 @@ const useStyles = makeStyles((theme) => ({
   description: {
     width: "100%",
   },
+  button: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 type Inputs = {
-  role: string;
-  company: string;
-  description: string;
+  title: string;
+  school: string;
   from: string;
   untill: string;
-  industries: Industry[];
+  description: string;
 };
 
-interface WorkExperienceFormProps {
-  mentorId: number;
+interface EditEducationProps {
+  values: EducationFieldsFragment;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
-  mentorId,
+export const EditEducation: React.FC<EditEducationProps> = ({
+  values,
   setEdit,
 }) => {
   const classes = useStyles();
 
-  const { data, loading } = useIndustriesQuery();
+  // GraphQL
+  const [updateEducation] = useUpdateEducationMutation();
 
-  const [createWorkExperience] = useCreateWorkExperienceMutation();
-
-  const { register, handleSubmit, errors, control, setValue } = useForm<
-    Inputs
-  >();
+  const { register, handleSubmit, errors, control } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
-    const input: WorkExperienceInput = {
-      role: formData.role,
-      companyName: formData.company,
-      description: formData.description,
+    const input: EducationInput = {
+      title: formData.title,
+      school: formData.school,
       from: formData.from,
       untill: formData.untill,
-      industries: formData.industries.map((industry) =>
-        industry.name.toLowerCase()
-      ),
+      description: formData.description,
     };
 
-    console.log(input);
-
-    await createWorkExperience({
-      variables: { input },
-      refetchQueries: [
-        { query: WorkExperiencesDocument, variables: { mentorId } },
-        { query: IsProfileCompleteDocument },
-      ],
+    const { data } = await updateEducation({
+      variables: { id: values.id, input },
+      refetchQueries: [{ query: EducationsDocument }],
     });
 
-    setEdit(false);
+    if (data?.updateEducation.education) {
+      setEdit(false);
+    }
   };
-
-  useEffect(() => {
-    register("industries");
-  }, [register]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
@@ -86,29 +72,33 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
         <Grid item xs={12}>
           <TextField
             inputRef={register({ required: true })}
-            error={errors.role ? true : false}
-            helperText={errors.role ? "Required field" : null}
+            error={errors.title ? true : false}
+            helperText={errors.title ? "Required field" : null}
             autoComplete="off"
             variant="outlined"
             fullWidth
-            id="role"
-            label="Role"
-            name="role"
+            id="title"
+            label="Title"
+            name="title"
             autoFocus
+            size="small"
+            defaultValue={values.title}
           />
         </Grid>
 
         <Grid item xs={12}>
           <TextField
             inputRef={register({ required: true })}
-            error={errors.company ? true : false}
-            helperText={errors.company ? "Required field" : null}
+            error={errors.school ? true : false}
+            helperText={errors.school ? "Required field" : null}
             autoComplete="off"
             variant="outlined"
             fullWidth
-            id="company"
-            label="Company"
-            name="company"
+            id="school"
+            label="School"
+            name="school"
+            size="small"
+            defaultValue={values.school}
           />
         </Grid>
 
@@ -117,7 +107,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
             <Controller
               control={control}
               name="from"
-              defaultValue={new Date()}
+              defaultValue={new Date(parseInt(values.startDate))}
               render={({ onChange, value }) => (
                 <DatePicker
                   className={classes.picker}
@@ -126,6 +116,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                   inputVariant="outlined"
                   value={value}
                   onChange={onChange}
+                  size="small"
                 />
               )}
             />
@@ -137,7 +128,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
             <Controller
               control={control}
               name="untill"
-              defaultValue={new Date()}
+              defaultValue={new Date(parseInt(values.endDate))}
               render={({ onChange, value }) => (
                 <DatePicker
                   className={classes.picker}
@@ -146,6 +137,7 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                   inputVariant="outlined"
                   value={value}
                   onChange={onChange}
+                  size="small"
                 />
               )}
             />
@@ -165,42 +157,30 @@ export const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
             rows={7}
             placeholder="Write about your position"
             variant="outlined"
+            size="small"
+            defaultValue={values.description}
           />
         </Grid>
 
         <Grid item xs={12}>
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            <Autocomplete
-              multiple
-              id="tags-standard"
-              options={data?.industries as Industry[]}
-              getOptionLabel={(option) => option.name}
-              onChange={(event, values) => {
-                setValue("industries", values);
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  error={errors.industries ? true : false}
-                  variant="outlined"
-                  label="Industries"
-                  placeholder="B2B, B2C..."
-                />
-              )}
-            />
-          )}
-        </Grid>
-
-        <Grid item xs={12}>
           <Button
+            className={classes.button}
             type="submit"
             variant="contained"
             color="primary"
+            size="small"
             disableElevation
           >
-            Add
+            Save
+          </Button>
+          <Button
+            className={classes.button}
+            onClick={() => setEdit(false)}
+            variant="outlined"
+            color="primary"
+            size="small"
+          >
+            Cancel
           </Button>
         </Grid>
       </Grid>
