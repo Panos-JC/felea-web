@@ -101,10 +101,10 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
     // handle snackbar
     if (errors) {
       console.log(errors);
-    } else if (data?.setMentorDetails.error) {
+    } else if (data?.setMentorDetails.errorMsg) {
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
-      setSnackbarMsg(data?.setMentorDetails.error.message);
+      setSnackbarMsg(data?.setMentorDetails.errorMsg);
     } else if (data?.setMentorDetails.mentor) {
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
