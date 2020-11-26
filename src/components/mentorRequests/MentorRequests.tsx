@@ -1,8 +1,9 @@
-import { Tabs, Tab, Paper, Box, makeStyles } from "@material-ui/core";
+import { Tabs, Tab, Paper, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useRequestsByMentorQuery } from "../../generated/graphql";
 import { Layout } from "../layout/Layout";
 import { Loading } from "../loading/Loading";
+import { TabPanel } from "../tabPanel/TabPanel";
 import { RequestCard } from "./request/RequestCard";
 
 const useStyles = makeStyles((theme) => ({
@@ -10,28 +11,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
-}
 
 interface MentorRequestsProps {}
 
