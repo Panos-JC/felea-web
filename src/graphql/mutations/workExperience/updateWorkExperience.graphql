@@ -1,6 +1,8 @@
 mutation UpdateWorkExperience($id: Int!, $input: WorkExperienceInput!) {
   updateWorkExperience(id: $id, input: $input) {
-    errorsMsg
+    error {
+      ...RegularError
+    }
     workExperience {
       id
       role

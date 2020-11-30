@@ -1,9 +1,15 @@
 mutation CreateWorkExperience($input: WorkExperienceInput!) {
   createWorkExperience(input: $input) {
-    role
-    companyName
-    description
-    from
-    untill
+    error {
+      ...RegularError
+    }
+    workExperience {
+      id
+      role
+      companyName
+      industries {
+        name
+      }
+    }
   }
 }

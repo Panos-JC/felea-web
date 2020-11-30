@@ -1,0 +1,5 @@
+fragment SkillFields on Skill {
+  id
+  name
+  nameLowercase
+}

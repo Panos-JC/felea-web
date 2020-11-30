@@ -1,0 +1,6 @@
+mutation GenerateAdmin($email: String!) {
+  generateAdmin(email: $email) {
+    errorMsg
+    emailSent
+  }
+}

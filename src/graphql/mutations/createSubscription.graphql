@@ -1,0 +1,7 @@
+mutation CreateSubscription($token: String!) {
+  createSubscription(token: $token) {
+    id
+    firstName
+    lastName
+  }
+}

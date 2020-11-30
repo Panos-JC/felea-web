@@ -1,9 +1,20 @@
-mutation CreateExpertise($skillId: Int!, $description: String!) {
-  createExpertise(skillId: $skillId, description: $description) {
-    errorMsg
+mutation CreateExpertise(
+  $skillName: String!
+  $description: String!
+  $descriptionText: String!
+) {
+  createExpertise(
+    skillName: $skillName
+    description: $description
+    descriptionText: $descriptionText
+  ) {
+    error {
+      ...RegularError
+    }
     expertise {
       id
       description
+      descriptionText
     }
   }
 }
