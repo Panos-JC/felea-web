@@ -21,32 +21,7 @@ import {
   useExpertisesByIdQuery,
   useMentorQuery,
 } from "../../../generated/graphql";
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import "./styles.css";
-
-const CARD_OPTIONS = {
-  style: {
-    base: {
-      iconColor: "#000",
-      color: "#fff",
-      fontWeight: "500",
-      fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
-      fontSize: "16px",
-      fontSmoothing: "antialiased",
-
-      ":-webkit-autofill": {
-        color: "#fce883",
-      },
-      "::placeholder": {
-        color: "#FFF",
-      },
-    },
-    invalid: {
-      iconColor: "#FFC7EE",
-      color: "#FFC7EE",
-    },
-  },
-};
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -105,10 +80,6 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
   const { id } = useParams<ParamTypes>();
   const history = useHistory();
 
-  // Stripe hooks
-  const stripe = useStripe();
-  const elements = useElements();
-
   // GraphQL
   const { data, loading } = useMentorQuery({
     variables: { mentorId: parseInt(id) },
@@ -127,53 +98,24 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
   const onSubmit = async (formData: Inputs) => {
     console.log(formData);
 
-    if (!stripe || !elements) {
-      // Stripe.js has not loaded yet. Make sure to disable
-      // form submission until Stripe.js has loaded.
-      return;
-    }
+    // Send token to the server
+    const input: SessionRequestInput = {
+      objective: formData.objective,
+      headline: formData.headline,
+      email: formData.email,
+      communicationTool: formData.tool,
+      communicationToolId: formData.id,
+      message: formData.message,
+      ammount: parseInt(data?.mentor.info.rate!) * 100, // Amount in cents
+      mentorId: parseInt(id),
+    };
 
-    // Get a reference to a mounted CardElement. Elements knows how
-    // to find your CardElement because there can only ever be one of
-    // each type of element.
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) {
-      // cardElement error.
-      return;
-    }
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardElement,
+    const { data: sessionData } = await createSessionRequest({
+      variables: { input },
     });
 
-    if (error) {
-      // Show error to customer
-      console.log("[error]: ", error);
-    } else {
-      // Send token to the server
-      const input: SessionRequestInput = {
-        objective: formData.objective,
-        headline: formData.headline,
-        email: formData.email,
-        communicationTool: formData.tool,
-        communicationToolId: formData.id,
-        message: formData.message,
-        ammount: parseInt(data?.mentor.info.rate!) * 100, // Amount in cents
-        mentorId: parseInt(id),
-        token: paymentMethod!.id,
-      };
-
-      const { data: sessionData } = await createSessionRequest({
-        variables: { input },
-      });
-
-      if (sessionData && sessionData.createSessionRequest.sessionRequest) {
-        history.push("/new-request/success");
-      }
-
-      console.log("[paymentMethod]", paymentMethod);
-      console.log("[sessionRequestData]", sessionData);
+    if (sessionData && sessionData.createSessionRequest.sessionRequest) {
+      history.push("/new-request/success");
     }
   };
 
@@ -289,28 +231,16 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
               helperText="Use this space to introduce yourself and the challenges you are facing."
             />
           </Card>
-          <Card className={classes.card} style={{ marginBottom: 50 }}>
-            <Typography variant="h5" className={classes.title}>
-              Payment Info
-            </Typography>
-            <CardElement
-              options={CARD_OPTIONS}
-              className={classes.creditCard}
-            />
-            <Typography variant="body2">
-              You will be charged after your session is complete
-            </Typography>
-            <Button
-              className={classes.actionBtn}
-              disabled={!data.mentor.info.rate || sessionRequestLoading}
-              type="submit"
-              variant="contained"
-              color="primary"
-              disableElevation
-            >
-              Create Request
-            </Button>
-          </Card>
+          <Button
+            className={classes.actionBtn}
+            disabled={!data.mentor.info.rate || sessionRequestLoading}
+            type="submit"
+            variant="contained"
+            color="primary"
+            disableElevation
+          >
+            Create Request
+          </Button>
         </form>
       </div>
     );
