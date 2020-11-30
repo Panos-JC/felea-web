@@ -130,16 +130,6 @@ export const SessionInfo: React.FC<SessionInfoProps> = () => {
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Payment Status</TableCell>
-                <TableCell>
-                  {data.sessionRequestById.data.paymentStatus && (
-                    <SessionTag
-                      status={data.sessionRequestById.data.paymentStatus}
-                    />
-                  )}
-                </TableCell>
-              </TableRow>
-              <TableRow>
                 <TableCell>Date</TableCell>
                 <TableCell>
                   <Typography>
