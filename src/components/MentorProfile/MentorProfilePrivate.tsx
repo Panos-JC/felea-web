@@ -2,7 +2,7 @@ import React from "react";
 import { Layout } from "../layout/Layout";
 import { Bio } from "./bio/Bio";
 import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
-import { WorkExperienceList } from "./workExperience/WorkExperienceList";
+import { Experience } from "./experience/Experience";
 import {
   useExpertisesQuery,
   useIsProfileCompleteQuery,
@@ -12,6 +12,7 @@ import { ExpertiseList } from "./expertise/ExpertiseList";
 import { ReviewsList } from "./reviews/ReviewsList";
 import { Loading } from "../loading/Loading";
 import { Alert } from "@material-ui/lab";
+import { Motto } from "./motto/Motto";
 
 interface MentorProfilePrivateProps {}
 
@@ -69,16 +70,14 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
               sessions={data.loggedInMentor.sessionCount}
               rating={data.loggedInMentor.avg}
             />
+            <Motto editable motto={data.loggedInMentor.info.motto} />
             <Bio editable={true} bio={data.loggedInMentor.info.bio} />
             <ExpertiseList
               data={experiencesData.expertises}
               loading={experiencesLoading}
               editable
             />
-            <WorkExperienceList
-              editable={true}
-              id={data.loggedInMentor.info.id}
-            />
+            <Experience editable={true} id={data.loggedInMentor.info.id} />
             <ReviewsList id={data.loggedInMentor.info.id} />
           </>
         )
