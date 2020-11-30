@@ -37,6 +37,7 @@ import { Individuals } from "../users/individuals/Individuals";
 import { Mentors } from "../users/mentors/Mentors";
 import { NewMentor } from "../users/mentors/newMentor/NewMentor";
 import { Settings } from "../settings/Settings";
+import { NewAdmin } from "../users/admins/newAdmin/NewAdmin";
 
 const drawerWidth = 240;
 
@@ -84,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
   active: {
     "& .MuiButton-root": {
-      color: theme.palette.secondary.main,
+      color: theme.palette.primary.main,
     },
   },
   title: {
@@ -301,6 +302,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <ProtectedRoute
           path="/dashboard/users/mentors/new"
           component={NewMentor}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/admins/new"
+          component={NewAdmin}
           exact
         />
         <ProtectedRoute

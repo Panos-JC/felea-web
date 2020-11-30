@@ -8,7 +8,11 @@ interface AdminsProps {}
 export const Admins: React.FC<AdminsProps> = () => {
   return (
     <>
-      <PageTitle title="Admins" />
+      <PageTitle
+        title="Admins"
+        action="Create Admin"
+        to="/dashboard/users/admins/new"
+      />
       <Card>
         <AdminTable />
       </Card>
