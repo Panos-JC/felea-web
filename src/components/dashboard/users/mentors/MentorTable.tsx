@@ -101,7 +101,7 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
               </TableCell>
               <TableCell>{mentor.sessions}</TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="secondary">
+                <IconButton size="small" color="primary">
                   <ArrowForwardIcon />
                 </IconButton>
               </TableCell>

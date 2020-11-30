@@ -153,7 +153,7 @@ export const SessionsTable: React.FC<SessionsTableProps> = () => {
                   to={`/dashboard/sessions/${session.id}`}
                   variant="h6"
                 >
-                  <IconButton size="small" color="secondary">
+                  <IconButton size="small" color="primary">
                     <ArrowForwardIcon />
                   </IconButton>
                 </Link>

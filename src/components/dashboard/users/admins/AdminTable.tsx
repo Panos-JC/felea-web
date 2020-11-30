@@ -110,7 +110,7 @@ export const AdminTable: React.FC<AdminTableProps> = () => {
                 />
               </TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="secondary">
+                <IconButton size="small" color="primary">
                   <ArrowForwardIcon />
                 </IconButton>
               </TableCell>

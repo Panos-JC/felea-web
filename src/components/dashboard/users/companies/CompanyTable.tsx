@@ -52,7 +52,7 @@ export const CompanyTable: React.FC<CompanyTableProps> = () => {
                 )}
               </TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="secondary">
+                <IconButton size="small" color="primary">
                   <ArrowForward />
                 </IconButton>
               </TableCell>

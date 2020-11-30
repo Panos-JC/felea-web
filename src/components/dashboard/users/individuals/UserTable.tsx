@@ -120,7 +120,7 @@ export const UserTable: React.FC<UserTableProps> = () => {
                 />
               </TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="secondary">
+                <IconButton size="small" color="primary">
                   <ArrowForwardIcon />
                 </IconButton>
               </TableCell>
