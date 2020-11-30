@@ -18,7 +18,6 @@ query SessionRequestById($requestId: Int!) {
       }
       ammount
       status
-      paymentStatus
       date
       message
     }

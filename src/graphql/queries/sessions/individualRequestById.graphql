@@ -1,0 +1,25 @@
+query IndividualRequestById($requestId: Int!) {
+  individualRequestById(requestId: $requestId) {
+    errorMsg
+    data {
+      id
+      objective
+      headline
+      communicationTool
+      communicationToolId
+      email
+      status
+      ammount
+      message
+      createdAt
+      mentor {
+        id
+        firstName
+        lastName
+        user {
+          avatar
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+query IndividualRequests {
+  individualRequests {
+    errorMsg
+    data {
+      id
+      objective
+      headline
+      communicationTool
+      communicationToolId
+      email
+      message
+      status
+      ammount
+      createdAt
+      mentor {
+        id
+        firstName
+        lastName
+        user {
+          avatar
+        }
+      }
+    }
+  }
+}
