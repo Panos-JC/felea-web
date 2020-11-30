@@ -2,13 +2,10 @@ import {
   makeStyles,
   Container,
   CssBaseline,
-  Avatar,
-  Typography,
   Grid,
   TextField,
   Button,
 } from "@material-ui/core";
-import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
 
 import React from "react";
@@ -21,15 +18,14 @@ import {
 } from "../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
+  logo: {
+    width: 150,
+  },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -103,12 +99,11 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
+        <img
+          className={classes.logo}
+          src={process.env.PUBLIC_URL + "/logo1blue512.png"}
+          alt=""
+        />
         <form onSubmit={handleSubmit} className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>

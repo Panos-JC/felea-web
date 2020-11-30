@@ -1,14 +1,11 @@
 import {
   Container,
   CssBaseline,
-  Avatar,
-  Typography,
   Grid,
   TextField,
   Button,
   makeStyles,
 } from "@material-ui/core";
-import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
@@ -19,15 +16,14 @@ import {
 } from "../../generated/graphql";
 
 const useStyles = makeStyles((theme) => ({
+  logo: {
+    width: 150,
+  },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -66,12 +62,11 @@ export const RegisterAdmin: React.FC<RegisterAdminProps> = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
+        <img
+          className={classes.logo}
+          src={process.env.PUBLIC_URL + "/logo1blue512.png"}
+          alt=""
+        />
         <form
           onSubmit={handleSubmit(onSubmit)}
           className={classes.form}
