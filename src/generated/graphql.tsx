@@ -374,6 +374,7 @@ export type Mutation = {
   declineRequest: RequestActionResponse;
   setRequestComplete: SetRequestCompleteResponse;
   createSessionRequest: CreateRequestResponse;
+  confirmUser: Scalars['Boolean'];
 };
 
 
@@ -556,6 +557,11 @@ export type MutationSetRequestCompleteArgs = {
 
 export type MutationCreateSessionRequestArgs = {
   input: SessionRequestInput;
+};
+
+
+export type MutationConfirmUserArgs = {
+  token: Scalars['String'];
 };
 
 export type GenerateUserResponse = {
@@ -1288,6 +1294,16 @@ export type ChangeKnownPasswordMutation = (
       & Pick<Users, 'id'>
     )> }
   ) }
+);
+
+export type ConfirmUserMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type ConfirmUserMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'confirmUser'>
 );
 
 export type CreateWorkExperienceMutationVariables = Exact<{
@@ -3001,6 +3017,36 @@ export function useChangeKnownPasswordMutation(baseOptions?: Apollo.MutationHook
 export type ChangeKnownPasswordMutationHookResult = ReturnType<typeof useChangeKnownPasswordMutation>;
 export type ChangeKnownPasswordMutationResult = Apollo.MutationResult<ChangeKnownPasswordMutation>;
 export type ChangeKnownPasswordMutationOptions = Apollo.BaseMutationOptions<ChangeKnownPasswordMutation, ChangeKnownPasswordMutationVariables>;
+export const ConfirmUserDocument = gql`
+    mutation ConfirmUser($token: String!) {
+  confirmUser(token: $token)
+}
+    `;
+export type ConfirmUserMutationFn = Apollo.MutationFunction<ConfirmUserMutation, ConfirmUserMutationVariables>;
+
+/**
+ * __useConfirmUserMutation__
+ *
+ * To run a mutation, you first call `useConfirmUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmUserMutation, { data, loading, error }] = useConfirmUserMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useConfirmUserMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmUserMutation, ConfirmUserMutationVariables>) {
+        return Apollo.useMutation<ConfirmUserMutation, ConfirmUserMutationVariables>(ConfirmUserDocument, baseOptions);
+      }
+export type ConfirmUserMutationHookResult = ReturnType<typeof useConfirmUserMutation>;
+export type ConfirmUserMutationResult = Apollo.MutationResult<ConfirmUserMutation>;
+export type ConfirmUserMutationOptions = Apollo.BaseMutationOptions<ConfirmUserMutation, ConfirmUserMutationVariables>;
 export const CreateWorkExperienceDocument = gql`
     mutation CreateWorkExperience($input: WorkExperienceInput!) {
   createWorkExperience(input: $input) {
