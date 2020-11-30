@@ -1,14 +1,12 @@
-import { Button, makeStyles, TextField } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import { Button, makeStyles, TextField, Typography } from "@material-ui/core";
 import { convertToRaw, EditorState } from "draft-js";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   ExpertisesDocument,
   IsProfileCompleteDocument,
-  Skill,
+  RegularErrorFragment,
   useCreateExpertiseMutation,
-  useSkillsQuery,
 } from "../../../generated/graphql";
 import { RichEditor } from "../../richEditor/RichEditor";
 
@@ -26,41 +24,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Inputs = {
-  skill: Skill;
+  skill: string;
 };
 
 interface NewSkillFormProps {
-  setEdit?: React.Dispatch<React.SetStateAction<boolean>>;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const NewSkillForm: React.FC<NewSkillFormProps> = ({ setEdit }) => {
   const classes = useStyles();
 
   // State
+  const [fieldError, setFieldError] = useState<RegularErrorFragment>();
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
 
   // GraphQL
-  const { data, loading } = useSkillsQuery();
   const [
     createExpertise,
     { loading: createExpLoading },
   ] = useCreateExpertiseMutation();
 
-  const { register, handleSubmit, errors, setValue } = useForm<Inputs>();
-
-  useEffect(() => {
-    register("skill", { required: true });
-  }, [register]);
+  const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
     const contentRaw = convertToRaw(editorState.getCurrentContent());
+    const plainText = editorState.getCurrentContent().getPlainText();
 
-    await createExpertise({
+    const { data } = await createExpertise({
       variables: {
-        skillId: formData.skill.id,
+        skillName: formData.skill,
         description: JSON.stringify(contentRaw),
+        descriptionText: plainText,
       },
       refetchQueries: [
         { query: ExpertisesDocument },
@@ -68,50 +64,38 @@ export const NewSkillForm: React.FC<NewSkillFormProps> = ({ setEdit }) => {
       ],
     });
 
-    if (!createExpLoading && setEdit) {
+    if (data?.createExpertise.error) {
+      setFieldError(data.createExpertise.error);
+    } else {
       setEdit(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <Autocomplete
-          className={classes.input}
-          fullWidth
-          size="small"
-          options={data?.skills as Skill[]}
-          getOptionLabel={(option) => option.name}
-          onChange={(event, values) => {
-            setValue("skill", values as Skill);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Skill"
-              variant="outlined"
-              error={errors.skill ? true : false}
-              helperText={errors.skill ? "Required field" : null}
-            />
-          )}
-        />
-      )}
-
-      {/* <TextField
-        inputRef={register({ required: true })}
-        error={errors.description ? true : false}
-        helperText={errors.description ? "Required field" : null}
+      <TextField
+        inputRef={register}
         className={classes.input}
-        label="Description"
-        multiline
-        rows={6}
+        error={fieldError?.field === "skill"}
+        helperText={fieldError?.field === "skill" ? fieldError.message : null}
+        label="Skill"
+        name="skill"
+        placeholder="e.g. Mindset Coaching"
         variant="outlined"
-        name="description"
-        inputProps={{ className: classes.textField }}
-      /> */}
-      <RichEditor editorState={editorState} setEditorState={setEditorState} />
+        size="small"
+      />
+      <RichEditor
+        error={fieldError?.field === "description"}
+        errorText={
+          fieldError?.field === "description" ? fieldError.message : null
+        }
+        label="Message"
+        editorState={editorState}
+        setEditorState={setEditorState}
+      />
+      <Typography variant="body2" color="textSecondary">
+        Use this space to write a short message about your expertise
+      </Typography>
       <Button
         className={classes.btn}
         type="submit"
