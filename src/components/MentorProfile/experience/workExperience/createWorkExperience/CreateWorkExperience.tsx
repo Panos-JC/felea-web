@@ -11,10 +11,8 @@ import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Industry,
   IsProfileCompleteDocument,
   useCreateWorkExperienceMutation,
-  useIndustriesQuery,
   WorkExperienceInput,
   WorkExperiencesDocument,
 } from "../../../../../generated/graphql";
@@ -38,7 +36,7 @@ type Inputs = {
   description: string;
   from: string;
   untill: string;
-  industries: Industry[];
+  industries: string[];
 };
 
 interface CreateWorkExperienceProps {
@@ -52,13 +50,15 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
 }) => {
   const classes = useStyles();
 
-  const { data, loading } = useIndustriesQuery();
-
   const [createWorkExperience] = useCreateWorkExperienceMutation();
 
-  const { register, handleSubmit, errors, control, setValue } = useForm<
-    Inputs
-  >();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+  } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
     const input: WorkExperienceInput = {
@@ -67,9 +67,7 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
       description: formData.description,
       from: formData.from,
       untill: formData.untill,
-      industries: formData.industries.map((industry) =>
-        industry.name.toLowerCase()
-      ),
+      industries: formData.industries,
     };
 
     console.log(input);
@@ -187,29 +185,25 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {loading ? (
-              <div>Loading...</div>
-            ) : (
-              <Autocomplete
-                multiple
-                id="tags-standard"
-                options={data?.industries as Industry[]}
-                getOptionLabel={(option) => option.name}
-                onChange={(event, values) => {
-                  setValue("industries", values);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    error={errors.industries ? true : false}
-                    variant="outlined"
-                    label="Industries"
-                    placeholder="B2B, B2C..."
-                    size="small"
-                  />
-                )}
-              />
-            )}
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              options={[]}
+              freeSolo
+              onChange={(event, values) => {
+                setValue("industries", values);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={errors.industries ? true : false}
+                  variant="outlined"
+                  label="Industries"
+                  placeholder="B2B, B2C..."
+                  size="small"
+                />
+              )}
+            />
           </Grid>
 
           <Grid item xs={12}>
