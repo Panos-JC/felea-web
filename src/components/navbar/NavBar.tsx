@@ -2,7 +2,6 @@ import {
   makeStyles,
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Menu,
   MenuItem,
@@ -39,13 +38,15 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  title: {
-    flexGrow: 1,
-    fontWeight: 500,
-  },
   link: {
     textDecoration: "none",
     color: theme.palette.text.primary,
+  },
+  imgWrapper: {
+    flexGrow: 1,
+  },
+  logo: {
+    width: 150,
   },
 }));
 
@@ -77,8 +78,18 @@ export const NavBar: React.FC<NavBarProps> = () => {
 
   const body = (
     <div>
-      {data && data.me && data.me.individual && (
+      {data?.me?.individual && (
         <>
+          <Link to="/user/requests" className={classes.link}>
+            <Button
+              className={classes.menuButton}
+              color="primary"
+              variant="contained"
+              disableElevation
+            >
+              My Requests
+            </Button>
+          </Link>
           <Link to="/mentors" className={classes.link}>
             <Button
               className={classes.menuButton}
@@ -92,7 +103,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
         </>
       )}
 
-      {data && data.me && data.me.mentor && (
+      {data?.me?.mentor && (
         <div className={classes.navigation}>
           <Link to="/requests" className={classes.link}>
             <Button
@@ -175,9 +186,14 @@ export const NavBar: React.FC<NavBarProps> = () => {
   return (
     <AppBar elevation={2} position="static" color="primary">
       <Toolbar>
-        <Typography variant="h4" className={classes.title}>
-          Felea
-        </Typography>
+        <div className={classes.imgWrapper}>
+          <img
+            className={classes.logo}
+            src={process.env.PUBLIC_URL + "/logo2silver.png"}
+            alt=""
+          />
+        </div>
+
         {data && data.me ? body : <Button>Login</Button>}
       </Toolbar>
     </AppBar>
