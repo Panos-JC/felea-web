@@ -144,7 +144,9 @@ export const Login: React.FC<loginProps> = () => {
               <Link to="/forgot-password">Forgot password?</Link>
             </Grid>
             <Grid item>
-              <Link to="/register">{"Don't have an account? Sign Up"}</Link>
+              <Link to="/guest-register">
+                {"Don't have an account? Sign Up"}
+              </Link>
             </Grid>
           </Grid>
         </form>
