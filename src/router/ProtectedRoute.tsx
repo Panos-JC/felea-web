@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import Cookies from "js-cookie";
+import { useMeQuery } from "../generated/graphql";
+import { Loading } from "../components/loading/Loading";
 
 interface ProtectedRouteProps {
   component: React.FC;
@@ -13,9 +14,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   path,
   exact = false,
 }) => {
-  console.log(Cookies.get("qid"));
+  const { data, loading } = useMeQuery();
 
-  return Cookies.get("qid") ? (
+  if (loading) {
+    return <Loading />;
+  }
+
+  return data?.me ? (
     <Route path={path} exact={exact}>
       <Component />
     </Route>
