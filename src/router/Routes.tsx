@@ -1,8 +1,6 @@
-import { Home } from "../components/home/Home";
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import { Login } from "../components/auth/Login";
-import { Register } from "../components/auth/Register";
 import { RegisterMentor } from "../components/auth/RegisterMentor";
 import { MentorProfilePrivate } from "../components/MentorProfile/MentorProfilePrivate";
 import { MentorProfilePublic } from "../components/MentorProfile/MentorProfilePublic";
@@ -12,7 +10,6 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { RegisterAdmin } from "../components/auth/RegisterAdmin";
 import { DashboardLayout } from "../components/dashboard/dashboardLayout/DashboardLayout";
 import { RegisterIndividual } from "../components/auth/RegisterIndividual";
-// import { Subscription } from "../components/account/Subscription";
 import { SessionRequest } from "../components/sessionRequest/SessionRequest";
 import { MentorRequests } from "../components/mentorRequests/MentorRequests";
 import { SessionRequestSuccess } from "../components/sessionRequest/success/SessionRequestSuccess";
@@ -20,6 +17,9 @@ import { NotFound } from "../components/404/NotFound";
 import { ForgotPassword } from "../components/auth/ForgotPassword";
 import { ChangePassword } from "../components/auth/ChangePassword";
 import { Settings } from "../components/account/settings/Settings";
+import { UserRequests } from "../components/userRequests/UserRequests";
+import { UserRequestPage } from "../components/userRequests/userRequestPage/UserRequestPage";
+import { Activate } from "../components/account/activate/Activate";
 
 interface RoutesProps {}
 
@@ -44,6 +44,12 @@ export const Routes: React.FC<RoutesProps> = () => {
       />
 
       <ProtectedRoute path="/requests" component={MentorRequests} exact />
+      <ProtectedRoute path="/user/requests" component={UserRequests} exact />
+      <ProtectedRoute
+        path="/user/requests/:id"
+        component={UserRequestPage}
+        exact
+      />
 
       <ProtectedRoute path="/mentors" component={Mentors} exact />
       <ProtectedRoute path="/profile" component={MentorProfilePrivate} exact />
@@ -56,20 +62,15 @@ export const Routes: React.FC<RoutesProps> = () => {
 
       <ProtectedRoute path="/dashboard" component={DashboardLayout} />
 
-      <ProtectedRoute path="/" component={Home} exact />
-
-      {/* <Route path="/subscribe" component={Subscription} /> */}
-
       <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
       <Route path="/mentor-register/:token" component={RegisterMentor} />
       <Route path="/admin-register" component={RegisterAdmin} />
       <Route path="/guest-register" component={RegisterIndividual} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/change-password/:token" component={ChangePassword} />
-      <Route component={NotFound} />
 
-      {/* <Redirect from="/" to="/mentorProfile" /> */}
+      <Route path="/user/activate/:token" component={Activate} />
+      <Route component={NotFound} />
     </Switch>
   );
 };
