@@ -9,7 +9,7 @@ interface ExpertiseListProps {
 }
 
 export const ExpertiseList: React.FC<ExpertiseListProps> = ({ id }) => {
-  const { data, loading } = useExpertisesByIdQuery({
+  const { data } = useExpertisesByIdQuery({
     variables: { mentorId: id },
   });
   return (

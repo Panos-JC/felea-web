@@ -1,6 +1,5 @@
 import { makeStyles, Typography, IconButton } from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
-import { values } from "lodash";
+import { Delete } from "@material-ui/icons";
 import React from "react";
 import {
   CertificateFieldsFragment,

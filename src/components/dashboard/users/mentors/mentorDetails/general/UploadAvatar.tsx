@@ -50,7 +50,7 @@ interface UploadAvatarProps {
 export const UploadAvatar: React.FC<UploadAvatarProps> = ({ id }) => {
   const classes = useStyles();
 
-  const { data, loading } = useGetAvatarQuery({ variables: { mentorId: id } });
+  const { data } = useGetAvatarQuery({ variables: { mentorId: id } });
   const [addAvatar, { loading: avatarLoading }] = useAddAvatarByAdminMutation();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

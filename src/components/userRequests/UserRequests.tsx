@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface UserRequestsProps {}
 
-export const UserRequests: React.FC<UserRequestsProps> = ({}) => {
+export const UserRequests: React.FC<UserRequestsProps> = () => {
   const classes = useStyles();
   return (
     <Layout maxWidth="md">
