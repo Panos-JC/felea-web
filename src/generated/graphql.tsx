@@ -37,6 +37,10 @@ export type Query = {
   me?: Maybe<Users>;
   educations: EducationsResponse;
   certificates: CertificatesResponse;
+  getBio: GetResponse;
+  getAvatar: GetResponse;
+  getMotto: GetResponse;
+  getMentorInfo: Temp;
 };
 
 
@@ -88,6 +92,26 @@ export type QueryEducationsArgs = {
 
 export type QueryCertificatesArgs = {
   mentorId?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryGetBioArgs = {
+  mentorId: Scalars['Int'];
+};
+
+
+export type QueryGetAvatarArgs = {
+  mentorId: Scalars['Int'];
+};
+
+
+export type QueryGetMottoArgs = {
+  mentorId: Scalars['Int'];
+};
+
+
+export type QueryGetMentorInfoArgs = {
+  mentorId: Scalars['Int'];
 };
 
 export type Admin = {
@@ -337,6 +361,17 @@ export type Certificate = {
   updatedAt: Scalars['String'];
 };
 
+export type GetResponse = {
+  __typename?: 'GetResponse';
+  result?: Maybe<Scalars['String']>;
+};
+
+export type Temp = {
+  __typename?: 'Temp';
+  errorMsg?: Maybe<Scalars['String']>;
+  mentor?: Maybe<Mentor>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   generateMentor: GenerateUserResponse;
@@ -375,6 +410,18 @@ export type Mutation = {
   setRequestComplete: SetRequestCompleteResponse;
   createSessionRequest: CreateRequestResponse;
   confirmUser: Scalars['Boolean'];
+  addAvatarByAdmin: Scalars['Boolean'];
+  setBioByMentor: Scalars['Boolean'];
+  setMentorDetailsByAdmin: MentorResponse;
+  setMottoByMentor: Scalars['Boolean'];
+  deleteExpertiseByAdmin: Scalars['Boolean'];
+  deleteWorkExperienceByAdmin: Scalars['Boolean'];
+  deleteEducationByAdmin: Scalars['Boolean'];
+  deleteCertificateByAdmin: Scalars['Boolean'];
+  createCertificateByAdmin: CertificateResponse;
+  createExpertiseByAdmin: ExpertiseResponse;
+  createWorkExperienceByAdmin: WorkExperienceResponse;
+  createEducationByAdmin: EducationResponse;
 };
 
 
@@ -562,6 +609,77 @@ export type MutationCreateSessionRequestArgs = {
 
 export type MutationConfirmUserArgs = {
   token: Scalars['String'];
+};
+
+
+export type MutationAddAvatarByAdminArgs = {
+  mentorId: Scalars['Int'];
+  publicId: Scalars['String'];
+  avatarUrl: Scalars['String'];
+};
+
+
+export type MutationSetBioByMentorArgs = {
+  bio: Scalars['String'];
+  mentorId: Scalars['Int'];
+};
+
+
+export type MutationSetMentorDetailsByAdminArgs = {
+  mentorId: Scalars['Int'];
+  options: MentorDetailsInput;
+};
+
+
+export type MutationSetMottoByMentorArgs = {
+  motto: Scalars['String'];
+  mentorId: Scalars['Int'];
+};
+
+
+export type MutationDeleteExpertiseByAdminArgs = {
+  expertiseId: Scalars['Int'];
+};
+
+
+export type MutationDeleteWorkExperienceByAdminArgs = {
+  experienceId: Scalars['Int'];
+};
+
+
+export type MutationDeleteEducationByAdminArgs = {
+  educationId: Scalars['Int'];
+};
+
+
+export type MutationDeleteCertificateByAdminArgs = {
+  certificateId: Scalars['Int'];
+};
+
+
+export type MutationCreateCertificateByAdminArgs = {
+  mentorId: Scalars['Int'];
+  input: CertificateInput;
+};
+
+
+export type MutationCreateExpertiseByAdminArgs = {
+  descriptionText: Scalars['String'];
+  description: Scalars['String'];
+  skillName: Scalars['String'];
+  mentorId: Scalars['Int'];
+};
+
+
+export type MutationCreateWorkExperienceByAdminArgs = {
+  mentorId: Scalars['Int'];
+  input: WorkExperienceInput;
+};
+
+
+export type MutationCreateEducationByAdminArgs = {
+  mentorId: Scalars['Int'];
+  input: EducationInput;
 };
 
 export type GenerateUserResponse = {
@@ -840,6 +958,180 @@ export type UpdateAdminInfoMutation = (
       & Pick<Admin, 'id'>
     )> }
   ) }
+);
+
+export type AddAvatarByAdminMutationVariables = Exact<{
+  avatarUrl: Scalars['String'];
+  publicId: Scalars['String'];
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type AddAvatarByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addAvatarByAdmin'>
+);
+
+export type CreateCertificateByAdminMutationVariables = Exact<{
+  input: CertificateInput;
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type CreateCertificateByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { createCertificateByAdmin: (
+    { __typename?: 'CertificateResponse' }
+    & Pick<CertificateResponse, 'errorMsg'>
+    & { certificate?: Maybe<(
+      { __typename?: 'Certificate' }
+      & CertificateFieldsFragment
+    )> }
+  ) }
+);
+
+export type CreateEducationByAdminMutationVariables = Exact<{
+  input: EducationInput;
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type CreateEducationByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { createEducationByAdmin: (
+    { __typename?: 'EducationResponse' }
+    & Pick<EducationResponse, 'errorMsg'>
+    & { education?: Maybe<(
+      { __typename?: 'Education' }
+      & Pick<Education, 'id'>
+    )> }
+  ) }
+);
+
+export type CreateExpertiseByAdminMutationVariables = Exact<{
+  description: Scalars['String'];
+  descriptionText: Scalars['String'];
+  skillName: Scalars['String'];
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type CreateExpertiseByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { createExpertiseByAdmin: (
+    { __typename?: 'ExpertiseResponse' }
+    & { error?: Maybe<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>, expertise?: Maybe<(
+      { __typename?: 'Expertise' }
+      & Pick<Expertise, 'id'>
+    )> }
+  ) }
+);
+
+export type CreateWorkExperienceByAdminMutationVariables = Exact<{
+  input: WorkExperienceInput;
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type CreateWorkExperienceByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { createWorkExperienceByAdmin: (
+    { __typename?: 'WorkExperienceResponse' }
+    & { error?: Maybe<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>, workExperience?: Maybe<(
+      { __typename?: 'WorkExperience' }
+      & Pick<WorkExperience, 'id' | 'role' | 'companyName'>
+      & { industries?: Maybe<Array<(
+        { __typename?: 'Industry' }
+        & Pick<Industry, 'name'>
+      )>> }
+    )> }
+  ) }
+);
+
+export type DeleteCertificateByAdminMutationVariables = Exact<{
+  certificateId: Scalars['Int'];
+}>;
+
+
+export type DeleteCertificateByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteCertificateByAdmin'>
+);
+
+export type DeleteEducationByAdminMutationVariables = Exact<{
+  educationId: Scalars['Int'];
+}>;
+
+
+export type DeleteEducationByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteEducationByAdmin'>
+);
+
+export type DeleteExpertiseByAdminMutationVariables = Exact<{
+  expertiseId: Scalars['Int'];
+}>;
+
+
+export type DeleteExpertiseByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteExpertiseByAdmin'>
+);
+
+export type DeleteWorkExperienceByAdminMutationVariables = Exact<{
+  experienceId: Scalars['Int'];
+}>;
+
+
+export type DeleteWorkExperienceByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteWorkExperienceByAdmin'>
+);
+
+export type SetBioByMentorMutationVariables = Exact<{
+  mentorId: Scalars['Int'];
+  bio: Scalars['String'];
+}>;
+
+
+export type SetBioByMentorMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setBioByMentor'>
+);
+
+export type SetMentorDetailsByAdminMutationVariables = Exact<{
+  options: MentorDetailsInput;
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type SetMentorDetailsByAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { setMentorDetailsByAdmin: (
+    { __typename?: 'MentorResponse' }
+    & Pick<MentorResponse, 'errorMsg'>
+    & { mentor?: Maybe<(
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+    )> }
+  ) }
+);
+
+export type SetMottoByMentorMutationVariables = Exact<{
+  mentorId: Scalars['Int'];
+  motto: Scalars['String'];
+}>;
+
+
+export type SetMottoByMentorMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setMottoByMentor'>
 );
 
 export type RegisterAdminMutationVariables = Exact<{
@@ -1356,6 +1648,62 @@ export type UpdateWorkExperienceMutation = (
       { __typename?: 'WorkExperience' }
       & Pick<WorkExperience, 'id' | 'role'>
     )> }
+  ) }
+);
+
+export type GetAvatarQueryVariables = Exact<{
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type GetAvatarQuery = (
+  { __typename?: 'Query' }
+  & { getAvatar: (
+    { __typename?: 'GetResponse' }
+    & Pick<GetResponse, 'result'>
+  ) }
+);
+
+export type GetBioQueryVariables = Exact<{
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type GetBioQuery = (
+  { __typename?: 'Query' }
+  & { getBio: (
+    { __typename?: 'GetResponse' }
+    & Pick<GetResponse, 'result'>
+  ) }
+);
+
+export type GetMentorInfoQueryVariables = Exact<{
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type GetMentorInfoQuery = (
+  { __typename?: 'Query' }
+  & { getMentorInfo: (
+    { __typename?: 'Temp' }
+    & Pick<Temp, 'errorMsg'>
+    & { mentor?: Maybe<(
+      { __typename?: 'Mentor' }
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+    )> }
+  ) }
+);
+
+export type GetMottoQueryVariables = Exact<{
+  mentorId: Scalars['Int'];
+}>;
+
+
+export type GetMottoQuery = (
+  { __typename?: 'Query' }
+  & { getMotto: (
+    { __typename?: 'GetResponse' }
+    & Pick<GetResponse, 'result'>
   ) }
 );
 
@@ -2022,6 +2370,417 @@ export function useUpdateAdminInfoMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateAdminInfoMutationHookResult = ReturnType<typeof useUpdateAdminInfoMutation>;
 export type UpdateAdminInfoMutationResult = Apollo.MutationResult<UpdateAdminInfoMutation>;
 export type UpdateAdminInfoMutationOptions = Apollo.BaseMutationOptions<UpdateAdminInfoMutation, UpdateAdminInfoMutationVariables>;
+export const AddAvatarByAdminDocument = gql`
+    mutation AddAvatarByAdmin($avatarUrl: String!, $publicId: String!, $mentorId: Int!) {
+  addAvatarByAdmin(avatarUrl: $avatarUrl, publicId: $publicId, mentorId: $mentorId)
+}
+    `;
+export type AddAvatarByAdminMutationFn = Apollo.MutationFunction<AddAvatarByAdminMutation, AddAvatarByAdminMutationVariables>;
+
+/**
+ * __useAddAvatarByAdminMutation__
+ *
+ * To run a mutation, you first call `useAddAvatarByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddAvatarByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addAvatarByAdminMutation, { data, loading, error }] = useAddAvatarByAdminMutation({
+ *   variables: {
+ *      avatarUrl: // value for 'avatarUrl'
+ *      publicId: // value for 'publicId'
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useAddAvatarByAdminMutation(baseOptions?: Apollo.MutationHookOptions<AddAvatarByAdminMutation, AddAvatarByAdminMutationVariables>) {
+        return Apollo.useMutation<AddAvatarByAdminMutation, AddAvatarByAdminMutationVariables>(AddAvatarByAdminDocument, baseOptions);
+      }
+export type AddAvatarByAdminMutationHookResult = ReturnType<typeof useAddAvatarByAdminMutation>;
+export type AddAvatarByAdminMutationResult = Apollo.MutationResult<AddAvatarByAdminMutation>;
+export type AddAvatarByAdminMutationOptions = Apollo.BaseMutationOptions<AddAvatarByAdminMutation, AddAvatarByAdminMutationVariables>;
+export const CreateCertificateByAdminDocument = gql`
+    mutation CreateCertificateByAdmin($input: CertificateInput!, $mentorId: Int!) {
+  createCertificateByAdmin(input: $input, mentorId: $mentorId) {
+    errorMsg
+    certificate {
+      ...CertificateFields
+    }
+  }
+}
+    ${CertificateFieldsFragmentDoc}`;
+export type CreateCertificateByAdminMutationFn = Apollo.MutationFunction<CreateCertificateByAdminMutation, CreateCertificateByAdminMutationVariables>;
+
+/**
+ * __useCreateCertificateByAdminMutation__
+ *
+ * To run a mutation, you first call `useCreateCertificateByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCertificateByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCertificateByAdminMutation, { data, loading, error }] = useCreateCertificateByAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useCreateCertificateByAdminMutation(baseOptions?: Apollo.MutationHookOptions<CreateCertificateByAdminMutation, CreateCertificateByAdminMutationVariables>) {
+        return Apollo.useMutation<CreateCertificateByAdminMutation, CreateCertificateByAdminMutationVariables>(CreateCertificateByAdminDocument, baseOptions);
+      }
+export type CreateCertificateByAdminMutationHookResult = ReturnType<typeof useCreateCertificateByAdminMutation>;
+export type CreateCertificateByAdminMutationResult = Apollo.MutationResult<CreateCertificateByAdminMutation>;
+export type CreateCertificateByAdminMutationOptions = Apollo.BaseMutationOptions<CreateCertificateByAdminMutation, CreateCertificateByAdminMutationVariables>;
+export const CreateEducationByAdminDocument = gql`
+    mutation CreateEducationByAdmin($input: EducationInput!, $mentorId: Int!) {
+  createEducationByAdmin(input: $input, mentorId: $mentorId) {
+    errorMsg
+    education {
+      id
+    }
+  }
+}
+    `;
+export type CreateEducationByAdminMutationFn = Apollo.MutationFunction<CreateEducationByAdminMutation, CreateEducationByAdminMutationVariables>;
+
+/**
+ * __useCreateEducationByAdminMutation__
+ *
+ * To run a mutation, you first call `useCreateEducationByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEducationByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEducationByAdminMutation, { data, loading, error }] = useCreateEducationByAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useCreateEducationByAdminMutation(baseOptions?: Apollo.MutationHookOptions<CreateEducationByAdminMutation, CreateEducationByAdminMutationVariables>) {
+        return Apollo.useMutation<CreateEducationByAdminMutation, CreateEducationByAdminMutationVariables>(CreateEducationByAdminDocument, baseOptions);
+      }
+export type CreateEducationByAdminMutationHookResult = ReturnType<typeof useCreateEducationByAdminMutation>;
+export type CreateEducationByAdminMutationResult = Apollo.MutationResult<CreateEducationByAdminMutation>;
+export type CreateEducationByAdminMutationOptions = Apollo.BaseMutationOptions<CreateEducationByAdminMutation, CreateEducationByAdminMutationVariables>;
+export const CreateExpertiseByAdminDocument = gql`
+    mutation CreateExpertiseByAdmin($description: String!, $descriptionText: String!, $skillName: String!, $mentorId: Int!) {
+  createExpertiseByAdmin(description: $description, descriptionText: $descriptionText, skillName: $skillName, mentorId: $mentorId) {
+    error {
+      field
+      message
+    }
+    expertise {
+      id
+    }
+  }
+}
+    `;
+export type CreateExpertiseByAdminMutationFn = Apollo.MutationFunction<CreateExpertiseByAdminMutation, CreateExpertiseByAdminMutationVariables>;
+
+/**
+ * __useCreateExpertiseByAdminMutation__
+ *
+ * To run a mutation, you first call `useCreateExpertiseByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExpertiseByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExpertiseByAdminMutation, { data, loading, error }] = useCreateExpertiseByAdminMutation({
+ *   variables: {
+ *      description: // value for 'description'
+ *      descriptionText: // value for 'descriptionText'
+ *      skillName: // value for 'skillName'
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useCreateExpertiseByAdminMutation(baseOptions?: Apollo.MutationHookOptions<CreateExpertiseByAdminMutation, CreateExpertiseByAdminMutationVariables>) {
+        return Apollo.useMutation<CreateExpertiseByAdminMutation, CreateExpertiseByAdminMutationVariables>(CreateExpertiseByAdminDocument, baseOptions);
+      }
+export type CreateExpertiseByAdminMutationHookResult = ReturnType<typeof useCreateExpertiseByAdminMutation>;
+export type CreateExpertiseByAdminMutationResult = Apollo.MutationResult<CreateExpertiseByAdminMutation>;
+export type CreateExpertiseByAdminMutationOptions = Apollo.BaseMutationOptions<CreateExpertiseByAdminMutation, CreateExpertiseByAdminMutationVariables>;
+export const CreateWorkExperienceByAdminDocument = gql`
+    mutation CreateWorkExperienceByAdmin($input: WorkExperienceInput!, $mentorId: Int!) {
+  createWorkExperienceByAdmin(input: $input, mentorId: $mentorId) {
+    error {
+      ...RegularError
+    }
+    workExperience {
+      id
+      role
+      companyName
+      industries {
+        name
+      }
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}`;
+export type CreateWorkExperienceByAdminMutationFn = Apollo.MutationFunction<CreateWorkExperienceByAdminMutation, CreateWorkExperienceByAdminMutationVariables>;
+
+/**
+ * __useCreateWorkExperienceByAdminMutation__
+ *
+ * To run a mutation, you first call `useCreateWorkExperienceByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWorkExperienceByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWorkExperienceByAdminMutation, { data, loading, error }] = useCreateWorkExperienceByAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useCreateWorkExperienceByAdminMutation(baseOptions?: Apollo.MutationHookOptions<CreateWorkExperienceByAdminMutation, CreateWorkExperienceByAdminMutationVariables>) {
+        return Apollo.useMutation<CreateWorkExperienceByAdminMutation, CreateWorkExperienceByAdminMutationVariables>(CreateWorkExperienceByAdminDocument, baseOptions);
+      }
+export type CreateWorkExperienceByAdminMutationHookResult = ReturnType<typeof useCreateWorkExperienceByAdminMutation>;
+export type CreateWorkExperienceByAdminMutationResult = Apollo.MutationResult<CreateWorkExperienceByAdminMutation>;
+export type CreateWorkExperienceByAdminMutationOptions = Apollo.BaseMutationOptions<CreateWorkExperienceByAdminMutation, CreateWorkExperienceByAdminMutationVariables>;
+export const DeleteCertificateByAdminDocument = gql`
+    mutation DeleteCertificateByAdmin($certificateId: Int!) {
+  deleteCertificateByAdmin(certificateId: $certificateId)
+}
+    `;
+export type DeleteCertificateByAdminMutationFn = Apollo.MutationFunction<DeleteCertificateByAdminMutation, DeleteCertificateByAdminMutationVariables>;
+
+/**
+ * __useDeleteCertificateByAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteCertificateByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCertificateByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCertificateByAdminMutation, { data, loading, error }] = useDeleteCertificateByAdminMutation({
+ *   variables: {
+ *      certificateId: // value for 'certificateId'
+ *   },
+ * });
+ */
+export function useDeleteCertificateByAdminMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCertificateByAdminMutation, DeleteCertificateByAdminMutationVariables>) {
+        return Apollo.useMutation<DeleteCertificateByAdminMutation, DeleteCertificateByAdminMutationVariables>(DeleteCertificateByAdminDocument, baseOptions);
+      }
+export type DeleteCertificateByAdminMutationHookResult = ReturnType<typeof useDeleteCertificateByAdminMutation>;
+export type DeleteCertificateByAdminMutationResult = Apollo.MutationResult<DeleteCertificateByAdminMutation>;
+export type DeleteCertificateByAdminMutationOptions = Apollo.BaseMutationOptions<DeleteCertificateByAdminMutation, DeleteCertificateByAdminMutationVariables>;
+export const DeleteEducationByAdminDocument = gql`
+    mutation DeleteEducationByAdmin($educationId: Int!) {
+  deleteEducationByAdmin(educationId: $educationId)
+}
+    `;
+export type DeleteEducationByAdminMutationFn = Apollo.MutationFunction<DeleteEducationByAdminMutation, DeleteEducationByAdminMutationVariables>;
+
+/**
+ * __useDeleteEducationByAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteEducationByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEducationByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEducationByAdminMutation, { data, loading, error }] = useDeleteEducationByAdminMutation({
+ *   variables: {
+ *      educationId: // value for 'educationId'
+ *   },
+ * });
+ */
+export function useDeleteEducationByAdminMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEducationByAdminMutation, DeleteEducationByAdminMutationVariables>) {
+        return Apollo.useMutation<DeleteEducationByAdminMutation, DeleteEducationByAdminMutationVariables>(DeleteEducationByAdminDocument, baseOptions);
+      }
+export type DeleteEducationByAdminMutationHookResult = ReturnType<typeof useDeleteEducationByAdminMutation>;
+export type DeleteEducationByAdminMutationResult = Apollo.MutationResult<DeleteEducationByAdminMutation>;
+export type DeleteEducationByAdminMutationOptions = Apollo.BaseMutationOptions<DeleteEducationByAdminMutation, DeleteEducationByAdminMutationVariables>;
+export const DeleteExpertiseByAdminDocument = gql`
+    mutation DeleteExpertiseByAdmin($expertiseId: Int!) {
+  deleteExpertiseByAdmin(expertiseId: $expertiseId)
+}
+    `;
+export type DeleteExpertiseByAdminMutationFn = Apollo.MutationFunction<DeleteExpertiseByAdminMutation, DeleteExpertiseByAdminMutationVariables>;
+
+/**
+ * __useDeleteExpertiseByAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteExpertiseByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteExpertiseByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteExpertiseByAdminMutation, { data, loading, error }] = useDeleteExpertiseByAdminMutation({
+ *   variables: {
+ *      expertiseId: // value for 'expertiseId'
+ *   },
+ * });
+ */
+export function useDeleteExpertiseByAdminMutation(baseOptions?: Apollo.MutationHookOptions<DeleteExpertiseByAdminMutation, DeleteExpertiseByAdminMutationVariables>) {
+        return Apollo.useMutation<DeleteExpertiseByAdminMutation, DeleteExpertiseByAdminMutationVariables>(DeleteExpertiseByAdminDocument, baseOptions);
+      }
+export type DeleteExpertiseByAdminMutationHookResult = ReturnType<typeof useDeleteExpertiseByAdminMutation>;
+export type DeleteExpertiseByAdminMutationResult = Apollo.MutationResult<DeleteExpertiseByAdminMutation>;
+export type DeleteExpertiseByAdminMutationOptions = Apollo.BaseMutationOptions<DeleteExpertiseByAdminMutation, DeleteExpertiseByAdminMutationVariables>;
+export const DeleteWorkExperienceByAdminDocument = gql`
+    mutation DeleteWorkExperienceByAdmin($experienceId: Int!) {
+  deleteWorkExperienceByAdmin(experienceId: $experienceId)
+}
+    `;
+export type DeleteWorkExperienceByAdminMutationFn = Apollo.MutationFunction<DeleteWorkExperienceByAdminMutation, DeleteWorkExperienceByAdminMutationVariables>;
+
+/**
+ * __useDeleteWorkExperienceByAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteWorkExperienceByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWorkExperienceByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWorkExperienceByAdminMutation, { data, loading, error }] = useDeleteWorkExperienceByAdminMutation({
+ *   variables: {
+ *      experienceId: // value for 'experienceId'
+ *   },
+ * });
+ */
+export function useDeleteWorkExperienceByAdminMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWorkExperienceByAdminMutation, DeleteWorkExperienceByAdminMutationVariables>) {
+        return Apollo.useMutation<DeleteWorkExperienceByAdminMutation, DeleteWorkExperienceByAdminMutationVariables>(DeleteWorkExperienceByAdminDocument, baseOptions);
+      }
+export type DeleteWorkExperienceByAdminMutationHookResult = ReturnType<typeof useDeleteWorkExperienceByAdminMutation>;
+export type DeleteWorkExperienceByAdminMutationResult = Apollo.MutationResult<DeleteWorkExperienceByAdminMutation>;
+export type DeleteWorkExperienceByAdminMutationOptions = Apollo.BaseMutationOptions<DeleteWorkExperienceByAdminMutation, DeleteWorkExperienceByAdminMutationVariables>;
+export const SetBioByMentorDocument = gql`
+    mutation SetBioByMentor($mentorId: Int!, $bio: String!) {
+  setBioByMentor(mentorId: $mentorId, bio: $bio)
+}
+    `;
+export type SetBioByMentorMutationFn = Apollo.MutationFunction<SetBioByMentorMutation, SetBioByMentorMutationVariables>;
+
+/**
+ * __useSetBioByMentorMutation__
+ *
+ * To run a mutation, you first call `useSetBioByMentorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetBioByMentorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setBioByMentorMutation, { data, loading, error }] = useSetBioByMentorMutation({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *      bio: // value for 'bio'
+ *   },
+ * });
+ */
+export function useSetBioByMentorMutation(baseOptions?: Apollo.MutationHookOptions<SetBioByMentorMutation, SetBioByMentorMutationVariables>) {
+        return Apollo.useMutation<SetBioByMentorMutation, SetBioByMentorMutationVariables>(SetBioByMentorDocument, baseOptions);
+      }
+export type SetBioByMentorMutationHookResult = ReturnType<typeof useSetBioByMentorMutation>;
+export type SetBioByMentorMutationResult = Apollo.MutationResult<SetBioByMentorMutation>;
+export type SetBioByMentorMutationOptions = Apollo.BaseMutationOptions<SetBioByMentorMutation, SetBioByMentorMutationVariables>;
+export const SetMentorDetailsByAdminDocument = gql`
+    mutation SetMentorDetailsByAdmin($options: MentorDetailsInput!, $mentorId: Int!) {
+  setMentorDetailsByAdmin(options: $options, mentorId: $mentorId) {
+    errorMsg
+    mentor {
+      firstName
+      lastName
+      title
+      location
+      languages
+      rate
+    }
+  }
+}
+    `;
+export type SetMentorDetailsByAdminMutationFn = Apollo.MutationFunction<SetMentorDetailsByAdminMutation, SetMentorDetailsByAdminMutationVariables>;
+
+/**
+ * __useSetMentorDetailsByAdminMutation__
+ *
+ * To run a mutation, you first call `useSetMentorDetailsByAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetMentorDetailsByAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setMentorDetailsByAdminMutation, { data, loading, error }] = useSetMentorDetailsByAdminMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useSetMentorDetailsByAdminMutation(baseOptions?: Apollo.MutationHookOptions<SetMentorDetailsByAdminMutation, SetMentorDetailsByAdminMutationVariables>) {
+        return Apollo.useMutation<SetMentorDetailsByAdminMutation, SetMentorDetailsByAdminMutationVariables>(SetMentorDetailsByAdminDocument, baseOptions);
+      }
+export type SetMentorDetailsByAdminMutationHookResult = ReturnType<typeof useSetMentorDetailsByAdminMutation>;
+export type SetMentorDetailsByAdminMutationResult = Apollo.MutationResult<SetMentorDetailsByAdminMutation>;
+export type SetMentorDetailsByAdminMutationOptions = Apollo.BaseMutationOptions<SetMentorDetailsByAdminMutation, SetMentorDetailsByAdminMutationVariables>;
+export const SetMottoByMentorDocument = gql`
+    mutation SetMottoByMentor($mentorId: Int!, $motto: String!) {
+  setMottoByMentor(mentorId: $mentorId, motto: $motto)
+}
+    `;
+export type SetMottoByMentorMutationFn = Apollo.MutationFunction<SetMottoByMentorMutation, SetMottoByMentorMutationVariables>;
+
+/**
+ * __useSetMottoByMentorMutation__
+ *
+ * To run a mutation, you first call `useSetMottoByMentorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetMottoByMentorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setMottoByMentorMutation, { data, loading, error }] = useSetMottoByMentorMutation({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *      motto: // value for 'motto'
+ *   },
+ * });
+ */
+export function useSetMottoByMentorMutation(baseOptions?: Apollo.MutationHookOptions<SetMottoByMentorMutation, SetMottoByMentorMutationVariables>) {
+        return Apollo.useMutation<SetMottoByMentorMutation, SetMottoByMentorMutationVariables>(SetMottoByMentorDocument, baseOptions);
+      }
+export type SetMottoByMentorMutationHookResult = ReturnType<typeof useSetMottoByMentorMutation>;
+export type SetMottoByMentorMutationResult = Apollo.MutationResult<SetMottoByMentorMutation>;
+export type SetMottoByMentorMutationOptions = Apollo.BaseMutationOptions<SetMottoByMentorMutation, SetMottoByMentorMutationVariables>;
 export const RegisterAdminDocument = gql`
     mutation RegisterAdmin($options: RegisterInput!) {
   registerAdmin(options: $options) {
@@ -3158,6 +3917,147 @@ export function useUpdateWorkExperienceMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateWorkExperienceMutationHookResult = ReturnType<typeof useUpdateWorkExperienceMutation>;
 export type UpdateWorkExperienceMutationResult = Apollo.MutationResult<UpdateWorkExperienceMutation>;
 export type UpdateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<UpdateWorkExperienceMutation, UpdateWorkExperienceMutationVariables>;
+export const GetAvatarDocument = gql`
+    query GetAvatar($mentorId: Int!) {
+  getAvatar(mentorId: $mentorId) {
+    result
+  }
+}
+    `;
+
+/**
+ * __useGetAvatarQuery__
+ *
+ * To run a query within a React component, call `useGetAvatarQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAvatarQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAvatarQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useGetAvatarQuery(baseOptions?: Apollo.QueryHookOptions<GetAvatarQuery, GetAvatarQueryVariables>) {
+        return Apollo.useQuery<GetAvatarQuery, GetAvatarQueryVariables>(GetAvatarDocument, baseOptions);
+      }
+export function useGetAvatarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAvatarQuery, GetAvatarQueryVariables>) {
+          return Apollo.useLazyQuery<GetAvatarQuery, GetAvatarQueryVariables>(GetAvatarDocument, baseOptions);
+        }
+export type GetAvatarQueryHookResult = ReturnType<typeof useGetAvatarQuery>;
+export type GetAvatarLazyQueryHookResult = ReturnType<typeof useGetAvatarLazyQuery>;
+export type GetAvatarQueryResult = Apollo.QueryResult<GetAvatarQuery, GetAvatarQueryVariables>;
+export const GetBioDocument = gql`
+    query GetBio($mentorId: Int!) {
+  getBio(mentorId: $mentorId) {
+    result
+  }
+}
+    `;
+
+/**
+ * __useGetBioQuery__
+ *
+ * To run a query within a React component, call `useGetBioQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBioQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBioQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useGetBioQuery(baseOptions?: Apollo.QueryHookOptions<GetBioQuery, GetBioQueryVariables>) {
+        return Apollo.useQuery<GetBioQuery, GetBioQueryVariables>(GetBioDocument, baseOptions);
+      }
+export function useGetBioLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBioQuery, GetBioQueryVariables>) {
+          return Apollo.useLazyQuery<GetBioQuery, GetBioQueryVariables>(GetBioDocument, baseOptions);
+        }
+export type GetBioQueryHookResult = ReturnType<typeof useGetBioQuery>;
+export type GetBioLazyQueryHookResult = ReturnType<typeof useGetBioLazyQuery>;
+export type GetBioQueryResult = Apollo.QueryResult<GetBioQuery, GetBioQueryVariables>;
+export const GetMentorInfoDocument = gql`
+    query GetMentorInfo($mentorId: Int!) {
+  getMentorInfo(mentorId: $mentorId) {
+    errorMsg
+    mentor {
+      id
+      firstName
+      lastName
+      title
+      location
+      languages
+      rate
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMentorInfoQuery__
+ *
+ * To run a query within a React component, call `useGetMentorInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMentorInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMentorInfoQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useGetMentorInfoQuery(baseOptions?: Apollo.QueryHookOptions<GetMentorInfoQuery, GetMentorInfoQueryVariables>) {
+        return Apollo.useQuery<GetMentorInfoQuery, GetMentorInfoQueryVariables>(GetMentorInfoDocument, baseOptions);
+      }
+export function useGetMentorInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMentorInfoQuery, GetMentorInfoQueryVariables>) {
+          return Apollo.useLazyQuery<GetMentorInfoQuery, GetMentorInfoQueryVariables>(GetMentorInfoDocument, baseOptions);
+        }
+export type GetMentorInfoQueryHookResult = ReturnType<typeof useGetMentorInfoQuery>;
+export type GetMentorInfoLazyQueryHookResult = ReturnType<typeof useGetMentorInfoLazyQuery>;
+export type GetMentorInfoQueryResult = Apollo.QueryResult<GetMentorInfoQuery, GetMentorInfoQueryVariables>;
+export const GetMottoDocument = gql`
+    query GetMotto($mentorId: Int!) {
+  getMotto(mentorId: $mentorId) {
+    result
+  }
+}
+    `;
+
+/**
+ * __useGetMottoQuery__
+ *
+ * To run a query within a React component, call `useGetMottoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMottoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMottoQuery({
+ *   variables: {
+ *      mentorId: // value for 'mentorId'
+ *   },
+ * });
+ */
+export function useGetMottoQuery(baseOptions?: Apollo.QueryHookOptions<GetMottoQuery, GetMottoQueryVariables>) {
+        return Apollo.useQuery<GetMottoQuery, GetMottoQueryVariables>(GetMottoDocument, baseOptions);
+      }
+export function useGetMottoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMottoQuery, GetMottoQueryVariables>) {
+          return Apollo.useLazyQuery<GetMottoQuery, GetMottoQueryVariables>(GetMottoDocument, baseOptions);
+        }
+export type GetMottoQueryHookResult = ReturnType<typeof useGetMottoQuery>;
+export type GetMottoLazyQueryHookResult = ReturnType<typeof useGetMottoLazyQuery>;
+export type GetMottoQueryResult = Apollo.QueryResult<GetMottoQuery, GetMottoQueryVariables>;
 export const AdminsDocument = gql`
     query Admins {
   admins {
