@@ -15,6 +15,8 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const [cookies] = useCookies(["qid"]);
 
+  console.log(cookies.qid);
+
   return cookies.qid ? (
     <Route path={path} exact={exact}>
       <Component />
