@@ -1,0 +1,3 @@
+mutation DeleteExpertiseByAdmin($expertiseId: Int!) {
+  deleteExpertiseByAdmin(expertiseId: $expertiseId)
+}

@@ -1,0 +1,3 @@
+mutation DeleteWorkExperienceByAdmin($experienceId: Int!) {
+  deleteWorkExperienceByAdmin(experienceId: $experienceId)
+}

@@ -1,0 +1,8 @@
+mutation CreateEducationByAdmin($input: EducationInput!, $mentorId: Int!) {
+  createEducationByAdmin(input: $input, mentorId: $mentorId) {
+    errorMsg
+    education {
+      id
+    }
+  }
+}

@@ -1,0 +1,5 @@
+query GetAvatar($mentorId: Int!) {
+  getAvatar(mentorId: $mentorId) {
+    result
+  }
+}

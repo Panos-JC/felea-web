@@ -1,0 +1,3 @@
+mutation SetMottoByMentor($mentorId: Int!, $motto: String!) {
+  setMottoByMentor(mentorId: $mentorId, motto: $motto)
+}

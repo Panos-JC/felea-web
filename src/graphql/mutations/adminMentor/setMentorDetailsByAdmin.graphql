@@ -1,0 +1,16 @@
+mutation SetMentorDetailsByAdmin(
+  $options: MentorDetailsInput!
+  $mentorId: Int!
+) {
+  setMentorDetailsByAdmin(options: $options, mentorId: $mentorId) {
+    errorMsg
+    mentor {
+      firstName
+      lastName
+      title
+      location
+      languages
+      rate
+    }
+  }
+}

@@ -1,0 +1,18 @@
+mutation CreateWorkExperienceByAdmin(
+  $input: WorkExperienceInput!
+  $mentorId: Int!
+) {
+  createWorkExperienceByAdmin(input: $input, mentorId: $mentorId) {
+    error {
+      ...RegularError
+    }
+    workExperience {
+      id
+      role
+      companyName
+      industries {
+        name
+      }
+    }
+  }
+}

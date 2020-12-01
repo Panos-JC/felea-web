@@ -1,0 +1,8 @@
+mutation CreateCertificateByAdmin($input: CertificateInput!, $mentorId: Int!) {
+  createCertificateByAdmin(input: $input, mentorId: $mentorId) {
+    errorMsg
+    certificate {
+      ...CertificateFields
+    }
+  }
+}

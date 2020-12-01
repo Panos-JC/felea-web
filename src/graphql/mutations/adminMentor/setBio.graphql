@@ -1,0 +1,3 @@
+mutation SetBioByMentor($mentorId: Int!, $bio: String!) {
+  setBioByMentor(mentorId: $mentorId, bio: $bio)
+}

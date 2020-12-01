@@ -1,0 +1,3 @@
+mutation DeleteCertificateByAdmin($certificateId: Int!) {
+  deleteCertificateByAdmin(certificateId: $certificateId)
+}

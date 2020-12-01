@@ -1,0 +1,21 @@
+mutation CreateExpertiseByAdmin(
+  $description: String!
+  $descriptionText: String!
+  $skillName: String!
+  $mentorId: Int!
+) {
+  createExpertiseByAdmin(
+    description: $description
+    descriptionText: $descriptionText
+    skillName: $skillName
+    mentorId: $mentorId
+  ) {
+    error {
+      field
+      message
+    }
+    expertise {
+      id
+    }
+  }
+}
