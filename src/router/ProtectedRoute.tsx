@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 
 interface ProtectedRouteProps {
   component: React.FC;
@@ -13,12 +13,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   path,
   exact = false,
 }) => {
-  const [cookies] = useCookies(["qid"]);
+  console.log(Cookies.get("qid"));
 
-  console.log(cookies.qid);
-  console.log(cookies);
-
-  return cookies.qid ? (
+  return Cookies.get("qid") ? (
     <Route path={path} exact={exact}>
       <Component />
     </Route>
