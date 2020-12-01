@@ -105,7 +105,7 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
                   className={classes.link}
                   color="inherit"
                   component={RouterLink}
-                  to={`/dashboard/users/mentors/${mentor.mentor.id}`}
+                  to={`/dashboard/users/mentor/${mentor.mentor.id}`}
                   variant="h6"
                 >
                   <IconButton size="small" color="primary">

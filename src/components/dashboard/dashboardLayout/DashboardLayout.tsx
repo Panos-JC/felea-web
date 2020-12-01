@@ -296,6 +296,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <Toolbar />
         <ProtectedRoute path="/dashboard/settings" component={Settings} exact />
         <ProtectedRoute
+          path="/dashboard/users/mentor/:id"
+          component={MentorDetails}
+          exact
+        />
+        <ProtectedRoute
           path="/dashboard/users/mentors"
           component={Mentors}
           exact
@@ -303,11 +308,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <ProtectedRoute
           path="/dashboard/users/mentors/new"
           component={NewMentor}
-          exact
-        />
-        <ProtectedRoute
-          path="/dashboard/users/mentors/:id"
-          component={MentorDetails}
           exact
         />
         <ProtectedRoute
