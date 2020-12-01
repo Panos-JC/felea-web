@@ -88,7 +88,7 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
                       className={classes.link}
                       color="inherit"
                       component={RouterLink}
-                      to="/management/customers/1"
+                      to={`/mentor/${mentor.mentor.id}`}
                       variant="h6"
                     >
                       {`${mentor.mentor.firstName} ${mentor.mentor.lastName}`}
@@ -101,9 +101,17 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
               </TableCell>
               <TableCell>{mentor.sessions}</TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="primary">
-                  <ArrowForwardIcon />
-                </IconButton>
+                <Link
+                  className={classes.link}
+                  color="inherit"
+                  component={RouterLink}
+                  to={`/dashboard/users/mentors/${mentor.mentor.id}`}
+                  variant="h6"
+                >
+                  <IconButton size="small" color="primary">
+                    <ArrowForwardIcon />
+                  </IconButton>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

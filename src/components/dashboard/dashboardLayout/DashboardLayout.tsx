@@ -38,6 +38,7 @@ import { Mentors } from "../users/mentors/Mentors";
 import { NewMentor } from "../users/mentors/newMentor/NewMentor";
 import { Settings } from "../settings/Settings";
 import { NewAdmin } from "../users/admins/newAdmin/NewAdmin";
+import { MentorDetails } from "../users/mentors/mentorDetails/MentorDetails";
 
 const drawerWidth = 240;
 
@@ -302,6 +303,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <ProtectedRoute
           path="/dashboard/users/mentors/new"
           component={NewMentor}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/mentors/:id"
+          component={MentorDetails}
           exact
         />
         <ProtectedRoute
