@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { Login } from "../components/auth/Login";
 import { RegisterMentor } from "../components/auth/RegisterMentor";
 import { MentorProfilePrivate } from "../components/MentorProfile/MentorProfilePrivate";
@@ -71,6 +71,7 @@ export const Routes: React.FC<RoutesProps> = () => {
 
       <Route path="/user/activate/:token" component={Activate} />
       <Route component={NotFound} />
+      <Redirect from="/" to="/login" />
     </Switch>
   );
 };
