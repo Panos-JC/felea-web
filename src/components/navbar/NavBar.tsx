@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import {
   AccountCircle,
+  Dashboard,
   FolderOpen,
   PowerSettingsNew,
   Settings,
@@ -98,6 +99,22 @@ export const NavBar: React.FC<NavBarProps> = () => {
               disableElevation
             >
               Browse Mentors
+            </Button>
+          </Link>
+        </>
+      )}
+
+      {data?.me?.admin && (
+        <>
+          <Link to="/dashboard" className={classes.link}>
+            <Button
+              className={classes.menuButton}
+              color="primary"
+              variant="contained"
+              startIcon={<Dashboard />}
+              disableElevation
+            >
+              Dashboard
             </Button>
           </Link>
         </>
