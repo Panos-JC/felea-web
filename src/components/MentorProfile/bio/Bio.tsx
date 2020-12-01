@@ -88,8 +88,8 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
       <div className={classes.wrapper}>
         {edit && (
           <form>
-            <label>Type Your Bio</label>
             <RichEditor
+              label="Bio"
               editorState={editorState}
               setEditorState={setEditorState}
             />
