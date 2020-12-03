@@ -1,3 +1,4 @@
+import MomentUtils from "@date-io/moment";
 import {
   Card,
   Typography,
@@ -11,13 +12,17 @@ import {
   makeStyles,
   Snackbar,
   Button,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { MuiPickersUtilsProvider, TimePicker } from "@material-ui/pickers";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   IsProfileCompleteDocument,
   MeDocument,
+  MentorDetailsInput,
   useMeQuery,
   useSetMentorDetailsMutation,
 } from "../../../generated/graphql";
@@ -62,6 +67,10 @@ type Inputs = {
   rate: string;
   location: string;
   languages: string;
+  timeFrom: Date;
+  timeUntill: Date;
+  dayFrom: string;
+  dayUntill: string;
 };
 
 type Severity = "success" | "error" | "warning" | "info";
@@ -86,12 +95,23 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
   ] = useSetMentorDetailsMutation();
 
   // handle form
-  const { register, handleSubmit, errors } = useForm<Inputs>();
+  const { register, handleSubmit, errors, control } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
-    console.log("formData ", formData);
+    const options: MentorDetailsInput = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      title: formData.title,
+      rate: formData.rate,
+      location: formData.location,
+      languages: formData.languages,
+      availableTimeFrom: formData.timeFrom,
+      availableTimeUntill: formData.timeUntill,
+      availableDayFrom: formData.dayFrom,
+      availableDayUntill: formData.dayUntill,
+    };
     const { errors, data } = await setMentorDetails({
-      variables: { options: { ...formData } },
+      variables: { options },
       refetchQueries: [
         { query: MeDocument },
         { query: IsProfileCompleteDocument },
@@ -214,6 +234,146 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                   labelWidth={60}
                 />
               </FormControl>
+            </Grid>
+          </Grid>
+        </div>
+
+        <Divider />
+
+        <div className={classes.group}>
+          <Grid container>
+            <Grid item xs={4} className={classes.flexCenter}>
+              <Typography variant="h6" className={classes.title}>
+                Days Available
+              </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <FormControl
+                    size="small"
+                    variant="outlined"
+                    className={classes.formControl}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Available From
+                    </InputLabel>
+                    <Controller
+                      control={control}
+                      name="dayFrom"
+                      defaultValue={data?.me?.mentor?.availableDayFrom}
+                      render={({ onChange, value }) => (
+                        <Select
+                          label="Available From"
+                          value={value}
+                          onChange={onChange}
+                        >
+                          <MenuItem value={"Monday"}>Monday</MenuItem>
+                          <MenuItem value={"Tuesday"}>Tuesday</MenuItem>
+                          <MenuItem value={"Wednesday"}>Wednesday</MenuItem>
+                          <MenuItem value={"Thursday"}>Thursday</MenuItem>
+                          <MenuItem value={"Friday"}>Friday</MenuItem>
+                          <MenuItem value={"Saturday"}>Saturday</MenuItem>
+                          <MenuItem value={"Sunday"}>Sunday</MenuItem>
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl
+                    size="small"
+                    variant="outlined"
+                    className={classes.formControl}
+                  >
+                    <InputLabel id="demo-simple-select-outlined-label">
+                      Available Untill
+                    </InputLabel>
+                    <Controller
+                      control={control}
+                      name="dayUntill"
+                      defaultValue={data?.me?.mentor?.availableDayUntill}
+                      render={({ onChange, value }) => (
+                        <Select
+                          label="Available Untill"
+                          value={value}
+                          onChange={onChange}
+                        >
+                          <MenuItem value={"Monday"}>Monday</MenuItem>
+                          <MenuItem value={"Tuesday"}>Tuesday</MenuItem>
+                          <MenuItem value={"Wednesday"}>Wednesday</MenuItem>
+                          <MenuItem value={"Thursday"}>Thursday</MenuItem>
+                          <MenuItem value={"Friday"}>Friday</MenuItem>
+                          <MenuItem value={"Saturday"}>Saturday</MenuItem>
+                          <MenuItem value={"Sunday"}>Sunday</MenuItem>
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </div>
+
+        <Divider />
+
+        <div className={classes.group}>
+          <Grid container>
+            <Grid item xs={4} className={classes.flexCenter}>
+              <Typography variant="h6" className={classes.title}>
+                Hours Available
+              </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <Controller
+                      control={control}
+                      name="timeFrom"
+                      defaultValue={
+                        new Date(data?.me?.mentor?.availableTimeFrom)
+                      }
+                      render={({ onChange, value }) => (
+                        <TimePicker
+                          showTodayButton
+                          todayLabel="now"
+                          label="From"
+                          value={value}
+                          minutesStep={5}
+                          onChange={onChange}
+                          size="small"
+                          inputVariant="outlined"
+                        />
+                      )}
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item xs={6}>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <Controller
+                      control={control}
+                      name="timeUntill"
+                      defaultValue={
+                        new Date(data?.me?.mentor?.availableTimeUntill)
+                      }
+                      render={({ onChange, value }) => (
+                        <TimePicker
+                          showTodayButton
+                          todayLabel="now"
+                          label="Untill"
+                          value={value}
+                          minutesStep={5}
+                          onChange={onChange}
+                          size="small"
+                          inputVariant="outlined"
+                        />
+                      )}
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </div>

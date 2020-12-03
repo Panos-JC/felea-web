@@ -5,11 +5,7 @@ import {
   Card,
   Typography,
 } from "@material-ui/core";
-import {
-  GradeOutlined,
-  MicNoneOutlined,
-  VideocamOutlined,
-} from "@material-ui/icons";
+import { GradeOutlined } from "@material-ui/icons";
 import {
   RiLinkedinBoxLine,
   RiMediumLine,
@@ -18,8 +14,9 @@ import {
   RiInstagramLine,
 } from "react-icons/ri";
 import React from "react";
-import { useMeQuery } from "../../../generated/graphql";
+import { MentorInfoFragment, useMeQuery } from "../../../generated/graphql";
 import { Link, useParams } from "react-router-dom";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -54,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
   stats: {
     display: "flex",
     textAlign: "center",
+    alignItems: "flex-end",
     justifyContent: "space-around",
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 3,
@@ -69,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     display: "flex",
     alignItems: "center",
+  },
+  number: {
+    fontWeight: "bold",
+    fontSize: 13,
   },
   actions: {
     display: "flex",
@@ -90,20 +92,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface MentorInfoCardProps {
-  firstName?: string;
-  lastName?: string;
-  avatar?: string | null | undefined;
-  title?: string | null;
-  rate?: string | null;
-  location?: string | null;
-  languages?: string | null;
-  facebookLink?: string | null | undefined;
-  instagramLink?: string | null | undefined;
-  twitterLink?: string | null | undefined;
-  mediumLink?: string | null | undefined;
-  linkedinLink?: string | null | undefined;
-  sessions: number;
   rating: number | null | undefined;
+  sessions: number;
+  avatar?: string | null | undefined;
+  mentorInfo: MentorInfoFragment;
 }
 
 interface ParamTypes {
@@ -111,18 +103,8 @@ interface ParamTypes {
 }
 
 export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
-  firstName,
-  lastName,
+  mentorInfo,
   avatar,
-  title,
-  rate,
-  location,
-  languages,
-  facebookLink,
-  instagramLink,
-  twitterLink,
-  mediumLink,
-  linkedinLink,
   sessions,
   rating,
 }) => {
@@ -130,7 +112,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
 
   const { id } = useParams<ParamTypes>();
 
-  // Remote state
+  // GraphQL
   const { data } = useMeQuery();
 
   return (
@@ -138,33 +120,52 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
       <div className={classes.cardHead}>
         <Avatar className={classes.avatar} src={avatar || ""}></Avatar>
         <Typography className={classes.title} variant="h5">
-          {`${firstName} ${lastName}`}
+          {`${mentorInfo.firstName} ${mentorInfo.lastName}`}
         </Typography>
         <Typography className={classes.subtitle} variant="caption">
-          {title}
+          {mentorInfo.title}
         </Typography>
       </div>
       <div className={classes.infoSmall}>
-        <div className={classes.titleSmall}>{location}</div>
-        <div className={classes.titleSmall}>{languages}</div>
+        <div className={classes.titleSmall}>{mentorInfo.location}</div>
+        <div className={classes.titleSmall}>{mentorInfo.languages}</div>
       </div>
       <div className={classes.cardBody}>
         <div className={classes.stats}>
           <span className={classes.stat}>
             <Typography className={classes.statNumber} variant="subtitle1">
-              {rate} &euro;
+              {mentorInfo.rate} &euro;
             </Typography>
             <Typography className={classes.subtitle} variant="subtitle2">
               Hourly Rate
             </Typography>
           </span>
           <span className={classes.stat}>
-            <Typography className={classes.statNumber} variant="subtitle1">
-              <MicNoneOutlined />
-              <VideocamOutlined />
+            <Typography className={classes.number} variant="subtitle1">
+              {`${mentorInfo.availableDayFrom?.slice(0, 3) || ""} - ${
+                mentorInfo.availableDayUntill?.slice(0, 3) || ""
+              }`}
             </Typography>
+
             <Typography className={classes.subtitle} variant="subtitle2">
-              Availability
+              Days Available
+            </Typography>
+          </span>
+          <span className={classes.stat}>
+            <div>
+              {mentorInfo.availableTimeFrom && mentorInfo.availableTimeUntill && (
+                <Typography className={classes.number} variant="subtitle1">
+                  {`${moment(new Date(mentorInfo.availableTimeFrom)).format(
+                    "h:mm a"
+                  )} - ${moment(
+                    new Date(mentorInfo.availableTimeUntill)
+                  ).format("h:mm a")}`}
+                </Typography>
+              )}
+            </div>
+
+            <Typography className={classes.subtitle} variant="subtitle2">
+              Hours Available
             </Typography>
           </span>
           <span className={classes.stat}>
@@ -187,53 +188,41 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
         </div>
         <div className={classes.actions}>
           <div className={classes.actionButtonContainer}>
-            {data &&
-              data.me &&
-              data.me.individual &&
-              data.me.individual.premium && (
-                <Link to={`/mentor/${id}/new-request`} className={classes.link}>
-                  <Button variant="contained" color="primary" disableElevation>
-                    Contact
-                  </Button>
-                </Link>
-              )}
-
-            <Button
-              style={{ marginLeft: 10 }}
-              variant="outlined"
-              color="primary"
-              disableElevation
-            >
-              Reviews
-            </Button>
+            {data?.me?.individual?.premium && (
+              <Link to={`/mentor/${id}/new-request`} className={classes.link}>
+                <Button variant="contained" color="primary" disableElevation>
+                  Contact
+                </Button>
+              </Link>
+            )}
           </div>
 
           <div className={classes.icons}>
-            {mediumLink && (
-              <a href={mediumLink}>
+            {mentorInfo.medium && (
+              <a href={mentorInfo.medium}>
                 <RiMediumLine className={classes.icon} />
               </a>
             )}
 
-            {facebookLink && (
-              <a href={facebookLink}>
+            {mentorInfo.facebook && (
+              <a href={mentorInfo.facebook}>
                 <RiFacebookBoxLine className={classes.icon} />
               </a>
             )}
 
-            {twitterLink && (
-              <a href={twitterLink}>
+            {mentorInfo.twitter && (
+              <a href={mentorInfo.twitter}>
                 <RiTwitterLine className={classes.icon} />
               </a>
             )}
 
-            {instagramLink && (
-              <a href={instagramLink}>
+            {mentorInfo.instagram && (
+              <a href={mentorInfo.instagram}>
                 <RiInstagramLine className={classes.icon} />
               </a>
             )}
-            {linkedinLink && (
-              <a href={linkedinLink}>
+            {mentorInfo.linkedin && (
+              <a href={mentorInfo.linkedin}>
                 <RiLinkedinBoxLine className={classes.icon} />
               </a>
             )}

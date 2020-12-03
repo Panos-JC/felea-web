@@ -37,13 +37,8 @@ export const MentorProfilePublic: React.FC<MentorProfilePublicProps> = () => {
         data.expertisesById && (
           <>
             <MentorInfoCard
-              firstName={mentorData.mentor.info.firstName}
-              lastName={mentorData.mentor.info.lastName}
+              mentorInfo={mentorData.mentor.info}
               avatar={mentorData.mentor.info.user.avatar}
-              title={mentorData.mentor.info.title}
-              rate={mentorData.mentor.info.rate}
-              location={mentorData.mentor.info.location}
-              languages={mentorData.mentor.info.languages}
               sessions={mentorData.mentor.sessionCount}
               rating={mentorData.mentor.avg}
             />

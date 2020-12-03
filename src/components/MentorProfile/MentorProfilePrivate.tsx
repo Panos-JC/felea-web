@@ -55,18 +55,8 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
               )}
 
             <MentorInfoCard
-              firstName={data.loggedInMentor.info.firstName}
-              lastName={data.loggedInMentor.info.lastName}
+              mentorInfo={data.loggedInMentor.info}
               avatar={data.loggedInMentor.info.user.avatar}
-              title={data.loggedInMentor.info.title}
-              rate={data.loggedInMentor.info.rate}
-              location={data.loggedInMentor.info.location}
-              languages={data.loggedInMentor.info.languages}
-              facebookLink={data.loggedInMentor.info.facebook}
-              instagramLink={data.loggedInMentor.info.instagram}
-              linkedinLink={data.loggedInMentor.info.linkedin}
-              mediumLink={data.loggedInMentor.info.medium}
-              twitterLink={data.loggedInMentor.info.twitter}
               sessions={data.loggedInMentor.sessionCount}
               rating={data.loggedInMentor.avg}
             />
