@@ -85,26 +85,26 @@ export const GeneralInfo: React.FC<GeneralInfoProps> = ({ id }) => {
   });
   const [setMentorDetails, { loading }] = useSetMentorDetailsByAdminMutation();
   console.log("data ", data);
-  const onSubmit = async (formData: Inputs) => {
-    const { errors, data } = await setMentorDetails({
-      variables: { options: { ...formData }, mentorId: id },
-      refetchQueries: [
-        { query: GetMentorInfoDocument, variables: { mentorId: id } },
-      ],
-    });
 
-    // handle snackbar
-    if (errors) {
-      console.log(errors);
-    } else if (data?.setMentorDetailsByAdmin.errorMsg) {
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-      setSnackbarMsg(data?.setMentorDetailsByAdmin.errorMsg);
-    } else if (data?.setMentorDetailsByAdmin.mentor) {
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-      setSnackbarMsg("Details updated");
-    }
+  const onSubmit = async (formData: Inputs) => {
+    // const { errors, data } = await setMentorDetails({
+    //   variables: { options: { ...formData }, mentorId: id },
+    //   refetchQueries: [
+    //     { query: GetMentorInfoDocument, variables: { mentorId: id } },
+    //   ],
+    // });
+    // // handle snackbar
+    // if (errors) {
+    //   console.log(errors);
+    // } else if (data?.setMentorDetailsByAdmin.errorMsg) {
+    //   setSnackbarSeverity("error");
+    //   setSnackbarOpen(true);
+    //   setSnackbarMsg(data?.setMentorDetailsByAdmin.errorMsg);
+    // } else if (data?.setMentorDetailsByAdmin.mentor) {
+    //   setSnackbarSeverity("success");
+    //   setSnackbarOpen(true);
+    //   setSnackbarMsg("Details updated");
+    // }
   };
 
   if (infoLoading) {
