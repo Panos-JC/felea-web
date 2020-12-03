@@ -3,21 +3,7 @@ query LoggedInMentor {
     avg
     sessionCount
     info {
-      id
-      firstName
-      lastName
-      title
-      location
-      languages
-      bio
-      motto
-      rate
-      profileComplete
-      medium
-      facebook
-      linkedin
-      twitter
-      instagram
+      ...MentorInfo
       user {
         avatar
       }

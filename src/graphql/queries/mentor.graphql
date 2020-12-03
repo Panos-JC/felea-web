@@ -3,19 +3,7 @@ query Mentor($mentorId: Int!) {
     avg
     sessionCount
     info {
-      id
-      firstName
-      lastName
-      title
-      location
-      languages
-      bio
-      rate
-      medium
-      facebook
-      linkedin
-      twitter
-      instagram
+      ...MentorInfo
       user {
         avatar
       }

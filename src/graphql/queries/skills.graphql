@@ -1,5 +1,5 @@
-query Skills($term: String!) {
-  skills(term: $term) {
+query Skills {
+  skills {
     ...SkillFields
   }
 }

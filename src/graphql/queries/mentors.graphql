@@ -3,14 +3,7 @@ query Mentors($skills: [String!]!, $industries: [String!]!) {
     avg
     sessions
     mentor {
-      id
-      firstName
-      lastName
-      title
-      location
-      languages
-      bio
-      rate
+      ...MentorInfo
       user {
         avatar
         email

@@ -1,0 +1,21 @@
+fragment MentorInfo on Mentor {
+  id
+  firstName
+  lastName
+  title
+  location
+  languages
+  bio
+  motto
+  rate
+  profileComplete
+  availableDayFrom
+  availableDayUntill
+  availableTimeFrom
+  availableTimeUntill
+  medium
+  facebook
+  linkedin
+  twitter
+  instagram
+}
