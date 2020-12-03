@@ -80,7 +80,7 @@ export const NewSkillForm: React.FC<NewSkillFormProps> = ({ setEdit }) => {
         helperText={fieldError?.field === "skill" ? fieldError.message : null}
         label="Skill"
         name="skill"
-        placeholder="e.g. Mindset Coaching"
+        placeholder="Type a skill e.g. Mindset Coaching"
         variant="outlined"
         size="small"
       />
