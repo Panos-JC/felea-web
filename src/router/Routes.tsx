@@ -70,8 +70,8 @@ export const Routes: React.FC<RoutesProps> = () => {
       <Route path="/change-password/:token" component={ChangePassword} />
 
       <Route path="/user/activate/:token" component={Activate} />
-      <Route component={NotFound} />
       <Redirect from="/" to="/login" />
+      <Route component={NotFound} />
     </Switch>
   );
 };
