@@ -87,7 +87,16 @@ export const Mentors: React.FC<MentorsProps> = () => {
         </Grid>
         <Grid item xs={9}>
           {loading ? <Loading /> : null}
-          {data && data.mentors.map((mentor) => <MentorCard mentor={mentor} />)}
+          {data &&
+            data.mentors.map((mentor) => (
+              <MentorCard
+                mentor={mentor.mentor}
+                avatar={mentor.mentor.user.avatar}
+                sessions={mentor.sessions}
+                rating={mentor.avg}
+                expertises={mentor.mentor.expertises}
+              />
+            ))}
         </Grid>
       </Grid>
     </Layout>
