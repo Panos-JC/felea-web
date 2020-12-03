@@ -2,6 +2,8 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -62,11 +64,6 @@ export type QueryMentorsArgs = {
 
 export type QueryReviewsByIdArgs = {
   mentorId: Scalars['Int'];
-};
-
-
-export type QuerySkillsArgs = {
-  term: Scalars['String'];
 };
 
 
@@ -148,6 +145,10 @@ export type Mentor = {
   languages?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   rate?: Maybe<Scalars['String']>;
+  availableDayFrom?: Maybe<Scalars['String']>;
+  availableDayUntill?: Maybe<Scalars['String']>;
+  availableTimeFrom?: Maybe<Scalars['DateTime']>;
+  availableTimeUntill?: Maybe<Scalars['DateTime']>;
   medium?: Maybe<Scalars['String']>;
   facebook?: Maybe<Scalars['String']>;
   linkedin?: Maybe<Scalars['String']>;
@@ -161,6 +162,7 @@ export type Mentor = {
   sessionCount?: Maybe<Scalars['Int']>;
 };
 
+
 export type WorkExperience = {
   __typename?: 'WorkExperience';
   id: Scalars['Int'];
@@ -173,7 +175,6 @@ export type WorkExperience = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
-
 
 export type Industry = {
   __typename?: 'Industry';
@@ -810,6 +811,10 @@ export type MentorDetailsInput = {
   rate: Scalars['String'];
   location: Scalars['String'];
   languages: Scalars['String'];
+  availableTimeFrom: Scalars['DateTime'];
+  availableTimeUntill: Scalars['DateTime'];
+  availableDayFrom: Scalars['String'];
+  availableDayUntill: Scalars['String'];
 };
 
 export type SocialLinksInput = {
@@ -860,9 +865,22 @@ export type EducationFieldsFragment = (
   & Pick<Education, 'id' | 'title' | 'school' | 'startDate' | 'endDate' | 'description'>
 );
 
+export type ExpertiseFieldsFragment = (
+  { __typename?: 'Expertise' }
+  & { skill: (
+    { __typename?: 'Skill' }
+    & Pick<Skill, 'name'>
+  ) }
+);
+
 export type RegularErrorFragment = (
   { __typename?: 'FieldError' }
   & Pick<FieldError, 'field' | 'message'>
+);
+
+export type MentorInfoFragment = (
+  { __typename?: 'Mentor' }
+  & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
 );
 
 export type SessionRequestFragmentFragment = (
@@ -1869,11 +1887,11 @@ export type LoggedInMentorQuery = (
     & Pick<MentorInfoResponse, 'avg' | 'sessionCount'>
     & { info: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'avatar'>
       ) }
+      & MentorInfoFragment
     ) }
   ) }
 );
@@ -1888,7 +1906,7 @@ export type MeQuery = (
     & Pick<Users, 'id' | 'email' | 'activated' | 'avatar' | 'createdAt'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'bio' | 'title' | 'location' | 'languages' | 'rate' | 'facebook' | 'twitter' | 'instagram' | 'linkedin' | 'medium'>
+      & MentorInfoFragment
     )>, individual?: Maybe<(
       { __typename?: 'Individual' }
       & Pick<Individual, 'id' | 'firstName' | 'lastName' | 'premium'>
@@ -1911,11 +1929,11 @@ export type MentorQuery = (
     & Pick<MentorInfoResponse, 'avg' | 'sessionCount'>
     & { info: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'avatar'>
       ) }
+      & MentorInfoFragment
     ) }
   ) }
 );
@@ -1933,16 +1951,12 @@ export type MentorsQuery = (
     & Pick<MentorsResponse, 'avg' | 'sessions'>
     & { mentor: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'rate'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'avatar' | 'email'>
       ), expertises: Array<(
         { __typename?: 'Expertise' }
-        & { skill: (
-          { __typename?: 'Skill' }
-          & Pick<Skill, 'name'>
-        ) }
+        & ExpertiseFieldsFragment
       )>, workExperience: Array<(
         { __typename?: 'WorkExperience' }
         & { industries?: Maybe<Array<(
@@ -1950,6 +1964,7 @@ export type MentorsQuery = (
           & Pick<Industry, 'name'>
         )>> }
       )> }
+      & MentorInfoFragment
     ) }
   )> }
 );
@@ -2108,9 +2123,7 @@ export type SessionRequestsQuery = (
   )> }
 );
 
-export type SkillsQueryVariables = Exact<{
-  term: Scalars['String'];
-}>;
+export type SkillsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type SkillsQuery = (
@@ -2161,10 +2174,40 @@ export const EducationFieldsFragmentDoc = gql`
   description
 }
     `;
+export const ExpertiseFieldsFragmentDoc = gql`
+    fragment ExpertiseFields on Expertise {
+  skill {
+    name
+  }
+}
+    `;
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
   field
   message
+}
+    `;
+export const MentorInfoFragmentDoc = gql`
+    fragment MentorInfo on Mentor {
+  id
+  firstName
+  lastName
+  title
+  location
+  languages
+  bio
+  motto
+  rate
+  profileComplete
+  availableDayFrom
+  availableDayUntill
+  availableTimeFrom
+  availableTimeUntill
+  medium
+  facebook
+  linkedin
+  twitter
+  instagram
 }
     `;
 export const SessionRequestFragmentFragmentDoc = gql`
@@ -3941,7 +3984,7 @@ export const GetAvatarDocument = gql`
  *   },
  * });
  */
-export function useGetAvatarQuery(baseOptions?: Apollo.QueryHookOptions<GetAvatarQuery, GetAvatarQueryVariables>) {
+export function useGetAvatarQuery(baseOptions: Apollo.QueryHookOptions<GetAvatarQuery, GetAvatarQueryVariables>) {
         return Apollo.useQuery<GetAvatarQuery, GetAvatarQueryVariables>(GetAvatarDocument, baseOptions);
       }
 export function useGetAvatarLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAvatarQuery, GetAvatarQueryVariables>) {
@@ -3974,7 +4017,7 @@ export const GetBioDocument = gql`
  *   },
  * });
  */
-export function useGetBioQuery(baseOptions?: Apollo.QueryHookOptions<GetBioQuery, GetBioQueryVariables>) {
+export function useGetBioQuery(baseOptions: Apollo.QueryHookOptions<GetBioQuery, GetBioQueryVariables>) {
         return Apollo.useQuery<GetBioQuery, GetBioQueryVariables>(GetBioDocument, baseOptions);
       }
 export function useGetBioLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBioQuery, GetBioQueryVariables>) {
@@ -4016,7 +4059,7 @@ export const GetMentorInfoDocument = gql`
  *   },
  * });
  */
-export function useGetMentorInfoQuery(baseOptions?: Apollo.QueryHookOptions<GetMentorInfoQuery, GetMentorInfoQueryVariables>) {
+export function useGetMentorInfoQuery(baseOptions: Apollo.QueryHookOptions<GetMentorInfoQuery, GetMentorInfoQueryVariables>) {
         return Apollo.useQuery<GetMentorInfoQuery, GetMentorInfoQueryVariables>(GetMentorInfoDocument, baseOptions);
       }
 export function useGetMentorInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMentorInfoQuery, GetMentorInfoQueryVariables>) {
@@ -4049,7 +4092,7 @@ export const GetMottoDocument = gql`
  *   },
  * });
  */
-export function useGetMottoQuery(baseOptions?: Apollo.QueryHookOptions<GetMottoQuery, GetMottoQueryVariables>) {
+export function useGetMottoQuery(baseOptions: Apollo.QueryHookOptions<GetMottoQuery, GetMottoQueryVariables>) {
         return Apollo.useQuery<GetMottoQuery, GetMottoQueryVariables>(GetMottoDocument, baseOptions);
       }
 export function useGetMottoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMottoQuery, GetMottoQueryVariables>) {
@@ -4318,7 +4361,7 @@ export const ExpertisesByIdDocument = gql`
  *   },
  * });
  */
-export function useExpertisesByIdQuery(baseOptions?: Apollo.QueryHookOptions<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>) {
+export function useExpertisesByIdQuery(baseOptions: Apollo.QueryHookOptions<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>) {
         return Apollo.useQuery<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>(ExpertisesByIdDocument, baseOptions);
       }
 export function useExpertisesByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ExpertisesByIdQuery, ExpertisesByIdQueryVariables>) {
@@ -4439,28 +4482,14 @@ export const LoggedInMentorDocument = gql`
     avg
     sessionCount
     info {
-      id
-      firstName
-      lastName
-      title
-      location
-      languages
-      bio
-      motto
-      rate
-      profileComplete
-      medium
-      facebook
-      linkedin
-      twitter
-      instagram
+      ...MentorInfo
       user {
         avatar
       }
     }
   }
 }
-    `;
+    ${MentorInfoFragmentDoc}`;
 
 /**
  * __useLoggedInMentorQuery__
@@ -4495,19 +4524,7 @@ export const MeDocument = gql`
     avatar
     createdAt
     mentor {
-      id
-      firstName
-      lastName
-      bio
-      title
-      location
-      languages
-      rate
-      facebook
-      twitter
-      instagram
-      linkedin
-      medium
+      ...MentorInfo
     }
     individual {
       id
@@ -4521,7 +4538,7 @@ export const MeDocument = gql`
     }
   }
 }
-    `;
+    ${MentorInfoFragmentDoc}`;
 
 /**
  * __useMeQuery__
@@ -4553,26 +4570,14 @@ export const MentorDocument = gql`
     avg
     sessionCount
     info {
-      id
-      firstName
-      lastName
-      title
-      location
-      languages
-      bio
-      rate
-      medium
-      facebook
-      linkedin
-      twitter
-      instagram
+      ...MentorInfo
       user {
         avatar
       }
     }
   }
 }
-    `;
+    ${MentorInfoFragmentDoc}`;
 
 /**
  * __useMentorQuery__
@@ -4590,7 +4595,7 @@ export const MentorDocument = gql`
  *   },
  * });
  */
-export function useMentorQuery(baseOptions?: Apollo.QueryHookOptions<MentorQuery, MentorQueryVariables>) {
+export function useMentorQuery(baseOptions: Apollo.QueryHookOptions<MentorQuery, MentorQueryVariables>) {
         return Apollo.useQuery<MentorQuery, MentorQueryVariables>(MentorDocument, baseOptions);
       }
 export function useMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MentorQuery, MentorQueryVariables>) {
@@ -4605,22 +4610,13 @@ export const MentorsDocument = gql`
     avg
     sessions
     mentor {
-      id
-      firstName
-      lastName
-      title
-      location
-      languages
-      bio
-      rate
+      ...MentorInfo
       user {
         avatar
         email
       }
       expertises {
-        skill {
-          name
-        }
+        ...ExpertiseFields
       }
       workExperience {
         industries {
@@ -4630,7 +4626,8 @@ export const MentorsDocument = gql`
     }
   }
 }
-    `;
+    ${MentorInfoFragmentDoc}
+${ExpertiseFieldsFragmentDoc}`;
 
 /**
  * __useMentorsQuery__
@@ -4649,7 +4646,7 @@ export const MentorsDocument = gql`
  *   },
  * });
  */
-export function useMentorsQuery(baseOptions?: Apollo.QueryHookOptions<MentorsQuery, MentorsQueryVariables>) {
+export function useMentorsQuery(baseOptions: Apollo.QueryHookOptions<MentorsQuery, MentorsQueryVariables>) {
         return Apollo.useQuery<MentorsQuery, MentorsQueryVariables>(MentorsDocument, baseOptions);
       }
 export function useMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MentorsQuery, MentorsQueryVariables>) {
@@ -4738,7 +4735,7 @@ export const ReviewsByIdDocument = gql`
  *   },
  * });
  */
-export function useReviewsByIdQuery(baseOptions?: Apollo.QueryHookOptions<ReviewsByIdQuery, ReviewsByIdQueryVariables>) {
+export function useReviewsByIdQuery(baseOptions: Apollo.QueryHookOptions<ReviewsByIdQuery, ReviewsByIdQueryVariables>) {
         return Apollo.useQuery<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, baseOptions);
       }
 export function useReviewsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReviewsByIdQuery, ReviewsByIdQueryVariables>) {
@@ -4791,7 +4788,7 @@ export const IndividualRequestByIdDocument = gql`
  *   },
  * });
  */
-export function useIndividualRequestByIdQuery(baseOptions?: Apollo.QueryHookOptions<IndividualRequestByIdQuery, IndividualRequestByIdQueryVariables>) {
+export function useIndividualRequestByIdQuery(baseOptions: Apollo.QueryHookOptions<IndividualRequestByIdQuery, IndividualRequestByIdQueryVariables>) {
         return Apollo.useQuery<IndividualRequestByIdQuery, IndividualRequestByIdQueryVariables>(IndividualRequestByIdDocument, baseOptions);
       }
 export function useIndividualRequestByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IndividualRequestByIdQuery, IndividualRequestByIdQueryVariables>) {
@@ -4896,7 +4893,7 @@ export const SessionRequestByIdDocument = gql`
  *   },
  * });
  */
-export function useSessionRequestByIdQuery(baseOptions?: Apollo.QueryHookOptions<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>) {
+export function useSessionRequestByIdQuery(baseOptions: Apollo.QueryHookOptions<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>) {
         return Apollo.useQuery<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>(SessionRequestByIdDocument, baseOptions);
       }
 export function useSessionRequestByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionRequestByIdQuery, SessionRequestByIdQueryVariables>) {
@@ -4963,8 +4960,8 @@ export type SessionRequestsQueryHookResult = ReturnType<typeof useSessionRequest
 export type SessionRequestsLazyQueryHookResult = ReturnType<typeof useSessionRequestsLazyQuery>;
 export type SessionRequestsQueryResult = Apollo.QueryResult<SessionRequestsQuery, SessionRequestsQueryVariables>;
 export const SkillsDocument = gql`
-    query Skills($term: String!) {
-  skills(term: $term) {
+    query Skills {
+  skills {
     ...SkillFields
   }
 }
@@ -4982,7 +4979,6 @@ export const SkillsDocument = gql`
  * @example
  * const { data, loading, error } = useSkillsQuery({
  *   variables: {
- *      term: // value for 'term'
  *   },
  * });
  */
