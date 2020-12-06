@@ -1,4 +1,4 @@
-import { Container } from "@material-ui/core";
+import { Container, Toolbar } from "@material-ui/core";
 import React from "react";
 import { NavBar } from "../navbar/NavBar";
 
@@ -13,6 +13,7 @@ export const Layout: React.FC<LayoutProps> = ({
   return (
     <>
       <NavBar />
+      <Toolbar />
       <Container maxWidth={maxWidth}>{children as any}</Container>
     </>
   );
