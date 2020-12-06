@@ -1,30 +1,44 @@
-import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  Redirect,
+  Route,
+  RouteComponentProps,
+  RouteProps,
+} from "react-router-dom";
 import { useMeQuery } from "../generated/graphql";
 import { Loading } from "../components/loading/Loading";
 
-interface ProtectedRouteProps {
+interface ProtectedRouteProps extends RouteProps {
   component: React.FC;
-  path: string;
-  exact?: boolean;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   component: Component,
-  path,
-  exact = false,
-}) => {
+  ...rest
+}: any) => {
+  const [wait, setWait] = useState(true);
   const { data, loading } = useMeQuery();
 
-  if (loading) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    // temporary fix
+    // PROBLEM: right after login me query returns null
+    setTimeout(() => {
+      setWait(false);
+    }, 1000);
+  }, []);
 
-  return data?.me ? (
-    <Route path={path} exact={exact}>
-      <Component />
-    </Route>
-  ) : (
-    <Redirect to="/login" />
-  );
+  const renderRoute = (routeProps: RouteComponentProps) => {
+    if (!data || loading || wait) {
+      return <Loading />;
+    }
+
+    if (!data.me) {
+      // user not logged in
+      return <Redirect to="/login" />;
+    }
+
+    return <Component {...routeProps} />;
+  };
+
+  return <Route {...rest} render={renderRoute} />;
 };
