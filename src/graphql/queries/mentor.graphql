@@ -5,6 +5,7 @@ query Mentor($mentorId: Int!) {
     info {
       ...MentorInfo
       user {
+        email
         avatar
       }
     }

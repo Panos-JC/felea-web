@@ -1,0 +1,6 @@
+mutation DeleteIndividual($individualId: Int!) {
+  deleteIndividual(individualId: $individualId) {
+    errorMsg
+    deleted
+  }
+}

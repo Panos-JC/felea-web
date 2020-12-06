@@ -1,0 +1,6 @@
+mutation DeleteMentor($mentorId: Int!) {
+  deleteMentor(mentorId: $mentorId) {
+    errorMsg
+    deleted
+  }
+}

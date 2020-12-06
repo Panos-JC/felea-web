@@ -1,0 +1,11 @@
+query Individual($individualId: Int!) {
+  individual(individualId: $individualId) {
+    id
+    firstName
+    lastName
+    user {
+      email
+      avatar
+    }
+  }
+}
