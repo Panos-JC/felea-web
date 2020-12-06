@@ -23,10 +23,12 @@ const useStyles = makeStyles((theme) => ({
 
 interface GeneralCardProps {
   title: string;
+  subtitle?: string;
 }
 
 export const GeneralCard: React.FC<GeneralCardProps> = ({
   title,
+  subtitle,
   children,
 }) => {
   const classes = useStyles();
@@ -35,6 +37,11 @@ export const GeneralCard: React.FC<GeneralCardProps> = ({
     <Card className={classes.card}>
       <div className={classes.title}>
         <Typography variant="h6">{title}</Typography>
+        {subtitle && (
+          <Typography variant="caption" color="textSecondary">
+            {subtitle}
+          </Typography>
+        )}
       </div>
 
       <Divider />

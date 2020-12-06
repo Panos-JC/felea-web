@@ -120,9 +120,17 @@ export const UserTable: React.FC<UserTableProps> = () => {
                 />
               </TableCell>
               <TableCell align="right">
-                <IconButton size="small" color="primary">
-                  <ArrowForwardIcon />
-                </IconButton>
+                <Link
+                  className={classes.link}
+                  color="inherit"
+                  component={RouterLink}
+                  to={`/dashboard/users/individual/${individual.id}`}
+                  variant="h6"
+                >
+                  <IconButton size="small" color="primary">
+                    <ArrowForwardIcon />
+                  </IconButton>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

@@ -1,100 +1,49 @@
-import { Grid, Card, makeStyles } from "@material-ui/core";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import {
+  useDeleteMentorMutation,
+  useMentorQuery,
+} from "../../../../../generated/graphql";
+import { Loading } from "../../../../loading/Loading";
+import { DeleteEntityCard } from "../../../deleteEntityCard/DeleteEntityCard";
 import { PageTitle } from "../../../pageTitle/PageTitle";
-import { Bio } from "./bio/Bio";
-import { EditBio } from "./bio/EditBio";
-import { AddCertificate } from "./certificates/AddCertificate";
-import { CertificateList } from "./certificates/CertificateList";
-import { AddEducation } from "./education/AddEducation";
-import { EducationList } from "./education/EducationList";
-import { CreateExpertise } from "./expertise/CreateExpertise";
-import { ExpertiseList } from "./expertise/ExpertiseList";
-// import { GeneralInfo } from "./general/GeneralInfo";
-import { UploadAvatar } from "./general/UploadAvatar";
-import { EditMotto } from "./motto/EditMotto";
-import { Motto } from "./motto/Motto";
-import { AddWorkExperience } from "./workExperience/AddWorkExperience";
-import { Experience } from "./workExperience/Experience";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    padding: theme.spacing(2),
-  },
-}));
-
-type Params = {
-  id: string;
-};
 
 interface MentorDetailsProps {}
 
 export const MentorDetails: React.FC<MentorDetailsProps> = () => {
-  const classes = useStyles();
+  const { id } = useParams<{ id: string }>();
 
-  const { id } = useParams<Params>();
+  let history = useHistory();
 
-  const idNum = parseInt(id);
+  const { data, loading } = useMentorQuery({
+    variables: { mentorId: parseInt(id) },
+  });
+  const [deleteMentor] = useDeleteMentorMutation();
+
+  const handleDelete = async () => {
+    const { data } = await deleteMentor({
+      variables: { mentorId: parseInt(id) },
+    });
+    if (data?.deleteMentor.deleted) {
+      history.goBack();
+    }
+  };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
       <PageTitle title="Mentor Details" />
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <UploadAvatar id={idNum} />
-        </Grid>
-        <Grid item xs={9}>
-          {/* <GeneralInfo id={idNum} /> */}
-        </Grid>
-        <Grid item xs={6}>
-          <Bio mentorId={idNum} />
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <EditBio mentorId={idNum} />
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Motto id={idNum} />
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <EditMotto id={idNum} />
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <ExpertiseList id={idNum} />
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <CreateExpertise id={idNum} />
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Experience id={idNum} />
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <AddWorkExperience id={idNum} />
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <EducationList id={idNum} />
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <AddEducation id={idNum} />
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <CertificateList id={idNum} />
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <AddCertificate id={idNum} />
-          </Card>
-        </Grid>
-      </Grid>
+      {data && (
+        <DeleteEntityCard
+          userEmail={data.mentor.info.user.email}
+          avatar={data.mentor.info.user.avatar || ""}
+          name={`${data.mentor.info.firstName} ${data.mentor.info.lastName}`}
+          handleDelete={handleDelete}
+        />
+      )}
     </>
   );
 };

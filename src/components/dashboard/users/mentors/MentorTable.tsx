@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { fade } from "@material-ui/core/styles";
-import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
+import { ArrowForward as ArrowForwardIcon, Edit } from "@material-ui/icons";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAllMentorsQuery } from "../../../../generated/graphql";
@@ -101,6 +101,17 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
               </TableCell>
               <TableCell>{mentor.sessions}</TableCell>
               <TableCell align="right">
+                <Link
+                  className={classes.link}
+                  color="inherit"
+                  component={RouterLink}
+                  to={`/dashboard/users/mentor/${mentor.mentor.id}/edit`}
+                  variant="h6"
+                >
+                  <IconButton size="small" color="primary">
+                    <Edit />
+                  </IconButton>
+                </Link>
                 <Link
                   className={classes.link}
                   color="inherit"

@@ -1,18 +1,12 @@
 import {
   makeStyles,
   CssBaseline,
-  AppBar,
   Toolbar,
-  Typography,
   Drawer,
   List,
   ListItem,
   Button,
   Collapse,
-  Avatar,
-  Menu,
-  MenuItem,
-  ListItemIcon,
 } from "@material-ui/core";
 import {
   PeopleOutline,
@@ -21,12 +15,9 @@ import {
   ExpandMore,
   PersonOutlineOutlined,
   Business,
-  Settings as SettingsIcon,
-  PowerSettingsNew,
 } from "@material-ui/icons";
 import React, { useState } from "react";
-import { Link, NavLink, useHistory } from "react-router-dom";
-import { useLogoutMutation, useMeQuery } from "../../../generated/graphql";
+import { NavLink } from "react-router-dom";
 import { ProtectedRoute } from "../../../router/ProtectedRoute";
 import { SessionPage } from "../sessions/sessionPage/SessionPage";
 import { Sessions } from "../sessions/Sessions";
@@ -38,6 +29,9 @@ import { Mentors } from "../users/mentors/Mentors";
 import { NewMentor } from "../users/mentors/newMentor/NewMentor";
 import { Settings } from "../settings/Settings";
 import { NewAdmin } from "../users/admins/newAdmin/NewAdmin";
+import { EditMentorDetails } from "../users/mentors/mentorDetails/EditMentorDetails";
+import { NavBar } from "../../navbar/NavBar";
+import { IndividualPage } from "../users/individuals/individualPage/IndividualPage";
 import { MentorDetails } from "../users/mentors/mentorDetails/MentorDetails";
 
 const drawerWidth = 240;
@@ -115,79 +109,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   // State
   const [open, setOpen] = useState<boolean>(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  // Remote state
-  const { data, loading } = useMeQuery();
-  const [logout] = useLogoutMutation();
-
-  // History
-  const history = useHistory();
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    logout();
-    setAnchorEl(null);
-    history.push("/login");
-  };
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Felea | Dashboard
-          </Typography>
-          {!loading && data && data.me && data.me.admin && (
-            <Button
-              onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
-                setAnchorEl(event.currentTarget)
-              }
-              className={classes.navBtn}
-              color="secondary"
-              endIcon={
-                <Avatar src={data.me.avatar || ""} className={classes.avatar} />
-              }
-            >
-              Hi {data.me.admin.firstName}
-            </Button>
-          )}
-          <Menu
-            anchorEl={anchorEl}
-            getContentAnchorEl={null}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <Link className={classes.link} to={`/dashboard/settings`}>
-                Settings
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <PowerSettingsNew />
-              </ListItemIcon>
-              Logout
-            </MenuItem>
-          </Menu>
-        </Toolbar>
-      </AppBar>
+      <NavBar />
       <Drawer
         className={classes.drawer}
         variant="permanent"
@@ -296,7 +222,12 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <Toolbar />
         <ProtectedRoute path="/dashboard/settings" component={Settings} exact />
         <ProtectedRoute
-          path="/dashboard/users/mentor/:id"
+          path="/dashboard/users/mentor/:id/edit"
+          component={EditMentorDetails}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/mentor/:id/"
           component={MentorDetails}
           exact
         />
@@ -318,6 +249,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <ProtectedRoute
           path="/dashboard/users/individuals"
           component={Individuals}
+          exact
+        />
+        <ProtectedRoute
+          path="/dashboard/users/individual/:id"
+          component={IndividualPage}
           exact
         />
         <ProtectedRoute
