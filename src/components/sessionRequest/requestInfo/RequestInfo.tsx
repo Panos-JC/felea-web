@@ -16,11 +16,13 @@ import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
 import {
+  IndividualRequestsDocument,
   SessionRequestInput,
   useCreateSessionRequestMutation,
-  useExpertisesByIdQuery,
   useMentorQuery,
+  useMeQuery,
 } from "../../../generated/graphql";
+import { Loading } from "../../loading/Loading";
 import "./styles.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,33 +36,41 @@ const useStyles = makeStyles((theme) => ({
   mentorSection: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    padding: theme.spacing(1),
+    background: theme.palette.background.default,
+    // justifyContent: "space-between",
     marginBottom: theme.spacing(6),
   },
   avatar: {
     width: 60,
     height: 60,
+    marginRight: theme.spacing(2),
   },
   select: {
-    width: 300,
+    width: 400,
   },
   input: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(3),
   },
-  comInput: {
-    width: 300,
+  messgeField: {
+    marginTop: theme.spacing(3),
   },
   actionBtn: {
     marginTop: theme.spacing(2),
   },
-  creditCard: {
-    maxWidth: 400,
-  },
 }));
+
+const reasons = [
+  "To learn more about their provided services",
+  "Because their expertise matches my needs.",
+  "Because I need urgent support.",
+  "Other",
+];
 
 type Inputs = {
   objective: string;
-  headline: string;
+  subject: string;
+  other?: string;
   email: string;
   tool: string;
   id: string;
@@ -81,10 +91,8 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
   const history = useHistory();
 
   // GraphQL
+  const { data: meData, loading: meLoading } = useMeQuery();
   const { data, loading } = useMentorQuery({
-    variables: { mentorId: parseInt(id) },
-  });
-  const { data: expertisesData } = useExpertisesByIdQuery({
     variables: { mentorId: parseInt(id) },
   });
   const [
@@ -93,15 +101,21 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
   ] = useCreateSessionRequestMutation();
 
   // Form Handler
-  const { register, handleSubmit, control, errors } = useForm<Inputs>();
+  const { register, handleSubmit, control, errors, watch } = useForm<Inputs>();
+
+  const watchObjective = watch("objective");
 
   const onSubmit = async (formData: Inputs) => {
-    console.log(formData);
+    let objective = formData.objective;
+
+    if (formData.objective === "Other" && formData.other) {
+      objective = formData.other;
+    }
 
     // Send token to the server
     const input: SessionRequestInput = {
-      objective: formData.objective,
-      headline: formData.headline,
+      objective: objective,
+      headline: formData.subject,
       email: formData.email,
       communicationTool: formData.tool,
       communicationToolId: formData.id,
@@ -110,141 +124,186 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
       mentorId: parseInt(id),
     };
 
+    console.log(input);
+
     const { data: sessionData } = await createSessionRequest({
       variables: { input },
+      refetchQueries: [{ query: IndividualRequestsDocument }],
     });
 
     if (sessionData && sessionData.createSessionRequest.sessionRequest) {
-      history.push("/new-request/success");
+      history.push("/user/requests");
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  } else if (data && data.mentor) {
-    return (
-      <div>
-        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <Card className={classes.card}>
-            <Typography variant="h5" className={classes.title}>
-              Request Info
-            </Typography>
-            {data && data.mentor && (
-              <div className={classes.mentorSection}>
-                <Avatar
-                  className={classes.avatar}
-                  src={data.mentor.info.user.avatar || ""}
-                />
-                <div>
-                  <Typography>Mentor</Typography>
-                  <Typography variant="subtitle2">
-                    {data.mentor.info.firstName}
-                  </Typography>
-                </div>
-                <div>
-                  <FormControl variant="outlined" className={classes.select}>
-                    <InputLabel>Objective</InputLabel>
-                    <Controller
-                      as={
-                        <Select label="Objective">
-                          {expertisesData?.expertisesById.map((expertise) => (
-                            <MenuItem
-                              key={expertise.skill.name}
-                              value={expertise.skill.name}
-                            >
-                              {expertise.skill.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      }
-                      name="objective"
-                      control={control}
-                      defaultValue={
-                        expertisesData?.expertisesById[0].skill.name
-                      }
-                    />
-                  </FormControl>
-                </div>
-              </div>
-            )}
+  if (loading || meLoading) {
+    return <Loading />;
+  }
 
+  return (
+    <div>
+      <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+        <Card className={classes.card}>
+          <Typography variant="h5" className={classes.title}>
+            Schedule a meeting
+          </Typography>
+          {data && data.mentor && (
+            <div className={classes.mentorSection}>
+              <Avatar
+                className={classes.avatar}
+                src={data.mentor.info.user.avatar || ""}
+              />
+              <Typography variant="h6">
+                {`${data.mentor.info.firstName} ${data.mentor.info.lastName}`}
+              </Typography>
+            </div>
+          )}
+
+          <div>
+            <Typography variant="subtitle1">
+              Why would you like to schedule a meeting with{" "}
+              {data?.mentor.info.firstName}
+            </Typography>
+            <FormControl
+              error={errors.objective ? true : false}
+              variant="outlined"
+              fullWidth
+              size="small"
+              className={classes.input}
+            >
+              <InputLabel>Select</InputLabel>
+              <Controller
+                as={
+                  <Select label="Select">
+                    {reasons.map((reason) => (
+                      <MenuItem key={reason} value={reason}>
+                        {reason}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                }
+                name="objective"
+                control={control}
+                rules={{ required: true }}
+              />
+              {errors.objective && (
+                <Typography variant="caption" color="error">
+                  This field is required
+                </Typography>
+              )}
+            </FormControl>
+          </div>
+
+          {watchObjective === "Other" && (
             <TextField
               inputRef={register({ required: true })}
-              error={errors.headline ? true : false}
-              helperText={errors.headline ? "Required" : null}
               className={classes.input}
-              label="Session Headline"
-              name="headline"
+              label="Other"
+              name="other"
               variant="outlined"
               size="small"
               fullWidth
+              error={errors.other ? true : false}
+              helperText={errors.other ? "This field is required" : null}
+              placeholder={`Please, explain why you would like to schedule a meeting with ${data?.mentor.info.firstName}`}
             />
-            <TextField
-              inputRef={register}
-              className={classes.input}
-              label="Your Email"
-              name="email"
-              variant="outlined"
-              size="small"
-              fullWidth
-            />
-            <Divider className={classes.input} />
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <FormControl variant="outlined" className={classes.comInput}>
-                  <InputLabel>Communication Tool</InputLabel>
-                  <Controller
-                    as={
-                      <Select label="Communication Tool">
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={"Skype"}>Skype</MenuItem>
-                      </Select>
-                    }
-                    name="tool"
-                    control={control}
-                    defaultValue={"Skype"}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  inputRef={register}
-                  className={classes.input}
-                  label="ID"
-                  name="id"
-                  variant="outlined"
-                  fullWidth
+          )}
+
+          <TextField
+            inputRef={register({ required: true })}
+            error={errors.subject ? true : false}
+            helperText={errors.subject ? "This field is required" : null}
+            className={classes.input}
+            label="Subject"
+            name="subject"
+            variant="outlined"
+            size="small"
+            placeholder="e.g. HR recruiting"
+            fullWidth
+          />
+          <TextField
+            inputRef={register({ required: true })}
+            error={errors.email ? true : false}
+            helperText={errors.email ? "This field is required" : null}
+            className={classes.input}
+            label="Your Email"
+            name="email"
+            variant="outlined"
+            size="small"
+            fullWidth
+            defaultValue={meData?.me?.email}
+          />
+          <Divider className={classes.input} />
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <FormControl
+                error={errors.tool ? true : false}
+                fullWidth
+                size="small"
+                variant="outlined"
+              >
+                <InputLabel>Communication Tool</InputLabel>
+                <Controller
+                  as={
+                    <Select label="Communication Tool">
+                      <MenuItem value={"Skype"}>Skype</MenuItem>
+                    </Select>
+                  }
+                  name="tool"
+                  control={control}
+                  rules={{ required: true }}
                 />
-              </Grid>
+                {errors.tool && (
+                  <Typography variant="caption" color="error">
+                    This field is required
+                  </Typography>
+                )}
+              </FormControl>
+              <Typography variant="caption" className={classes.input}>
+                How would you like to communicate with{" "}
+                {data?.mentor.info.firstName}?
+              </Typography>
             </Grid>
-            <TextField
-              inputRef={register}
-              className={classes.input}
-              multiline
-              rows={7}
-              label="Message"
-              name="message"
-              variant="outlined"
-              fullWidth
-              helperText="Use this space to introduce yourself and the challenges you are facing."
-            />
-          </Card>
-          <Button
-            className={classes.actionBtn}
-            disabled={!data.mentor.info.rate || sessionRequestLoading}
-            type="submit"
-            variant="contained"
-            color="primary"
-            disableElevation
-          >
-            Create Request
-          </Button>
-        </form>
-      </div>
-    );
-  } else {
-    return <div>Error</div>;
-  }
+            <Grid item xs={6}>
+              <TextField
+                inputRef={register({ required: true })}
+                error={errors.id ? true : false}
+                helperText={errors.id ? "This field is required" : null}
+                className={classes.input}
+                label="Account Name or ID"
+                placeholder="e.g. live:felea.org"
+                name="id"
+                variant="outlined"
+                fullWidth
+                size="small"
+              />
+            </Grid>
+          </Grid>
+          <TextField
+            inputRef={register({ required: true })}
+            error={errors.message ? true : false}
+            helperText={errors.message ? "This field is required" : null}
+            className={classes.messgeField}
+            multiline
+            placeholder="Use this space to introduce yourself and the challenges you are facing."
+            rows={7}
+            label="Message"
+            name="message"
+            variant="outlined"
+            fullWidth
+          />
+        </Card>
+        <Button
+          className={classes.actionBtn}
+          disabled={sessionRequestLoading}
+          type="submit"
+          variant="contained"
+          color="primary"
+          disableElevation
+        >
+          Send Request
+        </Button>
+      </form>
+    </div>
+  );
 };
