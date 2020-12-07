@@ -1,5 +1,5 @@
-mutation RegisterAdmin($options: RegisterInput!) {
-  registerAdmin(options: $options) {
+mutation RegisterAdmin($options: RegisterInput!, $token: String!) {
+  registerAdmin(options: $options, token: $token) {
     errors {
       field
       message
