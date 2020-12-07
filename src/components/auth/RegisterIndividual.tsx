@@ -5,7 +5,14 @@ import {
   Grid,
   TextField,
   Button,
+  InputAdornment,
+  IconButton,
+  OutlinedInput,
+  FormControl,
+  InputLabel,
+  Typography,
 } from "@material-ui/core";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(3),
   },
+  code: {
+    marginTop: theme.spacing(2),
+  },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
@@ -40,6 +50,7 @@ type Inputs = {
   lastName: string;
   email: string;
   password: string;
+  repeatPassword: string;
   code?: string;
 };
 
@@ -50,8 +61,11 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
 
   const history = useHistory();
 
+  // State
   const [errors, setErrors] = useState<FieldError>();
+  const [showPassword, setShowPassword] = useState(false);
 
+  // GraphQL
   const [registerIndividual, { loading }] = useRegisterIndividualMutation();
 
   const { register, handleSubmit } = useForm<Inputs>();
@@ -62,6 +76,7 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
       lastName: formData.lastName,
       email: formData.email,
       password: formData.password,
+      repeatPassword: formData.repeatPassword,
       code: formData.code,
     };
 
@@ -141,9 +156,76 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
               />
             </Grid>
             <Grid item xs={12}>
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  error={errors?.field === "password" ? true : false}
+                  inputRef={register}
+                  name="password"
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+                {errors?.field === "password" && (
+                  <Typography variant="caption" color="error">
+                    {errors.message}
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password2">
+                  Repeat Password
+                </InputLabel>
+                <OutlinedInput
+                  error={errors?.field === "repeatPassword" ? true : false}
+                  inputRef={register}
+                  name="repeatPassword"
+                  id="outlined-adornment-password2"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={125}
+                />
+                {errors?.field === "repeatPassword" && (
+                  <Typography variant="caption" color="error">
+                    {errors.message}
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 error={errors?.field === "code" ? true : false}
-                helperText={errors?.field === "code" ? errors.message : null}
+                helperText={
+                  errors?.field === "code"
+                    ? errors.message
+                    : "(Optional): Fill the 10 digit code if you are part of an organization"
+                }
+                className={classes.code}
                 inputRef={register}
                 variant="outlined"
                 fullWidth
@@ -151,23 +233,6 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
                 label="Code"
                 name="code"
                 autoComplete="off"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                inputRef={register}
-                error={errors?.field === "password" ? true : false}
-                helperText={
-                  errors?.field === "password" ? errors.message : null
-                }
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
               />
             </Grid>
           </Grid>

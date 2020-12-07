@@ -62,15 +62,15 @@ export const Routes: React.FC<RoutesProps> = () => {
 
       <ProtectedRoute path="/dashboard" component={DashboardLayout} />
 
-      <Route path="/login" component={Login} />
-      <Route path="/mentor-register/:token" component={RegisterMentor} />
-      <Route path="/admin-register" component={RegisterAdmin} />
-      <Route path="/guest-register" component={RegisterIndividual} />
-      <Route path="/forgot-password" component={ForgotPassword} />
-      <Route path="/change-password/:token" component={ChangePassword} />
+      <Route path="/login" component={Login} exact />
+      <Route path="/mentor-register/:token" component={RegisterMentor} exact />
+      <Route path="/admin-register/:token" component={RegisterAdmin} exact />
+      <Route path="/guest-register" component={RegisterIndividual} exact />
+      <Route path="/forgot-password" component={ForgotPassword} exact />
+      <Route path="/change-password/:token" component={ChangePassword} exact />
 
-      <Route path="/user/activate/:token" component={Activate} />
-      <Redirect from="/" to="/login" />
+      <Route path="/user/activate/:token" component={Activate} exact />
+      <Redirect from="/" to="/login" exact />
       <Route component={NotFound} />
     </Switch>
   );

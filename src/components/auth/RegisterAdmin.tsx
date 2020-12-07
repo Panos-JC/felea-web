@@ -5,10 +5,18 @@ import {
   TextField,
   Button,
   makeStyles,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Typography,
 } from "@material-ui/core";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Alert } from "@material-ui/lab";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import {
   FieldError,
   RegisterInput,
@@ -41,14 +49,21 @@ export const RegisterAdmin: React.FC<RegisterAdminProps> = () => {
 
   const history = useHistory();
 
+  const { token } = useParams<{ token: string }>();
+
+  // State
   const [errors, setErrors] = useState<FieldError>();
+  const [showPassword, setShowPassword] = useState(false);
+
+  // GraphQL
+  const [adminRegister, { loading }] = useRegisterAdminMutation();
 
   const { register, handleSubmit } = useForm<RegisterInput>();
 
-  const [adminRegister, { loading }] = useRegisterAdminMutation();
-
   const onSubmit = async (formData: RegisterInput) => {
-    const { data } = await adminRegister({ variables: { options: formData } });
+    const { data } = await adminRegister({
+      variables: { options: formData, token },
+    });
 
     if (data?.registerAdmin.errors) {
       setErrors(data.registerAdmin.errors[0]);
@@ -73,6 +88,13 @@ export const RegisterAdmin: React.FC<RegisterAdminProps> = () => {
           noValidate
         >
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              {errors && errors.field === "token" && (
+                <Alert severity="error" variant="filled">
+                  {errors.message}
+                </Alert>
+              )}
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 inputRef={register}
@@ -121,21 +143,66 @@ export const RegisterAdmin: React.FC<RegisterAdminProps> = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                inputRef={register}
-                error={errors?.field === "password" ? true : false}
-                helperText={
-                  errors?.field === "password" ? errors.message : null
-                }
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  error={errors?.field === "password" ? true : false}
+                  inputRef={register}
+                  name="password"
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+                {errors?.field === "password" && (
+                  <Typography variant="caption" color="error">
+                    {errors.message}
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password2">
+                  Repeat Password
+                </InputLabel>
+                <OutlinedInput
+                  error={errors?.field === "repeatPassword" ? true : false}
+                  inputRef={register}
+                  name="repeatPassword"
+                  id="outlined-adornment-password2"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={125}
+                />
+                {errors?.field === "repeatPassword" && (
+                  <Typography variant="caption" color="error">
+                    {errors.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid>
           </Grid>
           <Button

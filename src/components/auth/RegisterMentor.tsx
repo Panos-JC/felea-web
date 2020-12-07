@@ -5,11 +5,19 @@ import {
   Grid,
   TextField,
   Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Typography,
 } from "@material-ui/core";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { Alert } from "@material-ui/lab";
 
 import React from "react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link, useHistory, useParams } from "react-router-dom";
 import {
   FieldError,
@@ -36,8 +44,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Params = {
-  token: string;
+type Inputs = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
 };
 
 interface RegisterMentorProps {}
@@ -45,46 +57,28 @@ interface RegisterMentorProps {}
 export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
   const classes = useStyles();
 
-  const { token } = useParams<Params>();
-
-  const [mentorRegister, { loading }] = useMentorRegisterMutation();
+  const { token } = useParams<{ token: string }>();
 
   const history = useHistory();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // State
   const [errors, setErrors] = useState<FieldError>();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = (event: any) => {
-    switch (event.target.name) {
-      case "firstName":
-        setFirstName(event.target.value);
-        break;
-      case "lastName":
-        setLastName(event.target.value);
-        break;
-      case "email":
-        setEmail(event.target.value);
-        break;
-      case "password":
-        setPassword(event.target.value);
-        break;
-      default:
-        break;
-    }
-  };
+  const { register, handleSubmit } = useForm<Inputs>();
 
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
+  const [mentorRegister, { loading }] = useMentorRegisterMutation();
 
+  const onSubmit = async (formData: Inputs) => {
     const options: RegisterInput = {
-      firstName,
-      lastName,
-      email,
-      password,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      repeatPassword: formData.repeatPassword,
     };
+
+    console.log(options);
 
     const { data } = await mentorRegister({ variables: { options, token } });
 
@@ -104,7 +98,11 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
           src={process.env.PUBLIC_URL + "/logo1blue512.png"}
           alt=""
         />
-        <form onSubmit={handleSubmit} className={classes.form} noValidate>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={classes.form}
+          noValidate
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {errors && errors.field === "token" && (
@@ -115,14 +113,13 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                inputRef={register}
                 error={errors?.field === "firstName" ? true : false}
                 helperText={
                   errors?.field === "firstName" ? errors.message : null
                 }
                 autoComplete="fname"
                 name="firstName"
-                value={firstName}
-                onChange={handleChange}
                 variant="outlined"
                 required
                 fullWidth
@@ -133,6 +130,7 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                inputRef={register}
                 error={errors?.field === "lastName" ? true : false}
                 helperText={
                   errors?.field === "lastName" ? errors.message : null
@@ -143,13 +141,12 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
                 id="lastName"
                 label="Last Name"
                 name="lastName"
-                value={lastName}
-                onChange={handleChange}
                 autoComplete="lname"
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
+                inputRef={register}
                 error={errors?.field === "email" ? true : false}
                 helperText={errors?.field === "email" ? errors.message : null}
                 variant="outlined"
@@ -158,28 +155,70 @@ export const RegisterMentor: React.FC<RegisterMentorProps> = () => {
                 id="email"
                 label="Email Address"
                 name="email"
-                value={email}
-                onChange={handleChange}
                 autoComplete="email"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                error={errors?.field === "password" ? true : false}
-                helperText={
-                  errors?.field === "password" ? errors.message : null
-                }
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                value={password}
-                onChange={handleChange}
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">
+                  Password
+                </InputLabel>
+                <OutlinedInput
+                  error={errors?.field === "password" ? true : false}
+                  inputRef={register}
+                  name="password"
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+                {errors?.field === "password" && (
+                  <Typography variant="caption" color="error">
+                    {errors.message}
+                  </Typography>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password2">
+                  Repeat Password
+                </InputLabel>
+                <OutlinedInput
+                  error={errors?.field === "repeatPassword" ? true : false}
+                  inputRef={register}
+                  name="repeatPassword"
+                  id="outlined-adornment-password2"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={125}
+                />
+                {errors?.field === "repeatPassword" && (
+                  <Typography variant="caption" color="error">
+                    {errors.message}
+                  </Typography>
+                )}
+              </FormControl>
             </Grid>
           </Grid>
           <Button
