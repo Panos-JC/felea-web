@@ -14,6 +14,7 @@ import { SocialLinksForm } from "../forms/SocialLinksForm";
 import axios from "axios";
 import { Loading } from "../../loading/Loading";
 import {
+  IsProfileCompleteDocument,
   MeDocument,
   useAddAvatarMutation,
   useMeQuery,
@@ -83,7 +84,10 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
         avatarUrl: response.data.secure_url,
         publicId: response.data.public_id,
       },
-      refetchQueries: [{ query: MeDocument }],
+      refetchQueries: [
+        { query: MeDocument },
+        { query: IsProfileCompleteDocument },
+      ],
     });
 
     console.log(response.data);
