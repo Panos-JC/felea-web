@@ -1,7 +1,11 @@
-import { makeStyles, Fab, Grid } from "@material-ui/core";
+import { makeStyles, Fab, Grid, Chip, Typography } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { useState } from "react";
-import { Expertise as ExpertiseType, Skill } from "../../../generated/graphql";
+import {
+  ExpertiseFragment,
+  ExpertisesDocument,
+  useDeleteExpertiseMutation,
+} from "../../../generated/graphql";
 import { NewSkillForm } from "../forms/NewSkillForm";
 import { GeneralCard } from "../../generalCard/GeneralCard";
 import { Expertise } from "./Expertise";
@@ -21,28 +25,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ExpertiseListProps {
-  data?: ({
-    __typename?: "Expertise" | undefined;
-  } & Pick<ExpertiseType, "id" | "description"> & {
-      skill: {
-        __typename?: "Skill" | undefined;
-      } & Pick<Skill, "id" | "name">;
-    })[];
-  loading?: boolean;
+  data?: ExpertiseFragment[];
   editable?: boolean;
 }
 
 export const ExpertiseList: React.FC<ExpertiseListProps> = ({
   data,
-  loading,
   editable = false,
 }) => {
   const classes = useStyles();
 
   const [edit, setEdit] = useState<boolean>(false);
 
+  const [deleteExpertise] = useDeleteExpertiseMutation();
+
+  const handleDelete = async (id: number) => {
+    await deleteExpertise({
+      variables: { id },
+      refetchQueries: [{ query: ExpertisesDocument }],
+    });
+  };
+
   return (
-    <GeneralCard title="Expertise">
+    <GeneralCard title="Skills">
       {editable && (
         <Fab
           onClick={() => setEdit(!edit)}
@@ -60,21 +65,46 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({
             <NewSkillForm setEdit={setEdit} />
           </Grid>
         )}
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          data &&
-          data.map((expertise) => (
-            <Grid item xs={12}>
-              <Expertise
-                id={expertise.id}
-                skill={expertise.skill.name}
-                description={expertise.description}
-                editable={editable}
-              />
-            </Grid>
-          ))
+
+        {/* If data is empty render this message (only for mentor) */}
+        {data && data.length < 1 && editable && (
+          <Typography>Please add your skills</Typography>
         )}
+
+        {data?.map(
+          (expertise) =>
+            expertise.descriptionText && (
+              <Grid item xs={12}>
+                <Expertise
+                  id={expertise.id}
+                  skill={expertise.skill.name}
+                  description={expertise.description}
+                  editable={editable}
+                />
+              </Grid>
+            )
+        )}
+        {data?.map((expertise) => {
+          if (!expertise.descriptionText) {
+            if (editable) {
+              return (
+                <Grid item>
+                  <Chip
+                    label={expertise.skill.name}
+                    onDelete={() => handleDelete(expertise.id)}
+                    color="primary"
+                  />
+                </Grid>
+              );
+            } else {
+              return (
+                <Grid item>
+                  <Chip label={expertise.skill.name} color="primary" />
+                </Grid>
+              );
+            }
+          }
+        })}
       </Grid>
     </GeneralCard>
   );
