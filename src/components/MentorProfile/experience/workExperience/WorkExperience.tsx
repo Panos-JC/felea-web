@@ -5,7 +5,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { Delete, Edit } from "@material-ui/icons";
+import { Delete } from "@material-ui/icons";
 import React, { useState } from "react";
 import {
   useDeleteWorkExperienceMutation,
@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface WorkExperienceProps {
+  editable: boolean;
   mentorId: number;
   id: number;
   role: string;
@@ -76,6 +77,7 @@ interface WorkExperienceProps {
 }
 
 export const WorkExperience: React.FC<WorkExperienceProps> = ({
+  editable,
   mentorId,
   id,
   role,
@@ -92,10 +94,6 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
 
   // GraphQL
   const [deleteWorkExperience] = useDeleteWorkExperienceMutation();
-
-  const handleEdit = () => {
-    setEdit(!edit);
-  };
 
   const handleDelete = async () => {
     const { data } = await deleteWorkExperience({
@@ -128,22 +126,24 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
         <Typography className={classes.role} variant="subtitle2">
           {role}
         </Typography>
-        <div>
-          <IconButton
+        {editable && (
+          <div>
+            {/* <IconButton
             onClick={handleEdit}
             className={classes.editIcon}
             size="small"
           >
             <Edit />
-          </IconButton>
-          <IconButton
-            onClick={handleDelete}
-            className={classes.deleteIcon}
-            size="small"
-          >
-            <Delete />
-          </IconButton>
-        </div>
+          </IconButton> */}
+            <IconButton
+              onClick={handleDelete}
+              className={classes.deleteIcon}
+              size="small"
+            >
+              <Delete />
+            </IconButton>
+          </div>
+        )}
       </div>
       <Typography className={classes.company}>{company}</Typography>
       <Typography className={classes.date}>

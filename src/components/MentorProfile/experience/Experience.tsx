@@ -9,6 +9,7 @@ import {
   Zoom,
   useTheme,
   Slide,
+  Typography,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { useState } from "react";
@@ -23,8 +24,8 @@ import { TabPanel } from "../../tabPanel/TabPanel";
 import { Education } from "./education/Education";
 import { Loading } from "../../loading/Loading";
 import { CreateEducation } from "./education/createEducation/CreateEducation";
-import { Certificate } from "./certificates/Certificate";
-import { CreateCertificate } from "./certificates/createCertificate/CreateCertificate";
+import { SuccessStory } from "./certificates/SuccessStory";
+import { CreateSuccessStory } from "./certificates/createSuccessStory/CreateSuccessStory";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -110,7 +111,7 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
         >
           <Tab label="Work Experience" />
           <Tab label="Education" />
-          <Tab label="Certificates" />
+          <Tab label="Success Stories" />
         </Tabs>
       </Paper>
       <TabPanel value={value} index={0}>
@@ -124,9 +125,17 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                   <CreateWorkExperience mentorId={id} setEdit={setEdit} />
                 </div>
               </Slide>
+
+              {workExperiencesData?.workExperiences.data &&
+                workExperiencesData.workExperiences.data.length < 1 &&
+                editable && (
+                  <Typography>Please add your work experience.</Typography>
+                )}
+
               {workExperiencesData?.workExperiences.data?.map((work, index) => (
                 <>
                   <WorkExperience
+                    editable={editable}
                     mentorId={id}
                     key={work.id}
                     id={work.id}
@@ -157,6 +166,11 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                   <CreateEducation mentorId={id} setEdit={setEdit} />
                 </div>
               </Slide>
+
+              {educationData?.educations.data &&
+                educationData.educations.data.length < 1 &&
+                editable && <Typography>Please add your education.</Typography>}
+
               {educationData?.educations.data?.map((education, index) => (
                 <>
                   <Education key={education.id} values={education} />
@@ -178,12 +192,19 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
             <>
               <Slide direction="down" in={edit} mountOnEnter unmountOnExit>
                 <div>
-                  <CreateCertificate setEdit={setEdit} />
+                  <CreateSuccessStory setEdit={setEdit} />
                 </div>
               </Slide>
+
+              {certificateData?.certificates.data &&
+                certificateData.certificates.data.length < 1 &&
+                editable && (
+                  <Typography>Please add your success story.</Typography>
+                )}
+
               {certificateData?.certificates.data?.map((certificate, index) => (
                 <>
-                  <Certificate key={certificate.id} values={certificate} />
+                  <SuccessStory key={certificate.id} data={certificate} />
                   {certificateData.certificates.data &&
                     certificateData.certificates.data.length > index + 1 && (
                       <Divider className={classes.divider} />
