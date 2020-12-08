@@ -53,11 +53,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface CertificateProps {
-  values: CertificateFieldsFragment;
+interface SuccessStoryProps {
+  data: CertificateFieldsFragment;
 }
 
-export const Certificate: React.FC<CertificateProps> = ({ values }) => {
+export const SuccessStory: React.FC<SuccessStoryProps> = ({ data }) => {
   const classes = useStyles();
 
   // State
@@ -70,24 +70,24 @@ export const Certificate: React.FC<CertificateProps> = ({ values }) => {
   };
 
   const handleDelete = async () => {
-    const { data } = await deleteCertificate({
-      variables: { id: values.id },
+    const { data: deleteCertificateData } = await deleteCertificate({
+      variables: { id: data.id },
       refetchQueries: [{ query: CertificatesDocument }],
     });
 
-    if (data?.deleteCertificate) {
+    if (deleteCertificateData?.deleteCertificate) {
       setEdit(false);
     }
   };
 
   if (edit) {
-    return <EditCertificate setEdit={setEdit} values={values} />;
+    return <EditCertificate setEdit={setEdit} values={data} />;
   }
 
   return (
     <div className={classes.root}>
       <div className={classes.titleWrapper}>
-        <Typography className={classes.title}>{values.title}</Typography>
+        <Typography className={classes.title}>{data.title}</Typography>
         <div>
           <IconButton
             onClick={handleEdit}
@@ -106,9 +106,9 @@ export const Certificate: React.FC<CertificateProps> = ({ values }) => {
         </div>
       </div>
 
-      <Typography className={classes.school}>{values.organization}</Typography>
-      <Typography className={classes.date}>{values.date}</Typography>
-      <Typography className={classes.message}>{values.description}</Typography>
+      <Typography className={classes.school}>{data.organization}</Typography>
+      <Typography className={classes.date}>{data.date}</Typography>
+      <Typography className={classes.message}>{data.description}</Typography>
     </div>
   );
 };

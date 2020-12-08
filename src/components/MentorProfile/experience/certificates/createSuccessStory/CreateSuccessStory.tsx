@@ -35,11 +35,11 @@ type Inputs = {
   description: string;
 };
 
-interface CreateCertificateProps {
+interface CreateSuccessStoryProps {
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const CreateCertificate: React.FC<CreateCertificateProps> = ({
+export const CreateSuccessStory: React.FC<CreateSuccessStoryProps> = ({
   setEdit,
 }) => {
   const classes = useStyles();
@@ -71,7 +71,7 @@ export const CreateCertificate: React.FC<CreateCertificateProps> = ({
   return (
     <div>
       <Typography variant="h5" className={classes.title}>
-        Add Certificate
+        Add Success Story
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
         <Grid container spacing={2}>
@@ -138,7 +138,7 @@ export const CreateCertificate: React.FC<CreateCertificateProps> = ({
               name="description"
               multiline
               rows={7}
-              placeholder="Write about your position"
+              placeholder="By sharing your achievements, you can provide motivation and gain customer trust."
               variant="outlined"
               size="small"
             />
