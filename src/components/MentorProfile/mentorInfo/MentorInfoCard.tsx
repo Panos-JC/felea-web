@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   titleSmall: {
     fontSize: 12,
-    color: theme.palette.secondary.light,
+    color: theme.palette.text.secondary,
     margin: "5px 15px",
   },
   cardBody: {},
