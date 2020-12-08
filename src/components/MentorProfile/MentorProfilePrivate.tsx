@@ -27,7 +27,7 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
 
   return (
     <Layout maxWidth="md">
-      {loading ? (
+      {loading || experiencesLoading ? (
         <Loading />
       ) : (
         data &&
@@ -62,11 +62,7 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
             />
             <Motto editable motto={data.loggedInMentor.info.motto} />
             <Bio editable={true} bio={data.loggedInMentor.info.bio} />
-            <ExpertiseList
-              data={experiencesData.expertises}
-              loading={experiencesLoading}
-              editable
-            />
+            <ExpertiseList data={experiencesData.expertises} editable />
             <Experience editable={true} id={data.loggedInMentor.info.id} />
             <ReviewsList id={data.loggedInMentor.info.id} />
           </>
