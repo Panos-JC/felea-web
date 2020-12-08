@@ -11,6 +11,7 @@ import { Bio } from "./bio/Bio";
 import { ReviewsList } from "./reviews/ReviewsList";
 import { Loading } from "../loading/Loading";
 import { ExpertiseList } from "./expertise/ExpertiseList";
+import { Motto } from "./motto/Motto";
 
 interface MentorProfilePublicProps {}
 
@@ -42,6 +43,7 @@ export const MentorProfilePublic: React.FC<MentorProfilePublicProps> = () => {
               sessions={mentorData.mentor.sessionCount}
               rating={mentorData.mentor.avg}
             />
+            <Motto editable={false} motto={mentorData.mentor.info.motto} />
             <Bio editable={false} bio={mentorData.mentor.info.bio} />
             <ExpertiseList data={data.expertisesById} />
             <Experience editable={false} id={parseInt(id)} />
