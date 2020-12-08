@@ -441,8 +441,8 @@ export type MutationGenerateAdminArgs = {
 
 
 export type MutationCreateExpertiseArgs = {
-  descriptionText: Scalars['String'];
-  description: Scalars['String'];
+  descriptionText?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
   skillName: Scalars['String'];
 };
 
@@ -880,6 +880,15 @@ export type CertificateFieldsFragment = (
 export type EducationFieldsFragment = (
   { __typename?: 'Education' }
   & Pick<Education, 'id' | 'title' | 'school' | 'startDate' | 'endDate' | 'description'>
+);
+
+export type ExpertiseFragment = (
+  { __typename?: 'Expertise' }
+  & Pick<Expertise, 'id' | 'description' | 'descriptionText'>
+  & { skill: (
+    { __typename?: 'Skill' }
+    & Pick<Skill, 'id' | 'name'>
+  ) }
 );
 
 export type RegularErrorFragment = (
@@ -1838,11 +1847,7 @@ export type ExpertisesQuery = (
   { __typename?: 'Query' }
   & { expertises: Array<(
     { __typename?: 'Expertise' }
-    & Pick<Expertise, 'id' | 'description'>
-    & { skill: (
-      { __typename?: 'Skill' }
-      & Pick<Skill, 'id' | 'name'>
-    ) }
+    & ExpertiseFragment
   )> }
 );
 
@@ -1855,11 +1860,7 @@ export type ExpertisesByIdQuery = (
   { __typename?: 'Query' }
   & { expertisesById: Array<(
     { __typename?: 'Expertise' }
-    & Pick<Expertise, 'id' | 'description'>
-    & { skill: (
-      { __typename?: 'Skill' }
-      & Pick<Skill, 'id' | 'name'>
-    ) }
+    & ExpertiseFragment
   )> }
 );
 
@@ -2215,6 +2216,17 @@ export const EducationFieldsFragmentDoc = gql`
   startDate
   endDate
   description
+}
+    `;
+export const ExpertiseFragmentDoc = gql`
+    fragment Expertise on Expertise {
+  id
+  description
+  descriptionText
+  skill {
+    id
+    name
+  }
 }
     `;
 export const RegularErrorFragmentDoc = gql`
@@ -4367,15 +4379,10 @@ export type EducationsQueryResult = Apollo.QueryResult<EducationsQuery, Educatio
 export const ExpertisesDocument = gql`
     query Expertises {
   expertises {
-    id
-    description
-    skill {
-      id
-      name
-    }
+    ...Expertise
   }
 }
-    `;
+    ${ExpertiseFragmentDoc}`;
 
 /**
  * __useExpertisesQuery__
@@ -4404,15 +4411,10 @@ export type ExpertisesQueryResult = Apollo.QueryResult<ExpertisesQuery, Expertis
 export const ExpertisesByIdDocument = gql`
     query ExpertisesById($mentorId: Int!) {
   expertisesById(mentorId: $mentorId) {
-    id
-    description
-    skill {
-      id
-      name
-    }
+    ...Expertise
   }
 }
-    `;
+    ${ExpertiseFragmentDoc}`;
 
 /**
  * __useExpertisesByIdQuery__

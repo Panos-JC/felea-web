@@ -1,10 +1,5 @@
 query Expertises {
   expertises {
-    id
-    description
-    skill {
-      id
-      name
-    }
+    ...Expertise
   }
 }

@@ -1,0 +1,9 @@
+fragment Expertise on Expertise {
+  id
+  description
+  descriptionText
+  skill {
+    id
+    name
+  }
+}
