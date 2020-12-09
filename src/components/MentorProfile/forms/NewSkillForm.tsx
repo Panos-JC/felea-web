@@ -89,12 +89,13 @@ export const NewSkillForm: React.FC<NewSkillFormProps> = ({ setEdit }) => {
         errorText={
           fieldError?.field === "description" ? fieldError.message : null
         }
-        label="Message"
+        label="Message (Optional)"
         editorState={editorState}
         setEditorState={setEditorState}
       />
       <Typography variant="body2" color="textSecondary">
-        Use this space to write a short message about your expertise
+        Use this space to write a short message about why your are an expert of
+        this skill.
       </Typography>
       <Button
         className={classes.btn}
