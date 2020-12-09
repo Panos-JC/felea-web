@@ -8,7 +8,7 @@ import {
   RegularErrorFragment,
   useCreateExpertiseByAdminMutation,
 } from "../../../../../../generated/graphql";
-import { RichEditor } from "../../../../../richEditor/RichEditor";
+import { RichEditor } from "../../../../../shared/richEditor/RichEditor";
 
 const useStyles = makeStyles((theme) => ({
   input: {

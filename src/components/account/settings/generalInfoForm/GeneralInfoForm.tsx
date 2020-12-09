@@ -1,6 +1,6 @@
 import { Grid, makeStyles, TextField, Button } from "@material-ui/core";
 import React, { useState } from "react";
-import { GeneralCard } from "../../../generalCard/GeneralCard";
+import { GeneralCard } from "../../../shared/generalCard/GeneralCard";
 import { countries } from "../../../../utils/countries";
 import { Controller, useForm } from "react-hook-form";
 import { Autocomplete } from "@material-ui/lab";
@@ -8,7 +8,7 @@ import {
   MeDocument,
   useUpdateIndividualInfoMutation,
 } from "../../../../generated/graphql";
-import { GeneralSnackbar } from "../../../generalSnackbar/GeneralSnackbar";
+import { GeneralSnackbar } from "../../../shared/generalSnackbar/GeneralSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   input: {

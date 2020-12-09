@@ -1,9 +1,9 @@
 import { Tabs, Tab, Paper, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useRequestsByMentorQuery } from "../../generated/graphql";
-import { Layout } from "../layout/Layout";
-import { Loading } from "../loading/Loading";
-import { TabPanel } from "../tabPanel/TabPanel";
+import { Layout } from "../shared/layout/Layout";
+import { Loading } from "../shared/loading/Loading";
+import { TabPanel } from "../shared/tabPanel/TabPanel";
 import { RequestCard } from "./request/RequestCard";
 
 const useStyles = makeStyles((theme) => ({

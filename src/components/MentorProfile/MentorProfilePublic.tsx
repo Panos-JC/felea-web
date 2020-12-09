@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "../layout/Layout";
+import { Layout } from "../shared/layout/Layout";
 import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
 import { Experience } from "./experience/Experience";
 import {
@@ -9,7 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 import { Bio } from "./bio/Bio";
 import { ReviewsList } from "./reviews/ReviewsList";
-import { Loading } from "../loading/Loading";
+import { Loading } from "../shared/loading/Loading";
 import { ExpertiseList } from "./expertise/ExpertiseList";
 import { Motto } from "./motto/Motto";
 

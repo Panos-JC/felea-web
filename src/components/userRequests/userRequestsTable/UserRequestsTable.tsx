@@ -16,7 +16,7 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useIndividualRequestsQuery } from "../../../generated/graphql";
 import { SessionTag } from "../../dashboard/sessions/sessionTag/SessionTag";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {

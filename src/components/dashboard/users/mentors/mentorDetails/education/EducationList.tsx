@@ -1,7 +1,7 @@
 import React from "react";
 import { useEducationsQuery } from "../../../../../../generated/graphql";
-import { GeneralCard } from "../../../../../generalCard/GeneralCard";
-import { Loading } from "../../../../../loading/Loading";
+import { GeneralCard } from "../../../../../shared/generalCard/GeneralCard";
+import { Loading } from "../../../../../shared/loading/Loading";
 import { Education } from "./Education";
 
 interface EducationListProps {

@@ -15,8 +15,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useIndividualRequestByIdQuery } from "../../../generated/graphql";
 import { SessionTag } from "../../dashboard/sessions/sessionTag/SessionTag";
-import { Layout } from "../../layout/Layout";
-import { Loading } from "../../loading/Loading";
+import { Layout } from "../../shared/layout/Layout";
+import { Loading } from "../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   userWrapper: {

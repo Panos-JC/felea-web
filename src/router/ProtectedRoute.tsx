@@ -6,7 +6,7 @@ import {
   RouteProps,
 } from "react-router-dom";
 import { useMeQuery } from "../generated/graphql";
-import { Loading } from "../components/loading/Loading";
+import { Loading } from "../components/shared/loading/Loading";
 
 interface ProtectedRouteProps extends RouteProps {
   component: React.FC;

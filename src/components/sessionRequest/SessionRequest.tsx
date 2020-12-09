@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "../layout/Layout";
+import { Layout } from "../shared/layout/Layout";
 import { RequestInfo } from "./requestInfo/RequestInfo";
 
 interface SessionRequestProps {}

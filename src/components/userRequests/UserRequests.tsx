@@ -1,6 +1,6 @@
 import { Card, makeStyles } from "@material-ui/core";
 import React from "react";
-import { Layout } from "../layout/Layout";
+import { Layout } from "../shared/layout/Layout";
 import { UserRequestsTable } from "./userRequestsTable/UserRequestsTable";
 
 const useStyles = makeStyles((theme) => ({

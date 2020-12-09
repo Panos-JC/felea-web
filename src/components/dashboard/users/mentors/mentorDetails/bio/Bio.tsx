@@ -2,8 +2,8 @@ import { Typography } from "@material-ui/core";
 import { convertFromRaw, Editor, EditorState } from "draft-js";
 import React, { useEffect, useState } from "react";
 import { useGetBioQuery } from "../../../../../../generated/graphql";
-import { GeneralCard } from "../../../../../generalCard/GeneralCard";
-import { Loading } from "../../../../../loading/Loading";
+import { GeneralCard } from "../../../../../shared/generalCard/GeneralCard";
+import { Loading } from "../../../../../shared/loading/Loading";
 
 interface BioProps {
   mentorId: number;

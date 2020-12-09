@@ -21,7 +21,7 @@ import {
   useMeQuery,
   useSetMentorLinksMutation,
 } from "../../../generated/graphql";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   settings: {

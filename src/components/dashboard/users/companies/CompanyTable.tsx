@@ -10,7 +10,7 @@ import { ArrowForward } from "@material-ui/icons";
 import moment from "moment";
 import React from "react";
 import { useCompaniesQuery } from "../../../../generated/graphql";
-import { Loading } from "../../../loading/Loading";
+import { Loading } from "../../../shared/loading/Loading";
 
 interface CompanyTableProps {}
 

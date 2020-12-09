@@ -20,9 +20,9 @@ import {
 } from "../../../generated/graphql";
 import { CreateWorkExperience } from "./workExperience/createWorkExperience/CreateWorkExperience";
 import { WorkExperience } from "./workExperience/WorkExperience";
-import { TabPanel } from "../../tabPanel/TabPanel";
+import { TabPanel } from "../../shared/tabPanel/TabPanel";
 import { Education } from "./education/Education";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 import { CreateEducation } from "./education/createEducation/CreateEducation";
 import { SuccessStory } from "./certificates/SuccessStory";
 import { CreateSuccessStory } from "./certificates/createSuccessStory/CreateSuccessStory";

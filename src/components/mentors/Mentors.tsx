@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Layout } from "../layout/Layout";
+import { Layout } from "../shared/layout/Layout";
 import { MentorCard } from "./MentorCard";
 import { useMentorsQuery } from "../../generated/graphql";
 import { makeStyles, Grid, Typography } from "@material-ui/core";
 import { SkillFilters } from "./SkillFilters";
-import { Loading } from "../loading/Loading";
+import { Loading } from "../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   title: {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useGetMottoQuery } from "../../../../../../generated/graphql";
-import { GeneralCard } from "../../../../../generalCard/GeneralCard";
-import { Loading } from "../../../../../loading/Loading";
+import { GeneralCard } from "../../../../../shared/generalCard/GeneralCard";
+import { Loading } from "../../../../../shared/loading/Loading";
 
 interface MottoProps {
   id: number;

@@ -13,7 +13,7 @@ import { RegisterIndividual } from "../components/auth/RegisterIndividual";
 import { SessionRequest } from "../components/sessionRequest/SessionRequest";
 import { MentorRequests } from "../components/mentorRequests/MentorRequests";
 import { SessionRequestSuccess } from "../components/sessionRequest/success/SessionRequestSuccess";
-import { NotFound } from "../components/404/NotFound";
+import { NotFound } from "../components/shared/404/NotFound";
 import { ForgotPassword } from "../components/auth/ForgotPassword";
 import { ChangePassword } from "../components/auth/ChangePassword";
 import { Settings } from "../components/account/settings/Settings";

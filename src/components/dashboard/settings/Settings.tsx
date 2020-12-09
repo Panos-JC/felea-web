@@ -3,7 +3,7 @@ import React from "react";
 import { useMeQuery } from "../../../generated/graphql";
 import { SecurityInfoForm } from "../../account/settings/securityInfoForm/SecurityInfoForm";
 import { UploadAvatar } from "../../account/settings/uploadAvatar/UploadAvatar";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 import { PageTitle } from "../pageTitle/PageTitle";
 import { GeneralInfoForm } from "./generalInfoForm/GeneralInfoForm";
 

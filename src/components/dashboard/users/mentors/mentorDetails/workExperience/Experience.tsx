@@ -1,6 +1,6 @@
 import React from "react";
 import { useWorkExperiencesQuery } from "../../../../../../generated/graphql";
-import { GeneralCard } from "../../../../../generalCard/GeneralCard";
+import { GeneralCard } from "../../../../../shared/generalCard/GeneralCard";
 import { WorkExperience } from "./WorkExperience";
 
 interface ExperienceProps {

@@ -1,7 +1,7 @@
 import { Grid } from "@material-ui/core";
 import React from "react";
 import { useExpertisesByIdQuery } from "../../../../../../generated/graphql";
-import { GeneralCard } from "../../../../../generalCard/GeneralCard";
+import { GeneralCard } from "../../../../../shared/generalCard/GeneralCard";
 import { Expertise } from "./Expertise";
 
 interface ExpertiseListProps {

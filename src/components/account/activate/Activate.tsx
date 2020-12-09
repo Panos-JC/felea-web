@@ -3,7 +3,7 @@ import { Check, Close } from "@material-ui/icons";
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useConfirmUserMutation } from "../../../generated/graphql";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   card: {

@@ -19,8 +19,8 @@ import {
   useGetMentorInfoQuery,
   useSetMentorDetailsByAdminMutation,
 } from "../../../../../../generated/graphql";
-import { GeneralCard } from "../../../../../generalCard/GeneralCard";
-import { Loading } from "../../../../../loading/Loading";
+import { GeneralCard } from "../../../../../shared/generalCard/GeneralCard";
+import { Loading } from "../../../../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   settings: {

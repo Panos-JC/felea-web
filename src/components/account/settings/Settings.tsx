@@ -1,8 +1,8 @@
 import { makeStyles, Grid } from "@material-ui/core";
 import React from "react";
 import { useMeQuery } from "../../../generated/graphql";
-import { Layout } from "../../layout/Layout";
-import { Loading } from "../../loading/Loading";
+import { Layout } from "../../shared/layout/Layout";
+import { Loading } from "../../shared/loading/Loading";
 import { GeneralInfoForm } from "./generalInfoForm/GeneralInfoForm";
 import { SecurityInfoForm } from "./securityInfoForm/SecurityInfoForm";
 import { UploadAvatar } from "./uploadAvatar/UploadAvatar";

@@ -10,7 +10,7 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { GeneralCard } from "../../generalCard/GeneralCard";
+import { GeneralCard } from "../../shared/generalCard/GeneralCard";
 
 const useStyles = makeStyles((theme) => ({
   deletBtn: {

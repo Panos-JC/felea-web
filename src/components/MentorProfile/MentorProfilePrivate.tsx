@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout } from "../layout/Layout";
+import { Layout } from "../shared/layout/Layout";
 import { Bio } from "./bio/Bio";
 import { MentorInfoCard } from "./mentorInfo/MentorInfoCard";
 import { Experience } from "./experience/Experience";
@@ -10,7 +10,7 @@ import {
 } from "../../generated/graphql";
 import { ExpertiseList } from "./expertise/ExpertiseList";
 import { ReviewsList } from "./reviews/ReviewsList";
-import { Loading } from "../loading/Loading";
+import { Loading } from "../shared/loading/Loading";
 import { Alert } from "@material-ui/lab";
 import { Motto } from "./motto/Motto";
 

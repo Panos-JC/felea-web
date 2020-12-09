@@ -7,7 +7,7 @@ import {
   useDeleteExpertiseMutation,
 } from "../../../generated/graphql";
 import { NewSkillForm } from "../forms/NewSkillForm";
-import { GeneralCard } from "../../generalCard/GeneralCard";
+import { GeneralCard } from "../../shared/generalCard/GeneralCard";
 import { Expertise } from "./Expertise";
 
 const useStyles = makeStyles((theme) => ({

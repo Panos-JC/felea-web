@@ -4,7 +4,7 @@ import {
   useDeleteMentorMutation,
   useMentorQuery,
 } from "../../../../../generated/graphql";
-import { Loading } from "../../../../loading/Loading";
+import { Loading } from "../../../../shared/loading/Loading";
 import { DeleteEntityCard } from "../../../deleteEntityCard/DeleteEntityCard";
 import { PageTitle } from "../../../pageTitle/PageTitle";
 

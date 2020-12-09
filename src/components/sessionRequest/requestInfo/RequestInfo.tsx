@@ -22,7 +22,7 @@ import {
   useMentorQuery,
   useMeQuery,
 } from "../../../generated/graphql";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 import "./styles.css";
 
 const useStyles = makeStyles((theme) => ({

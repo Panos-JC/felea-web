@@ -5,8 +5,8 @@ import {
   FieldError,
   useChangeKnownPasswordMutation,
 } from "../../../../generated/graphql";
-import { GeneralCard } from "../../../generalCard/GeneralCard";
-import { GeneralSnackbar } from "../../../generalSnackbar/GeneralSnackbar";
+import { GeneralCard } from "../../../shared/generalCard/GeneralCard";
+import { GeneralSnackbar } from "../../../shared/generalSnackbar/GeneralSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   input: {

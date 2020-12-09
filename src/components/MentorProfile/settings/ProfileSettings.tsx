@@ -8,11 +8,11 @@ import {
 } from "@material-ui/core";
 import { CloudUpload } from "@material-ui/icons";
 import React, { useState } from "react";
-import { Layout } from "../../layout/Layout";
+import { Layout } from "../../shared/layout/Layout";
 import { SettingsForm } from "../forms/SettingsForm";
 import { SocialLinksForm } from "../forms/SocialLinksForm";
 import axios from "axios";
-import { Loading } from "../../loading/Loading";
+import { Loading } from "../../shared/loading/Loading";
 import {
   IsProfileCompleteDocument,
   MeDocument,

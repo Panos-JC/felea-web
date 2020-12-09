@@ -7,9 +7,9 @@ import {
   MeDocument,
   useSetBioMutation,
 } from "../../../generated/graphql";
-import { GeneralCard } from "../../generalCard/GeneralCard";
+import { GeneralCard } from "../../shared/generalCard/GeneralCard";
 import "draft-js/dist/Draft.css";
-import { RichEditor } from "../../richEditor/RichEditor";
+import { RichEditor } from "../../shared/richEditor/RichEditor";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
