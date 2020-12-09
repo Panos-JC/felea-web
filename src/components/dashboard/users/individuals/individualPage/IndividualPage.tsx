@@ -5,7 +5,7 @@ import {
   useIndividualQuery,
 } from "../../../../../generated/graphql";
 import { Loading } from "../../../../shared/loading/Loading";
-import { DeleteEntityCard } from "../../../deleteEntityCard/DeleteEntityCard";
+import { DeleteUserCard } from "../../../deleteCard/DeleteUserCard";
 import { PageTitle } from "../../../pageTitle/PageTitle";
 
 interface IndividualPageProps {}
@@ -39,7 +39,7 @@ export const IndividualPage: React.FC<IndividualPageProps> = () => {
     <>
       <PageTitle title="Individual" />
       {data && (
-        <DeleteEntityCard
+        <DeleteUserCard
           userEmail={data.individual.user.email}
           avatar={data.individual.user.avatar || ""}
           name={`${data.individual.firstName} ${data.individual.lastName}`}

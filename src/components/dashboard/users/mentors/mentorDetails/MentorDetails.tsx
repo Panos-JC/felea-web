@@ -5,7 +5,7 @@ import {
   useMentorQuery,
 } from "../../../../../generated/graphql";
 import { Loading } from "../../../../shared/loading/Loading";
-import { DeleteEntityCard } from "../../../deleteEntityCard/DeleteEntityCard";
+import { DeleteUserCard } from "../../../deleteCard/DeleteUserCard";
 import { PageTitle } from "../../../pageTitle/PageTitle";
 
 interface MentorDetailsProps {}
@@ -37,7 +37,7 @@ export const MentorDetails: React.FC<MentorDetailsProps> = () => {
     <>
       <PageTitle title="Mentor Details" />
       {data && (
-        <DeleteEntityCard
+        <DeleteUserCard
           userEmail={data.mentor.info.user.email}
           avatar={data.mentor.info.user.avatar || ""}
           name={`${data.mentor.info.firstName} ${data.mentor.info.lastName}`}
