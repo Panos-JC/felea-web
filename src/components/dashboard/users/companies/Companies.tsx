@@ -1,7 +1,7 @@
 import { Card } from "@material-ui/core";
 import React from "react";
 import { PageTitle } from "../../pageTitle/PageTitle";
-import { CompanyTable } from "./CompanyTable";
+import { CompanyTable } from "./companyTable/CompanyTable";
 
 interface CompaniesProps {}
 
