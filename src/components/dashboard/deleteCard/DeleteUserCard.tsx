@@ -39,14 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface DeleteEntityCardProps {
+interface DeleteUserCardProps {
   userEmail: string;
   avatar: string;
   name: string;
   handleDelete: () => Promise<void>;
 }
 
-export const DeleteEntityCard: React.FC<DeleteEntityCardProps> = ({
+export const DeleteUserCard: React.FC<DeleteUserCardProps> = ({
   userEmail,
   avatar,
   name,
