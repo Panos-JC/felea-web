@@ -74,7 +74,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({
         {data?.map(
           (expertise) =>
             expertise.descriptionText && (
-              <Grid item xs={12}>
+              <Grid item xs={12} key={expertise.id}>
                 <Expertise
                   id={expertise.id}
                   skill={expertise.skill.name}
@@ -88,7 +88,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({
           if (!expertise.descriptionText) {
             if (editable) {
               return (
-                <Grid item>
+                <Grid item key={expertise.id}>
                   <Chip
                     label={expertise.skill.name}
                     onDelete={() => handleDelete(expertise.id)}
@@ -98,7 +98,7 @@ export const ExpertiseList: React.FC<ExpertiseListProps> = ({
               );
             } else {
               return (
-                <Grid item>
+                <Grid item key={expertise.id}>
                   <Chip label={expertise.skill.name} color="primary" />
                 </Grid>
               );

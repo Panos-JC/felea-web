@@ -84,7 +84,7 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
   };
 
   useEffect(() => {
-    register("industries");
+    register("industries", { required: true });
   }, [register]);
 
   return (
@@ -197,9 +197,10 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
                 <TextField
                   {...params}
                   error={errors.industries ? true : false}
+                  helperText="(Tip): Type one industry and hit enter. You can type more than one industries."
                   variant="outlined"
                   label="Industries"
-                  placeholder="B2B, B2C..."
+                  placeholder="Type an industry..."
                   size="small"
                 />
               )}

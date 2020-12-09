@@ -261,7 +261,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                     <Controller
                       control={control}
                       name="dayFrom"
-                      defaultValue={data?.me?.mentor?.availableDayFrom}
+                      defaultValue={
+                        data?.me?.mentor?.availableDayFrom || "Monday"
+                      }
                       render={({ onChange, value }) => (
                         <Select
                           label="Available From"
@@ -292,7 +294,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                     <Controller
                       control={control}
                       name="dayUntill"
-                      defaultValue={data?.me?.mentor?.availableDayUntill}
+                      defaultValue={
+                        data?.me?.mentor?.availableDayUntill || "Friday"
+                      }
                       render={({ onChange, value }) => (
                         <Select
                           label="Available Untill"

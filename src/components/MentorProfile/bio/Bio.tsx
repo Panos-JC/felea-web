@@ -106,7 +106,7 @@ export const Bio: React.FC<BioProps> = ({ bio, editable }) => {
           </form>
         )}
         {!edit && (
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" component="div">
             <Editor
               readOnly
               onChange={(editorState) => null}

@@ -47,7 +47,7 @@ export const MentorProfilePrivate: React.FC<MentorProfilePrivateProps> = () => {
                   <ul>
                     {profileCompleteData.isProfileComplete.messages.map(
                       (message) => (
-                        <li>{message}</li>
+                        <li key={message}>{message}</li>
                       )
                     )}
                   </ul>

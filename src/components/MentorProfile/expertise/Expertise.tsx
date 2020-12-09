@@ -96,7 +96,7 @@ export const Expertise: React.FC<ExpertiseProps> = ({
       </div>
 
       {convertFromRaw(JSON.parse(description)).getPlainText() && (
-        <Typography className={classes.text}>
+        <Typography className={classes.text} component="div">
           <Editor
             readOnly
             onChange={(editorState) => null}

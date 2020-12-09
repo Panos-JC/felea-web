@@ -133,11 +133,10 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                 )}
 
               {workExperiencesData?.workExperiences.data?.map((work, index) => (
-                <>
+                <div key={work.id}>
                   <WorkExperience
                     editable={editable}
                     mentorId={id}
-                    key={work.id}
                     id={work.id}
                     role={work.role}
                     company={work.companyName}
@@ -149,7 +148,7 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                   {workExperiencesData.workExperiences.data &&
                     workExperiencesData.workExperiences.data.length >
                       index + 1 && <Divider className={classes.divider} />}
-                </>
+                </div>
               ))}
             </>
           )}
@@ -172,17 +171,13 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                 editable && <Typography>Please add your education.</Typography>}
 
               {educationData?.educations.data?.map((education, index) => (
-                <>
-                  <Education
-                    key={education.id}
-                    values={education}
-                    mentorId={id}
-                  />
+                <div key={education.id}>
+                  <Education values={education} mentorId={id} />
                   {educationData.educations.data &&
                     educationData.educations.data.length > index + 1 && (
                       <Divider className={classes.divider} />
                     )}
-                </>
+                </div>
               ))}
             </>
           )}
@@ -207,17 +202,13 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                 )}
 
               {certificateData?.certificates.data?.map((certificate, index) => (
-                <>
-                  <SuccessStory
-                    key={certificate.id}
-                    data={certificate}
-                    mentorId={id}
-                  />
+                <div key={certificate.id}>
+                  <SuccessStory data={certificate} mentorId={id} />
                   {certificateData.certificates.data &&
                     certificateData.certificates.data.length > index + 1 && (
                       <Divider className={classes.divider} />
                     )}
-                </>
+                </div>
               ))}
             </>
           )}
