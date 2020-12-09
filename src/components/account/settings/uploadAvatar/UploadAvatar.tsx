@@ -6,7 +6,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { CloudUpload } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import {
   MeDocument,
   useAddAvatarMutation,
@@ -49,10 +49,13 @@ interface UploadAvatarProps {
 export const UploadAvatar: React.FC<UploadAvatarProps> = ({ avatar }) => {
   const classes = useStyles();
 
+  const [loading, setLoading] = useState(false);
+
   // GraphQL
   const [addAvatar] = useAddAvatarMutation();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
     const formData = new FormData();
     formData.append("file", e.target.files![0]);
     formData.append("upload_preset", "qw0fx1xw");
@@ -64,7 +67,7 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({ avatar }) => {
       formData
     );
 
-    await addAvatar({
+    const { data } = await addAvatar({
       variables: {
         avatarUrl: response.data.secure_url,
         publicId: response.data.public_id,
@@ -72,7 +75,9 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({ avatar }) => {
       refetchQueries: [{ query: MeDocument }],
     });
 
-    console.log(response.data);
+    if (data?.addAvatar) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -101,6 +106,7 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({ avatar }) => {
           disableElevation
           className={classes.button}
           startIcon={<CloudUpload />}
+          disabled={loading}
         >
           Upload Image
         </Button>

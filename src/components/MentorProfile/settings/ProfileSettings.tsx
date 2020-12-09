@@ -57,17 +57,13 @@ interface ProfileSettingsProps {}
 export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
   const classes = useStyles();
 
-  const [file, setFile] = useState<File>();
+  const [loading, setLoading] = useState(false);
 
-  const { data, loading } = useMeQuery();
+  const { data: meData, loading: meLoading } = useMeQuery();
   const [addAvatar] = useAddAvatarMutation();
 
-  React.useEffect(() => {
-    console.log(file);
-  }, [file]);
-
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files![0]);
+    setLoading(true);
     const formData = new FormData();
     formData.append("file", e.target.files![0]);
     formData.append("upload_preset", "qw0fx1xw");
@@ -79,7 +75,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
       formData
     );
 
-    await addAvatar({
+    const { data } = await addAvatar({
       variables: {
         avatarUrl: response.data.secure_url,
         publicId: response.data.public_id,
@@ -90,7 +86,9 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
       ],
     });
 
-    console.log(response.data);
+    if (data?.addAvatar) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -98,13 +96,13 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
       <Grid container spacing={2} className={classes.container}>
         <Grid item xs={4}>
           <Card className={classes.infoCard}>
-            {loading && <Loading />}
-            {data && data.me && (
+            {meLoading && <Loading />}
+            {meData && meData.me && (
               <>
                 <div className={classes.info}>
                   <Avatar
                     className={classes.avatar}
-                    src={data.me.avatar || ""}
+                    src={meData.me.avatar || ""}
                   />
                   <Typography
                     className={classes.avatarTitle}
@@ -131,6 +129,7 @@ export const ProfileSettings: React.FC<ProfileSettingsProps> = () => {
                     disableElevation
                     className={classes.button}
                     startIcon={<CloudUpload />}
+                    disabled={loading}
                   >
                     Upload Image
                   </Button>
