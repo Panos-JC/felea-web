@@ -1,0 +1,15 @@
+query Employees($companyId: Int!) {
+  employees(companyId: $companyId) {
+    errorMsg
+    data {
+      id
+      firstName
+      lastName
+      sessionRequestsCount
+      user {
+        email
+        avatar
+      }
+    }
+  }
+}

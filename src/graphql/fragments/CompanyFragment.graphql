@@ -1,0 +1,14 @@
+fragment Company on Company {
+  id
+  name
+  boughtAccounts
+  remainingAccounts
+  code
+  createdAt
+  updatedAt
+  admin {
+    id
+    firstName
+    lastName
+  }
+}

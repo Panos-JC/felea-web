@@ -18,4 +18,5 @@ fragment MentorInfo on Mentor {
   linkedin
   twitter
   instagram
+  website
 }

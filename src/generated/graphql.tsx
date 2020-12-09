@@ -37,6 +37,8 @@ export type Query = {
   individualRequests: SessionRequestsResponse;
   individualRequestById: SessionRequestResponse;
   companies: Array<Company>;
+  company: CompanyResponse;
+  employees: EmployeesResponse;
   me?: Maybe<Users>;
   educations: EducationsResponse;
   certificates: CertificatesResponse;
@@ -85,6 +87,16 @@ export type QuerySessionRequestByIdArgs = {
 
 export type QueryIndividualRequestByIdArgs = {
   requestId: Scalars['Int'];
+};
+
+
+export type QueryCompanyArgs = {
+  companyId: Scalars['Int'];
+};
+
+
+export type QueryEmployeesArgs = {
+  companyId: Scalars['Int'];
 };
 
 
@@ -155,6 +167,7 @@ export type Mentor = {
   availableDayUntill?: Maybe<Scalars['String']>;
   availableTimeFrom?: Maybe<Scalars['DateTime']>;
   availableTimeUntill?: Maybe<Scalars['DateTime']>;
+  website?: Maybe<Scalars['String']>;
   medium?: Maybe<Scalars['String']>;
   facebook?: Maybe<Scalars['String']>;
   linkedin?: Maybe<Scalars['String']>;
@@ -229,6 +242,8 @@ export type Individual = {
   premium: Scalars['Boolean'];
   user: Users;
   company: Company;
+  sessionRequests: Array<SessionRequest>;
+  sessionRequestsCount: Scalars['Int'];
 };
 
 export type Company = {
@@ -328,6 +343,18 @@ export type SessionRequestResponse = {
   data?: Maybe<SessionRequest>;
 };
 
+export type CompanyResponse = {
+  __typename?: 'CompanyResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  company?: Maybe<Company>;
+};
+
+export type EmployeesResponse = {
+  __typename?: 'EmployeesResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  data?: Maybe<Array<Individual>>;
+};
+
 export type EducationsResponse = {
   __typename?: 'EducationsResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -339,8 +366,8 @@ export type Education = {
   id: Scalars['Int'];
   title: Scalars['String'];
   school: Scalars['String'];
-  startDate: Scalars['String'];
-  endDate: Scalars['String'];
+  startDate: Scalars['DateTime'];
+  endDate: Scalars['DateTime'];
   description: Scalars['String'];
   mentor: Mentor;
   createdAt: Scalars['String'];
@@ -358,7 +385,7 @@ export type Certificate = {
   id: Scalars['Int'];
   title: Scalars['String'];
   organization: Scalars['String'];
-  date: Scalars['String'];
+  date: Scalars['DateTime'];
   description: Scalars['String'];
   mentor: Mentor;
   createdAt: Scalars['String'];
@@ -386,7 +413,8 @@ export type Mutation = {
   createWorkExperience: WorkExperienceResponse;
   updateWorkExperience: WorkExperienceResponse;
   deleteWorkExperience: Scalars['Boolean'];
-  createCompany: CreateCompanyResponse;
+  createCompany: CompanyResponse;
+  deleteCompany: DeleteCompanyResponse;
   registerIndividual: UserResponse;
   registerMentor: UserResponse;
   registerAdmin: UserResponse;
@@ -475,6 +503,11 @@ export type MutationDeleteWorkExperienceArgs = {
 
 export type MutationCreateCompanyArgs = {
   input: CreateCompanyInput;
+};
+
+
+export type MutationDeleteCompanyArgs = {
+  companyId: Scalars['Int'];
 };
 
 
@@ -744,15 +777,15 @@ export type WorkExperienceInput = {
   industries: Array<Scalars['String']>;
 };
 
-export type CreateCompanyResponse = {
-  __typename?: 'createCompanyResponse';
-  errorMsg?: Maybe<Scalars['String']>;
-  company?: Maybe<Company>;
-};
-
 export type CreateCompanyInput = {
   name: Scalars['String'];
   accounts: Scalars['Float'];
+};
+
+export type DeleteCompanyResponse = {
+  __typename?: 'DeleteCompanyResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  deleted?: Maybe<Scalars['Boolean']>;
 };
 
 export type UserResponse = {
@@ -791,8 +824,8 @@ export type EducationResponse = {
 export type EducationInput = {
   title: Scalars['String'];
   school: Scalars['String'];
-  from: Scalars['String'];
-  untill: Scalars['String'];
+  from: Scalars['DateTime'];
+  untill: Scalars['DateTime'];
   description: Scalars['String'];
 };
 
@@ -805,7 +838,7 @@ export type CertificateResponse = {
 export type CertificateInput = {
   title: Scalars['String'];
   organization: Scalars['String'];
-  date: Scalars['String'];
+  date: Scalars['DateTime'];
   description: Scalars['String'];
 };
 
@@ -834,6 +867,7 @@ export type SocialLinksInput = {
   facebook: Scalars['String'];
   twitter: Scalars['String'];
   instagram: Scalars['String'];
+  website: Scalars['String'];
 };
 
 export type RequestActionResponse = {
@@ -877,6 +911,15 @@ export type CertificateFieldsFragment = (
   & Pick<Certificate, 'id' | 'title' | 'organization' | 'date' | 'description'>
 );
 
+export type CompanyFragment = (
+  { __typename?: 'Company' }
+  & Pick<Company, 'id' | 'name' | 'boughtAccounts' | 'remainingAccounts' | 'code' | 'createdAt' | 'updatedAt'>
+  & { admin: (
+    { __typename?: 'Admin' }
+    & Pick<Admin, 'id' | 'firstName' | 'lastName'>
+  ) }
+);
+
 export type EducationFieldsFragment = (
   { __typename?: 'Education' }
   & Pick<Education, 'id' | 'title' | 'school' | 'startDate' | 'endDate' | 'description'>
@@ -898,7 +941,7 @@ export type RegularErrorFragment = (
 
 export type MentorInfoFragment = (
   { __typename?: 'Mentor' }
-  & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram'>
+  & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram' | 'website'>
 );
 
 export type SessionRequestFragmentFragment = (
@@ -1358,12 +1401,25 @@ export type CreateCompanyMutationVariables = Exact<{
 export type CreateCompanyMutation = (
   { __typename?: 'Mutation' }
   & { createCompany: (
-    { __typename?: 'createCompanyResponse' }
-    & Pick<CreateCompanyResponse, 'errorMsg'>
+    { __typename?: 'CompanyResponse' }
+    & Pick<CompanyResponse, 'errorMsg'>
     & { company?: Maybe<(
       { __typename?: 'Company' }
       & Pick<Company, 'id' | 'name' | 'boughtAccounts' | 'remainingAccounts' | 'code'>
     )> }
+  ) }
+);
+
+export type DeleteCompanyMutationVariables = Exact<{
+  companyId: Scalars['Int'];
+}>;
+
+
+export type DeleteCompanyMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteCompany: (
+    { __typename?: 'DeleteCompanyResponse' }
+    & Pick<DeleteCompanyResponse, 'errorMsg' | 'deleted'>
   ) }
 );
 
@@ -1823,6 +1879,44 @@ export type CompaniesQuery = (
   )> }
 );
 
+export type CompanyQueryVariables = Exact<{
+  companyId: Scalars['Int'];
+}>;
+
+
+export type CompanyQuery = (
+  { __typename?: 'Query' }
+  & { company: (
+    { __typename?: 'CompanyResponse' }
+    & Pick<CompanyResponse, 'errorMsg'>
+    & { company?: Maybe<(
+      { __typename?: 'Company' }
+      & CompanyFragment
+    )> }
+  ) }
+);
+
+export type EmployeesQueryVariables = Exact<{
+  companyId: Scalars['Int'];
+}>;
+
+
+export type EmployeesQuery = (
+  { __typename?: 'Query' }
+  & { employees: (
+    { __typename?: 'EmployeesResponse' }
+    & Pick<EmployeesResponse, 'errorMsg'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'Individual' }
+      & Pick<Individual, 'id' | 'firstName' | 'lastName' | 'sessionRequestsCount'>
+      & { user: (
+        { __typename?: 'Users' }
+        & Pick<Users, 'email' | 'avatar'>
+      ) }
+    )>> }
+  ) }
+);
+
 export type EducationsQueryVariables = Exact<{
   mentorId?: Maybe<Scalars['Int']>;
 }>;
@@ -2208,6 +2302,22 @@ export const CertificateFieldsFragmentDoc = gql`
   description
 }
     `;
+export const CompanyFragmentDoc = gql`
+    fragment Company on Company {
+  id
+  name
+  boughtAccounts
+  remainingAccounts
+  code
+  createdAt
+  updatedAt
+  admin {
+    id
+    firstName
+    lastName
+  }
+}
+    `;
 export const EducationFieldsFragmentDoc = gql`
     fragment EducationFields on Education {
   id
@@ -2256,6 +2366,7 @@ export const MentorInfoFragmentDoc = gql`
   linkedin
   twitter
   instagram
+  website
 }
     `;
 export const SessionRequestFragmentFragmentDoc = gql`
@@ -3293,6 +3404,39 @@ export function useCreateCompanyMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateCompanyMutationHookResult = ReturnType<typeof useCreateCompanyMutation>;
 export type CreateCompanyMutationResult = Apollo.MutationResult<CreateCompanyMutation>;
 export type CreateCompanyMutationOptions = Apollo.BaseMutationOptions<CreateCompanyMutation, CreateCompanyMutationVariables>;
+export const DeleteCompanyDocument = gql`
+    mutation DeleteCompany($companyId: Int!) {
+  deleteCompany(companyId: $companyId) {
+    errorMsg
+    deleted
+  }
+}
+    `;
+export type DeleteCompanyMutationFn = Apollo.MutationFunction<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
+
+/**
+ * __useDeleteCompanyMutation__
+ *
+ * To run a mutation, you first call `useDeleteCompanyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCompanyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCompanyMutation, { data, loading, error }] = useDeleteCompanyMutation({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useDeleteCompanyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>) {
+        return Apollo.useMutation<DeleteCompanyMutation, DeleteCompanyMutationVariables>(DeleteCompanyDocument, baseOptions);
+      }
+export type DeleteCompanyMutationHookResult = ReturnType<typeof useDeleteCompanyMutation>;
+export type DeleteCompanyMutationResult = Apollo.MutationResult<DeleteCompanyMutation>;
+export type DeleteCompanyMutationOptions = Apollo.BaseMutationOptions<DeleteCompanyMutation, DeleteCompanyMutationVariables>;
 export const CreateExpertiseDocument = gql`
     mutation CreateExpertise($skillName: String!, $description: String!, $descriptionText: String!) {
   createExpertise(skillName: $skillName, description: $description, descriptionText: $descriptionText) {
@@ -4340,6 +4484,85 @@ export function useCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type CompaniesQueryHookResult = ReturnType<typeof useCompaniesQuery>;
 export type CompaniesLazyQueryHookResult = ReturnType<typeof useCompaniesLazyQuery>;
 export type CompaniesQueryResult = Apollo.QueryResult<CompaniesQuery, CompaniesQueryVariables>;
+export const CompanyDocument = gql`
+    query Company($companyId: Int!) {
+  company(companyId: $companyId) {
+    errorMsg
+    company {
+      ...Company
+    }
+  }
+}
+    ${CompanyFragmentDoc}`;
+
+/**
+ * __useCompanyQuery__
+ *
+ * To run a query within a React component, call `useCompanyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCompanyQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useCompanyQuery(baseOptions: Apollo.QueryHookOptions<CompanyQuery, CompanyQueryVariables>) {
+        return Apollo.useQuery<CompanyQuery, CompanyQueryVariables>(CompanyDocument, baseOptions);
+      }
+export function useCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CompanyQuery, CompanyQueryVariables>) {
+          return Apollo.useLazyQuery<CompanyQuery, CompanyQueryVariables>(CompanyDocument, baseOptions);
+        }
+export type CompanyQueryHookResult = ReturnType<typeof useCompanyQuery>;
+export type CompanyLazyQueryHookResult = ReturnType<typeof useCompanyLazyQuery>;
+export type CompanyQueryResult = Apollo.QueryResult<CompanyQuery, CompanyQueryVariables>;
+export const EmployeesDocument = gql`
+    query Employees($companyId: Int!) {
+  employees(companyId: $companyId) {
+    errorMsg
+    data {
+      id
+      firstName
+      lastName
+      sessionRequestsCount
+      user {
+        email
+        avatar
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useEmployeesQuery__
+ *
+ * To run a query within a React component, call `useEmployeesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmployeesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmployeesQuery({
+ *   variables: {
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useEmployeesQuery(baseOptions: Apollo.QueryHookOptions<EmployeesQuery, EmployeesQueryVariables>) {
+        return Apollo.useQuery<EmployeesQuery, EmployeesQueryVariables>(EmployeesDocument, baseOptions);
+      }
+export function useEmployeesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmployeesQuery, EmployeesQueryVariables>) {
+          return Apollo.useLazyQuery<EmployeesQuery, EmployeesQueryVariables>(EmployeesDocument, baseOptions);
+        }
+export type EmployeesQueryHookResult = ReturnType<typeof useEmployeesQuery>;
+export type EmployeesLazyQueryHookResult = ReturnType<typeof useEmployeesLazyQuery>;
+export type EmployeesQueryResult = Apollo.QueryResult<EmployeesQuery, EmployeesQueryVariables>;
 export const EducationsDocument = gql`
     query Educations($mentorId: Int) {
   educations(mentorId: $mentorId) {

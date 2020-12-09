@@ -1,0 +1,8 @@
+query Company($companyId: Int!) {
+  company(companyId: $companyId) {
+    errorMsg
+    company {
+      ...Company
+    }
+  }
+}
