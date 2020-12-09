@@ -37,8 +37,8 @@ type Inputs = {
 interface Values {
   role: string;
   company: string;
-  from: string;
-  to: string;
+  from: Date;
+  to: Date;
   description: string;
   industries: any[] | undefined;
 }

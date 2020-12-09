@@ -1,5 +1,6 @@
 import { makeStyles, Typography, IconButton } from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
+import moment from "moment";
 import React, { useState } from "react";
 import {
   CertificateFieldsFragment,
@@ -54,10 +55,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface SuccessStoryProps {
+  mentorId: number;
   data: CertificateFieldsFragment;
 }
 
-export const SuccessStory: React.FC<SuccessStoryProps> = ({ data }) => {
+export const SuccessStory: React.FC<SuccessStoryProps> = ({
+  data,
+  mentorId,
+}) => {
   const classes = useStyles();
 
   // State
@@ -72,7 +77,9 @@ export const SuccessStory: React.FC<SuccessStoryProps> = ({ data }) => {
   const handleDelete = async () => {
     const { data: deleteCertificateData } = await deleteCertificate({
       variables: { id: data.id },
-      refetchQueries: [{ query: CertificatesDocument }],
+      refetchQueries: [
+        { query: CertificatesDocument, variables: { mentorId } },
+      ],
     });
 
     if (deleteCertificateData?.deleteCertificate) {
@@ -107,7 +114,9 @@ export const SuccessStory: React.FC<SuccessStoryProps> = ({ data }) => {
       </div>
 
       <Typography className={classes.school}>{data.organization}</Typography>
-      <Typography className={classes.date}>{data.date}</Typography>
+      <Typography className={classes.date}>
+        {moment(data.date).format("MMMM YYYY")}
+      </Typography>
       <Typography className={classes.message}>{data.description}</Typography>
     </div>
   );

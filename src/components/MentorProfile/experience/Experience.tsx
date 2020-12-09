@@ -173,7 +173,11 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
 
               {educationData?.educations.data?.map((education, index) => (
                 <>
-                  <Education key={education.id} values={education} />
+                  <Education
+                    key={education.id}
+                    values={education}
+                    mentorId={id}
+                  />
                   {educationData.educations.data &&
                     educationData.educations.data.length > index + 1 && (
                       <Divider className={classes.divider} />
@@ -192,7 +196,7 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
             <>
               <Slide direction="down" in={edit} mountOnEnter unmountOnExit>
                 <div>
-                  <CreateSuccessStory setEdit={setEdit} />
+                  <CreateSuccessStory mentorId={id} setEdit={setEdit} />
                 </div>
               </Slide>
 
@@ -204,7 +208,11 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
 
               {certificateData?.certificates.data?.map((certificate, index) => (
                 <>
-                  <SuccessStory key={certificate.id} data={certificate} />
+                  <SuccessStory
+                    key={certificate.id}
+                    data={certificate}
+                    mentorId={id}
+                  />
                   {certificateData.certificates.data &&
                     certificateData.certificates.data.length > index + 1 && (
                       <Divider className={classes.divider} />

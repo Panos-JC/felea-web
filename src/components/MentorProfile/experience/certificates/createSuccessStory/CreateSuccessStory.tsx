@@ -31,15 +31,17 @@ const useStyles = makeStyles((theme) => ({
 type Inputs = {
   title: string;
   organization: string;
-  date: string;
+  date: Date;
   description: string;
 };
 
 interface CreateSuccessStoryProps {
+  mentorId: number;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const CreateSuccessStory: React.FC<CreateSuccessStoryProps> = ({
+  mentorId,
   setEdit,
 }) => {
   const classes = useStyles();
@@ -58,9 +60,13 @@ export const CreateSuccessStory: React.FC<CreateSuccessStoryProps> = ({
       description: formData.description,
     };
 
+    console.log("INPUT ", input);
+
     const { data } = await createCertificate({
       variables: { input },
-      refetchQueries: [{ query: CertificatesDocument }],
+      refetchQueries: [
+        { query: CertificatesDocument, variables: { mentorId } },
+      ],
     });
 
     if (data?.createCertificate.certificate) {

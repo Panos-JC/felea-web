@@ -6,6 +6,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
+import moment from "moment";
 import React, { useState } from "react";
 import {
   useDeleteWorkExperienceMutation,
@@ -70,8 +71,8 @@ interface WorkExperienceProps {
   id: number;
   role: string;
   company: string;
-  from: string;
-  to: string;
+  from: Date;
+  to: Date;
   description: string;
   industries: any[] | undefined;
 }
@@ -147,7 +148,9 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
       </div>
       <Typography className={classes.company}>{company}</Typography>
       <Typography className={classes.date}>
-        {new Date(from).getFullYear()} - {new Date(to).getFullYear()}
+        {`${moment(from).format("MMM YYYY")} - ${moment(to).format(
+          "MMM YYYY"
+        )}`}
       </Typography>
       <Typography className={classes.description}>{description}</Typography>
       <div className={classes.industries}>

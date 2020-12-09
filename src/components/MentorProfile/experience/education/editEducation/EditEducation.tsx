@@ -107,7 +107,7 @@ export const EditEducation: React.FC<EditEducationProps> = ({
             <Controller
               control={control}
               name="from"
-              defaultValue={new Date(parseInt(values.startDate))}
+              defaultValue={values.startDate}
               render={({ onChange, value }) => (
                 <DatePicker
                   className={classes.picker}
@@ -128,7 +128,7 @@ export const EditEducation: React.FC<EditEducationProps> = ({
             <Controller
               control={control}
               name="untill"
-              defaultValue={new Date(parseInt(values.endDate))}
+              defaultValue={values.endDate}
               render={({ onChange, value }) => (
                 <DatePicker
                   className={classes.picker}

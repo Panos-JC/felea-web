@@ -1,5 +1,6 @@
 import { Grow, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { Delete, Edit } from "@material-ui/icons";
+import moment from "moment";
 import React, { useState } from "react";
 import {
   EducationFieldsFragment,
@@ -54,10 +55,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface EducationProps {
+  mentorId: number;
   values: EducationFieldsFragment;
 }
 
-export const Education: React.FC<EducationProps> = ({ values }) => {
+export const Education: React.FC<EducationProps> = ({ values, mentorId }) => {
   const classes = useStyles();
 
   // State
@@ -72,7 +74,7 @@ export const Education: React.FC<EducationProps> = ({ values }) => {
   const handleDelete = async () => {
     await deleteEducation({
       variables: { id: values.id },
-      refetchQueries: [{ query: EducationsDocument }],
+      refetchQueries: [{ query: EducationsDocument, variables: { mentorId } }],
     });
   };
 
@@ -109,7 +111,9 @@ export const Education: React.FC<EducationProps> = ({ values }) => {
       </div>
 
       <Typography className={classes.school}>{values.school}</Typography>
-      <Typography className={classes.date}>2011 - 2019</Typography>
+      <Typography className={classes.date}>{`${moment(values.startDate).format(
+        "MMM YYYY"
+      )} - ${moment(values.endDate).format("MMM YYYY")}`}</Typography>
       <Typography className={classes.message}>{values.description}</Typography>
     </div>
   );

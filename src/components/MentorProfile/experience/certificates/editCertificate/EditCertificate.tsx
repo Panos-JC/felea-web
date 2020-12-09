@@ -1,6 +1,7 @@
 import MomentUtils from "@date-io/moment";
 import { makeStyles, Grid, TextField, Button } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+import moment from "moment";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -45,6 +46,8 @@ export const EditCertificate: React.FC<EditCertificateProps> = ({
   const [updateCertificate] = useUpdateCertificateMutation();
 
   const { register, handleSubmit, errors, control } = useForm<Inputs>();
+  console.log(moment(new Date(parseInt(values.date))));
+  console.log(values.date);
 
   const onSubmit = async (formData: Inputs) => {
     const input: CertificateInput = {
@@ -105,12 +108,12 @@ export const EditCertificate: React.FC<EditCertificateProps> = ({
             <Controller
               control={control}
               name="date"
-              defaultValue={new Date(parseInt(values.date))}
+              defaultValue={moment(new Date(values.date))}
               render={({ onChange, value }) => (
                 <DatePicker
                   className={classes.picker}
                   views={["year", "month"]}
-                  label="From"
+                  label="Date"
                   inputVariant="outlined"
                   value={value}
                   onChange={onChange}

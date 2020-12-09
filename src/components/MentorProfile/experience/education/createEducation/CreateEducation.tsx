@@ -32,8 +32,8 @@ type Inputs = {
   title: string;
   school: string;
   description: string;
-  from: string;
-  untill: string;
+  from: Date;
+  untill: Date;
 };
 
 interface CreateEducationProps {
@@ -62,7 +62,7 @@ export const CreateEducation: React.FC<CreateEducationProps> = ({
 
     const { data } = await createEducation({
       variables: { input },
-      refetchQueries: [{ query: EducationsDocument }],
+      refetchQueries: [{ query: EducationsDocument, variables: { mentorId } }],
     });
 
     if (data?.createEducation.education) {
