@@ -6,6 +6,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { Language } from "@material-ui/icons";
 import React from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -41,6 +42,7 @@ type Inputs = {
   facebook: string;
   twitter: string;
   instagram: string;
+  website: string;
 };
 
 interface SocialLinksFormProps {}
@@ -69,6 +71,24 @@ export const SocialLinksForm: React.FC<SocialLinksFormProps> = () => {
         Social Links
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <TextField
+          inputRef={register}
+          className={classes.input}
+          label="Website"
+          name="website"
+          variant="outlined"
+          size="small"
+          placeholder="https://www.felea.org/"
+          defaultValue={data?.me?.mentor?.website}
+          autoComplete="off"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Language className={classes.icon} />
+              </InputAdornment>
+            ),
+          }}
+        />
         <TextField
           inputRef={register}
           className={classes.input}

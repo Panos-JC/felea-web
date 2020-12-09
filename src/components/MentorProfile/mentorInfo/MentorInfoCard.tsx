@@ -5,7 +5,7 @@ import {
   Card,
   Typography,
 } from "@material-ui/core";
-import { GradeOutlined } from "@material-ui/icons";
+import { GradeOutlined, Language } from "@material-ui/icons";
 import {
   RiLinkedinBoxLine,
   RiMediumLine,
@@ -198,6 +198,12 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
           </div>
 
           <div className={classes.icons}>
+            {mentorInfo.website && (
+              <a href={mentorInfo.website}>
+                <Language className={classes.icon} />
+              </a>
+            )}
+
             {mentorInfo.medium && (
               <a href={mentorInfo.medium}>
                 <RiMediumLine className={classes.icon} />
