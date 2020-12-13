@@ -1,22 +1,12 @@
-import {
-  makeStyles,
-  Table,
-  Link,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Avatar,
-  IconButton,
-  fade,
-  CircularProgress,
-} from "@material-ui/core";
-import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
+import { makeStyles, Link, Avatar, Typography, fade } from "@material-ui/core";
+import { ArrowForward } from "@material-ui/icons";
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import moment from "moment";
 import { useSessionRequestsQuery } from "../../../../generated/graphql";
 import { SessionTag } from "../sessionTag/SessionTag";
+import { Loading } from "../../../shared/loading/Loading";
+import MaterialTable from "material-table";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -63,104 +53,141 @@ interface SessionsTableProps {}
 export const SessionsTable: React.FC<SessionsTableProps> = () => {
   const classes = useStyles();
 
+  const history = useHistory();
+
   const { data, loading } = useSessionRequestsQuery();
 
-  if (loading) {
-    return (
-      <div className={classes.spinner}>
-        <CircularProgress />
-      </div>
-    );
+  if (loading || !data) {
+    return <Loading />;
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Id</TableCell>
-          <TableCell>Mentor</TableCell>
-          <TableCell>User</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell>Ammount</TableCell>
-          <TableCell>Date</TableCell>
-          <TableCell align="right">Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data &&
-          data.sessionRequests &&
-          data.sessionRequests.map((session) => (
-            <TableRow hover key={session.id}>
-              <TableCell>{session.id}</TableCell>
-              <TableCell>
-                <div className={classes.nameCell}>
-                  <Avatar
-                    className={classes.avatar}
-                    src={session.mentor.user.avatar || ""}
-                  />
-                  <div>
-                    <Link
-                      className={classes.link}
-                      color="inherit"
-                      component={RouterLink}
-                      to="/management/customers/1"
-                      variant="h6"
-                    >
-                      {`${session.mentor.firstName} ${session.mentor.lastName}`}
-                    </Link>
-                    <div className={classes.email}>
-                      {session.mentor.user.email}
-                    </div>
+    <div>
+      <MaterialTable
+        title=""
+        columns={[
+          {
+            title: "#",
+            render: (rowData) => <Typography>{rowData.id}</Typography>,
+            searchable: false,
+            sorting: false,
+          },
+          {
+            title: "Mentor",
+            render: (rowData) => (
+              <div className={classes.nameCell}>
+                <Avatar
+                  className={classes.avatar}
+                  src={rowData.mentor.user.avatar || ""}
+                />
+                <div>
+                  <Link
+                    className={classes.link}
+                    color="inherit"
+                    component={RouterLink}
+                    to={`/dashboard/users/mentor/${rowData.mentor.id}`}
+                    variant="h6"
+                  >
+                    {`${rowData.mentor.firstName} ${rowData.mentor.lastName}`}
+                  </Link>
+                  <div className={classes.email}>
+                    {rowData.mentor.user.email}
                   </div>
                 </div>
-              </TableCell>
-              <TableCell>
-                <div className={classes.nameCell}>
-                  <Avatar
-                    className={classes.avatar}
-                    src={session.individual.user.avatar || ""}
-                  />
-                  <div>
-                    <Link
-                      className={classes.link}
-                      color="inherit"
-                      component={RouterLink}
-                      to="/management/customers/1"
-                      variant="h6"
-                    >
-                      {`${session.individual.firstName} ${session.individual.lastName}`}
-                    </Link>
-                    <div className={classes.email}>
-                      {session.individual.user.email}
-                    </div>
+              </div>
+            ),
+            sorting: false,
+            customFilterAndSearch: (term, rowData) =>
+              (
+                rowData.mentor.firstName.toLowerCase() +
+                " " +
+                rowData.mentor.lastName.toLowerCase()
+              ).indexOf(term.toLowerCase()) !== -1 ||
+              rowData.mentor.user.email
+                .toLowerCase()
+                .indexOf(term.toLowerCase()) !== -1,
+          },
+          {
+            title: "User",
+            render: (rowData) => (
+              <div className={classes.nameCell}>
+                <Avatar
+                  className={classes.avatar}
+                  src={rowData.individual.user.avatar || ""}
+                />
+                <div>
+                  <Link
+                    className={classes.link}
+                    color="inherit"
+                    component={RouterLink}
+                    to={`/dashboard/users/individual/${rowData.individual.id}`}
+                    variant="h6"
+                  >
+                    {`${rowData.individual.firstName} ${rowData.individual.lastName}`}
+                  </Link>
+                  <div className={classes.email}>
+                    {rowData.individual.user.email}
                   </div>
                 </div>
-              </TableCell>
-              <TableCell>
-                <SessionTag status={session.status} />
-              </TableCell>
-              <TableCell>{session.ammount / 100}&euro;</TableCell>
-              <TableCell>
-                {moment(new Date(parseInt(session.createdAt))).format(
-                  "MMMM Do YYYY"
-                )}
-              </TableCell>
-              <TableCell align="right">
-                <Link
-                  className={classes.link}
-                  color="inherit"
-                  component={RouterLink}
-                  to={`/dashboard/sessions/${session.id}`}
-                  variant="h6"
-                >
-                  <IconButton size="small" color="primary">
-                    <ArrowForwardIcon />
-                  </IconButton>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
+              </div>
+            ),
+            sorting: false,
+            customFilterAndSearch: (term, rowData) =>
+              (
+                rowData.individual.firstName.toLowerCase() +
+                " " +
+                rowData.individual.lastName.toLowerCase()
+              ).indexOf(term.toLowerCase()) !== -1 ||
+              rowData.individual.user.email
+                .toLowerCase()
+                .indexOf(term.toLowerCase()) !== -1,
+          },
+          {
+            title: "Status",
+            render: (rowData) => <SessionTag status={rowData.status} />,
+            sorting: false,
+          },
+          {
+            title: "Ammount",
+            render: (rowData) => <span>{rowData.ammount}&euro;</span>,
+            sorting: false,
+          },
+          {
+            title: "Date",
+            render: (rowData) => {
+              return moment(new Date(parseInt(rowData.date))).format(
+                "MMMM Do YYYY"
+              );
+            },
+            sorting: false,
+          },
+        ]}
+        data={data.sessionRequests.map((request) => {
+          return {
+            id: request.id,
+            mentor: request.mentor,
+            individual: request.individual,
+            status: request.status,
+            ammount: request.ammount / 100,
+            date: request.createdAt,
+          };
+        })}
+        options={{
+          draggable: false,
+          emptyRowsWhenPaging: false,
+          pageSize: 10,
+          pageSizeOptions: [10, 20],
+          actionsColumnIndex: -1,
+        }}
+        actions={[
+          {
+            icon: () => <ArrowForward />,
+            tooltip: "Details",
+            onClick: (event, rowData: any) =>
+              history.push(`/dashboard/sessions/${rowData.id}`),
+          },
+        ]}
+      />
+    </div>
   );
 };

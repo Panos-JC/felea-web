@@ -1,21 +1,23 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { Dispatch } from "react";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import {
   makeStyles,
   Avatar,
   Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Chip,
-  IconButton,
-  CircularProgress,
+  Typography,
+  Button,
 } from "@material-ui/core";
 import { fade } from "@material-ui/core/styles";
-import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
-import { useIndividualsQuery } from "../../../../generated/graphql";
+import { ArrowForward } from "@material-ui/icons";
+import {
+  IndividualFragment,
+  useIndividualsQuery,
+} from "../../../../generated/graphql";
+import { ModalActions } from "../../../../redux/actions/modalActions";
+import { useDispatch } from "react-redux";
+import MaterialTable from "material-table";
+import { Loading } from "../../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -28,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   warn: {
-    background: fade(theme.palette.error.light, 0.4),
-    color: theme.palette.error.dark,
+    background: fade(theme.palette.warning.light, 0.4),
+    color: theme.palette.warning.dark,
   },
   success: {
     background: fade(theme.palette.success.light, 0.4),
@@ -42,99 +44,143 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.875rem",
     color: theme.palette.text.secondary,
   },
-  spinner: {
-    textAlign: "center",
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
 }));
+
+type IRowData = {
+  id: number;
+};
 
 interface UserTableProps {}
 
 export const UserTable: React.FC<UserTableProps> = () => {
   const classes = useStyles();
 
+  const history = useHistory();
+
+  const modalDispatch = useDispatch<Dispatch<ModalActions>>();
+
   const { data, loading } = useIndividualsQuery();
 
-  if (loading) {
-    return (
-      <div className={classes.spinner}>
-        <CircularProgress />
-      </div>
-    );
+  const handleClick = (individual: IndividualFragment) => {
+    modalDispatch({ type: "SHOW_MODAL", payload: individual });
+  };
+
+  if (loading || !data) {
+    return <Loading />;
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Status</TableCell>
-          <TableCell>Active</TableCell>
-          <TableCell align="right">Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data &&
-          data.individuals &&
-          data.individuals.map((individual) => (
-            <TableRow hover key={individual.id}>
-              <TableCell>
-                <div className={classes.nameCell}>
-                  <Avatar
-                    src={individual.user.avatar || ""}
-                    className={classes.avatar}
-                  >
-                    JD
-                  </Avatar>
-                  <div>
-                    <Link
-                      className={classes.link}
-                      color="inherit"
-                      component={RouterLink}
-                      to="/management/customers/1"
-                      variant="h6"
-                    >
-                      {`${individual.firstName} ${individual.lastName}`}
-                    </Link>
-                    <div className={classes.email}>{individual.user.email}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label={individual.premium ? "Premium" : "Free"}
-                  size="small"
-                  className={
-                    individual.premium ? classes.success : classes.warn
-                  }
-                />
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label={individual.user.activated ? "True" : "False"}
-                  size="small"
-                  className={
-                    individual.user.activated ? classes.success : classes.warn
-                  }
-                />
-              </TableCell>
-              <TableCell align="right">
+    <MaterialTable
+      title="Individuals"
+      columns={[
+        {
+          title: "Name",
+          render: (rowData) => (
+            <div className={classes.nameCell}>
+              <Avatar src={rowData.avatar || ""} className={classes.avatar} />
+              <div>
                 <Link
                   className={classes.link}
                   color="inherit"
                   component={RouterLink}
-                  to={`/dashboard/users/individual/${individual.id}`}
+                  to={`/dashboard/users/individual/${rowData.id}`}
                   variant="h6"
                 >
-                  <IconButton size="small" color="primary">
-                    <ArrowForwardIcon />
-                  </IconButton>
+                  {`${rowData.firstName} ${rowData.lastName}`}
                 </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
+                <div className={classes.email}>{rowData.email}</div>
+              </div>
+            </div>
+          ),
+          customFilterAndSearch: (term, rowData) =>
+            (
+              rowData.firstName.toLowerCase() +
+              " " +
+              rowData.lastName.toLowerCase()
+            ).indexOf(term.toLowerCase()) !== -1 ||
+            rowData.email.toLowerCase().indexOf(term.toLowerCase()) !== -1,
+          sorting: false,
+        },
+        {
+          title: "Status",
+          render: (rowData) => (
+            <Chip
+              label={rowData.status ? "Premium" : "Free"}
+              size="small"
+              className={rowData.status ? classes.success : classes.warn}
+            />
+          ),
+          customSort: (a, b) => (a.status === b.status ? 0 : a.status ? -1 : 1),
+        },
+        {
+          title: "Company",
+          render: (rowData) => {
+            if (rowData.company) {
+              return (
+                <Link
+                  className={classes.link}
+                  color="inherit"
+                  component={RouterLink}
+                  to={`/dashboard/users/company/${rowData.company.id}`}
+                  variant="h6"
+                >
+                  {rowData.company.name}
+                </Link>
+              );
+            }
+          },
+          customSort: (a, b) =>
+            (a.company?.name.length || 0) - (b.company?.name.length || 0),
+        },
+        {
+          title: "Facilitator",
+          render: (rowData) => {
+            if (rowData.facilitator) {
+              return (
+                <Typography>{`${rowData.facilitator.firstName} ${rowData.facilitator.lastName}`}</Typography>
+              );
+            } else {
+              return (
+                <Button
+                  color="primary"
+                  size="small"
+                  onClick={() => handleClick(rowData.individual)}
+                >
+                  Assign Facilitator
+                </Button>
+              );
+            }
+          },
+        },
+      ]}
+      data={data.individuals.map((individual) => {
+        return {
+          id: individual.id,
+          firstName: individual.firstName,
+          lastName: individual.lastName,
+          avatar: individual.user.avatar,
+          email: individual.user.email,
+          status: individual.premium,
+          company: individual.company,
+          facilitator: individual.facilitator,
+          individual,
+        };
+      })}
+      options={{
+        draggable: false,
+        emptyRowsWhenPaging: false,
+        pageSize: 10,
+        pageSizeOptions: [10, 20],
+        actionsColumnIndex: -1,
+      }}
+      actions={[
+        {
+          icon: () => <ArrowForward />,
+          tooltip: "Details",
+          onClick: (event, rowData: any) =>
+            history.push(`/dashboard/users/individual/${rowData.id}`),
+        },
+      ]}
+    />
   );
 };
