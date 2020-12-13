@@ -11,6 +11,7 @@ query SessionRequests {
     ammount
     createdAt
     mentor {
+      id
       firstName
       lastName
       user {
@@ -19,6 +20,7 @@ query SessionRequests {
       }
     }
     individual {
+      id
       firstName
       lastName
       user {

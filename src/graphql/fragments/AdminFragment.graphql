@@ -1,0 +1,10 @@
+fragment Admin on Admin {
+  id
+  firstName
+  lastName
+  user {
+    activated
+    avatar
+    email
+  }
+}

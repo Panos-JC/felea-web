@@ -1,12 +1,5 @@
 query Admins {
   admins {
-    id
-    firstName
-    lastName
-    user {
-      activated
-      avatar
-      email
-    }
+    ...Admin
   }
 }

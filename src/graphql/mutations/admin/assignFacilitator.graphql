@@ -1,0 +1,3 @@
+mutation AssignFacilitator($adminId: Int!, $individualId: Int!) {
+  assignFacilitator(adminId: $adminId, individualId: $individualId)
+}

@@ -1,0 +1,5 @@
+query Individuals {
+  individuals {
+    ...Individual
+  }
+}

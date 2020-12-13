@@ -241,8 +241,11 @@ export type Individual = {
   lastName: Scalars['String'];
   premium: Scalars['Boolean'];
   user: Users;
-  company: Company;
+  company?: Maybe<Company>;
+  facilitator?: Maybe<Admin>;
   sessionRequests: Array<SessionRequest>;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
   sessionRequestsCount: Scalars['Int'];
 };
 
@@ -407,6 +410,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   generateMentor: GenerateUserResponse;
   generateAdmin: GenerateUserResponse;
+  assignFacilitator: Scalars['Boolean'];
   createExpertise: ExpertiseResponse;
   deleteExpertise: DeleteResponse;
   createReview: ReviewResponse;
@@ -465,6 +469,12 @@ export type MutationGenerateMentorArgs = {
 
 export type MutationGenerateAdminArgs = {
   email: Scalars['String'];
+};
+
+
+export type MutationAssignFacilitatorArgs = {
+  adminId: Scalars['Int'];
+  individualId: Scalars['Int'];
 };
 
 
@@ -906,6 +916,15 @@ export type DeleteEntityResponse = {
   deleted: Scalars['Boolean'];
 };
 
+export type AdminFragment = (
+  { __typename?: 'Admin' }
+  & Pick<Admin, 'id' | 'firstName' | 'lastName'>
+  & { user: (
+    { __typename?: 'Users' }
+    & Pick<Users, 'activated' | 'avatar' | 'email'>
+  ) }
+);
+
 export type CertificateFieldsFragment = (
   { __typename?: 'Certificate' }
   & Pick<Certificate, 'id' | 'title' | 'organization' | 'date' | 'description'>
@@ -937,6 +956,25 @@ export type ExpertiseFragment = (
 export type RegularErrorFragment = (
   { __typename?: 'FieldError' }
   & Pick<FieldError, 'field' | 'message'>
+);
+
+export type IndividualFragment = (
+  { __typename?: 'Individual' }
+  & Pick<Individual, 'id' | 'firstName' | 'lastName' | 'premium'>
+  & { user: (
+    { __typename?: 'Users' }
+    & Pick<Users, 'email' | 'activated' | 'avatar'>
+  ), facilitator?: Maybe<(
+    { __typename?: 'Admin' }
+    & Pick<Admin, 'firstName' | 'lastName'>
+    & { user: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'email' | 'avatar'>
+    ) }
+  )>, company?: Maybe<(
+    { __typename?: 'Company' }
+    & Pick<Company, 'id' | 'name'>
+  )> }
 );
 
 export type MentorInfoFragment = (
@@ -993,6 +1031,17 @@ export type AddAvatarMutation = (
       & Pick<Users, 'avatar'>
     )> }
   ) }
+);
+
+export type AssignFacilitatorMutationVariables = Exact<{
+  adminId: Scalars['Int'];
+  individualId: Scalars['Int'];
+}>;
+
+
+export type AssignFacilitatorMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'assignFacilitator'>
 );
 
 export type GenerateAdminMutationVariables = Exact<{
@@ -1820,11 +1869,7 @@ export type AdminsQuery = (
   { __typename?: 'Query' }
   & { admins: Array<(
     { __typename?: 'Admin' }
-    & Pick<Admin, 'id' | 'firstName' | 'lastName'>
-    & { user: (
-      { __typename?: 'Users' }
-      & Pick<Users, 'activated' | 'avatar' | 'email'>
-    ) }
+    & AdminFragment
   )> }
 );
 
@@ -1965,11 +2010,7 @@ export type IndividualsQuery = (
   { __typename?: 'Query' }
   & { individuals: Array<(
     { __typename?: 'Individual' }
-    & Pick<Individual, 'id' | 'firstName' | 'lastName' | 'premium'>
-    & { user: (
-      { __typename?: 'Users' }
-      & Pick<Users, 'email' | 'activated' | 'avatar'>
-    ) }
+    & IndividualFragment
   )> }
 );
 
@@ -2245,14 +2286,14 @@ export type SessionRequestsQuery = (
     & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'message' | 'communicationTool' | 'communicationToolId' | 'email' | 'status' | 'ammount' | 'createdAt'>
     & { mentor: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'firstName' | 'lastName'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'email' | 'avatar'>
       ) }
     ), individual: (
       { __typename?: 'Individual' }
-      & Pick<Individual, 'firstName' | 'lastName'>
+      & Pick<Individual, 'id' | 'firstName' | 'lastName'>
       & { user: (
         { __typename?: 'Users' }
         & Pick<Users, 'email' | 'avatar'>
@@ -2293,6 +2334,18 @@ export type WorkExperiencesQuery = (
   ) }
 );
 
+export const AdminFragmentDoc = gql`
+    fragment Admin on Admin {
+  id
+  firstName
+  lastName
+  user {
+    activated
+    avatar
+    email
+  }
+}
+    `;
 export const CertificateFieldsFragmentDoc = gql`
     fragment CertificateFields on Certificate {
   id
@@ -2343,6 +2396,31 @@ export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
   field
   message
+}
+    `;
+export const IndividualFragmentDoc = gql`
+    fragment Individual on Individual {
+  id
+  firstName
+  lastName
+  premium
+  user {
+    email
+    activated
+    avatar
+  }
+  facilitator {
+    firstName
+    lastName
+    user {
+      email
+      avatar
+    }
+  }
+  company {
+    id
+    name
+  }
 }
     `;
 export const MentorInfoFragmentDoc = gql`
@@ -2470,6 +2548,37 @@ export function useAddAvatarMutation(baseOptions?: Apollo.MutationHookOptions<Ad
 export type AddAvatarMutationHookResult = ReturnType<typeof useAddAvatarMutation>;
 export type AddAvatarMutationResult = Apollo.MutationResult<AddAvatarMutation>;
 export type AddAvatarMutationOptions = Apollo.BaseMutationOptions<AddAvatarMutation, AddAvatarMutationVariables>;
+export const AssignFacilitatorDocument = gql`
+    mutation AssignFacilitator($adminId: Int!, $individualId: Int!) {
+  assignFacilitator(adminId: $adminId, individualId: $individualId)
+}
+    `;
+export type AssignFacilitatorMutationFn = Apollo.MutationFunction<AssignFacilitatorMutation, AssignFacilitatorMutationVariables>;
+
+/**
+ * __useAssignFacilitatorMutation__
+ *
+ * To run a mutation, you first call `useAssignFacilitatorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignFacilitatorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignFacilitatorMutation, { data, loading, error }] = useAssignFacilitatorMutation({
+ *   variables: {
+ *      adminId: // value for 'adminId'
+ *      individualId: // value for 'individualId'
+ *   },
+ * });
+ */
+export function useAssignFacilitatorMutation(baseOptions?: Apollo.MutationHookOptions<AssignFacilitatorMutation, AssignFacilitatorMutationVariables>) {
+        return Apollo.useMutation<AssignFacilitatorMutation, AssignFacilitatorMutationVariables>(AssignFacilitatorDocument, baseOptions);
+      }
+export type AssignFacilitatorMutationHookResult = ReturnType<typeof useAssignFacilitatorMutation>;
+export type AssignFacilitatorMutationResult = Apollo.MutationResult<AssignFacilitatorMutation>;
+export type AssignFacilitatorMutationOptions = Apollo.BaseMutationOptions<AssignFacilitatorMutation, AssignFacilitatorMutationVariables>;
 export const GenerateAdminDocument = gql`
     mutation GenerateAdmin($email: String!) {
   generateAdmin(email: $email) {
@@ -4329,17 +4438,10 @@ export type GetMottoQueryResult = Apollo.QueryResult<GetMottoQuery, GetMottoQuer
 export const AdminsDocument = gql`
     query Admins {
   admins {
-    id
-    firstName
-    lastName
-    user {
-      activated
-      avatar
-      email
-    }
+    ...Admin
   }
 }
-    `;
+    ${AdminFragmentDoc}`;
 
 /**
  * __useAdminsQuery__
@@ -4667,18 +4769,10 @@ export type ExpertisesByIdQueryResult = Apollo.QueryResult<ExpertisesByIdQuery, 
 export const IndividualsDocument = gql`
     query Individuals {
   individuals {
-    id
-    firstName
-    lastName
-    premium
-    user {
-      email
-      activated
-      avatar
-    }
+    ...Individual
   }
 }
-    `;
+    ${IndividualFragmentDoc}`;
 
 /**
  * __useIndividualsQuery__
@@ -5251,6 +5345,7 @@ export const SessionRequestsDocument = gql`
     ammount
     createdAt
     mentor {
+      id
       firstName
       lastName
       user {
@@ -5259,6 +5354,7 @@ export const SessionRequestsDocument = gql`
       }
     }
     individual {
+      id
       firstName
       lastName
       user {

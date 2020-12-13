@@ -1,0 +1,23 @@
+fragment Individual on Individual {
+  id
+  firstName
+  lastName
+  premium
+  user {
+    email
+    activated
+    avatar
+  }
+  facilitator {
+    firstName
+    lastName
+    user {
+      email
+      avatar
+    }
+  }
+  company {
+    id
+    name
+  }
+}
