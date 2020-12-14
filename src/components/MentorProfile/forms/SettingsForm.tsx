@@ -15,7 +15,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, TimePicker } from "@material-ui/pickers";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -26,6 +26,7 @@ import {
   useMeQuery,
   useSetMentorDetailsMutation,
 } from "../../../generated/graphql";
+import { countries } from "../../../utils/countries";
 
 const useStyles = makeStyles((theme) => ({
   settings: {
@@ -65,7 +66,8 @@ type Inputs = {
   firstName: string;
   lastName: string;
   rate: string;
-  location: string;
+  country: string;
+  city: string;
   languages: string;
   timeFrom: Date;
   timeUntill: Date;
@@ -98,12 +100,14 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
   const { register, handleSubmit, errors, control } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
+    console.log(formData);
     const options: MentorDetailsInput = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       title: formData.title,
       rate: formData.rate,
-      location: formData.location,
+      country: formData.country,
+      city: formData.city,
       languages: formData.languages,
       availableTimeFrom: formData.timeFrom,
       availableTimeUntill: formData.timeUntill,
@@ -117,7 +121,6 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
         { query: IsProfileCompleteDocument },
       ],
     });
-
     // handle snackbar
     if (errors) {
       console.log(errors);
@@ -392,18 +395,47 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
               </Typography>
             </Grid>
             <Grid item xs={8}>
-              <TextField
-                inputRef={register({ required: true })}
-                error={errors.location ? true : false}
-                helperText={errors.location ? "Required field" : null}
-                defaultValue={data?.me?.mentor?.location}
-                name="location"
-                label="Location"
-                placeholder="Athens, Greece"
-                variant="outlined"
-                size="small"
-                className={classes.input}
-              />
+              <Grid container spacing={1}>
+                <Grid item xs={6}>
+                  <Controller
+                    name="country"
+                    as={({ onChange }) => (
+                      <Autocomplete
+                        options={countries}
+                        onChange={(_, data) => onChange(data?.name)}
+                        getOptionLabel={(option) => option.name}
+                        getOptionSelected={(option, value) => {
+                          return option.name === value.name;
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Country"
+                            variant="outlined"
+                            size="small"
+                          />
+                        )}
+                      />
+                    )}
+                    control={control}
+                    defaultValue={data?.me?.mentor?.country}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    inputRef={register({ required: true })}
+                    error={errors.city ? true : false}
+                    helperText={errors.city ? "Required field" : null}
+                    defaultValue={data?.me?.mentor?.city}
+                    name="city"
+                    label="City"
+                    placeholder="e.g Athens"
+                    variant="outlined"
+                    size="small"
+                    className={classes.input}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </div>

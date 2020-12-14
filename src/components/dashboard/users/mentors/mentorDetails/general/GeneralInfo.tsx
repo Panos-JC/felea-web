@@ -229,7 +229,7 @@ export const GeneralInfo: React.FC<GeneralInfoProps> = ({ id }) => {
                 inputRef={register({ required: true })}
                 error={errors.location ? true : false}
                 helperText={errors.location ? "Required field" : null}
-                defaultValue={data?.getMentorInfo?.mentor?.location}
+                // defaultValue={data?.getMentorInfo?.mentor?.location}
                 name="location"
                 label="Location"
                 placeholder="Athens, Greece"

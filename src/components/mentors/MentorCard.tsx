@@ -134,7 +134,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           <div className={classes.headerInfo}>
             <Typography className={classes.infoItem}>
               <LocationOnOutlined className={classes.locationIcon} />
-              {mentor.location}
+              {`${mentor.city}, ${mentor.country}`}
             </Typography>
             <Typography className={classes.infoItem}>
               {mentor.languages}
