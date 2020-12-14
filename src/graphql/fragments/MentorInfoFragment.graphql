@@ -3,7 +3,8 @@ fragment MentorInfo on Mentor {
   firstName
   lastName
   title
-  location
+  country
+  city
   languages
   bio
   motto

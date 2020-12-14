@@ -159,7 +159,8 @@ export type Mentor = {
   profileComplete: Scalars['Boolean'];
   title?: Maybe<Scalars['String']>;
   motto?: Maybe<Scalars['String']>;
-  location?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
   languages?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   rate?: Maybe<Scalars['String']>;
@@ -863,7 +864,8 @@ export type MentorDetailsInput = {
   lastName: Scalars['String'];
   title: Scalars['String'];
   rate: Scalars['String'];
-  location: Scalars['String'];
+  country: Scalars['String'];
+  city: Scalars['String'];
   languages: Scalars['String'];
   availableTimeFrom: Scalars['DateTime'];
   availableTimeUntill: Scalars['DateTime'];
@@ -979,7 +981,7 @@ export type IndividualFragment = (
 
 export type MentorInfoFragment = (
   { __typename?: 'Mentor' }
-  & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram' | 'website'>
+  & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'country' | 'city' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram' | 'website'>
 );
 
 export type SessionRequestFragmentFragment = (
@@ -1246,7 +1248,7 @@ export type SetMentorDetailsByAdminMutation = (
     & Pick<MentorResponse, 'errorMsg'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+      & Pick<Mentor, 'firstName' | 'lastName' | 'title' | 'country' | 'city' | 'languages' | 'rate'>
     )> }
   ) }
 );
@@ -1688,7 +1690,7 @@ export type SetMentorDetailsMutation = (
     & Pick<MentorResponse, 'errorMsg'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+      & MentorInfoFragment
     )> }
   ) }
 );
@@ -1844,7 +1846,7 @@ export type GetMentorInfoQuery = (
     & Pick<Temp, 'errorMsg'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'location' | 'languages' | 'rate'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'country' | 'city' | 'languages' | 'rate'>
     )> }
   ) }
 );
@@ -2429,7 +2431,8 @@ export const MentorInfoFragmentDoc = gql`
   firstName
   lastName
   title
-  location
+  country
+  city
   languages
   bio
   motto
@@ -3028,7 +3031,8 @@ export const SetMentorDetailsByAdminDocument = gql`
       firstName
       lastName
       title
-      location
+      country
+      city
       languages
       rate
     }
@@ -4007,16 +4011,11 @@ export const SetMentorDetailsDocument = gql`
   setMentorDetails(options: $options) {
     errorMsg
     mentor {
-      firstName
-      lastName
-      title
-      location
-      languages
-      rate
+      ...MentorInfo
     }
   }
 }
-    `;
+    ${MentorInfoFragmentDoc}`;
 export type SetMentorDetailsMutationFn = Apollo.MutationFunction<SetMentorDetailsMutation, SetMentorDetailsMutationVariables>;
 
 /**
@@ -4369,7 +4368,8 @@ export const GetMentorInfoDocument = gql`
       firstName
       lastName
       title
-      location
+      country
+      city
       languages
       rate
     }

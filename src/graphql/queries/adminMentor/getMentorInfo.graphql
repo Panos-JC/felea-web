@@ -6,7 +6,8 @@ query GetMentorInfo($mentorId: Int!) {
       firstName
       lastName
       title
-      location
+      country
+      city
       languages
       rate
     }
