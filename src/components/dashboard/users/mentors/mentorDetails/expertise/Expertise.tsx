@@ -93,7 +93,6 @@ export const Expertise: React.FC<ExpertiseProps> = ({
             convertFromRaw(JSON.parse(description))
           )}
         />
-        desc
       </Typography>
     </div>
   );

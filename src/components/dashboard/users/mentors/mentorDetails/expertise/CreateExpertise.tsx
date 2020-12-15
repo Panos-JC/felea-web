@@ -81,7 +81,7 @@ export const CreateExpertise: React.FC<CreateExpertiseProps> = ({ id }) => {
         errorText={
           fieldError?.field === "description" ? fieldError.message : null
         }
-        label="Message"
+        label="Message (Optional)"
         editorState={editorState}
         setEditorState={setEditorState}
       />
