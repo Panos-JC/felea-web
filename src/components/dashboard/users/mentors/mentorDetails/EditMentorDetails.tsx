@@ -10,7 +10,7 @@ import { AddEducation } from "./education/AddEducation";
 import { EducationList } from "./education/EducationList";
 import { CreateExpertise } from "./expertise/CreateExpertise";
 import { ExpertiseList } from "./expertise/ExpertiseList";
-// import { GeneralInfo } from "./general/GeneralInfo";
+import { GeneralInfo } from "./general/GeneralInfo";
 import { UploadAvatar } from "./general/UploadAvatar";
 import { EditMotto } from "./motto/EditMotto";
 import { Motto } from "./motto/Motto";
@@ -44,7 +44,7 @@ export const EditMentorDetails: React.FC<EditMentorDetailsProps> = () => {
           <UploadAvatar id={idNum} />
         </Grid>
         <Grid item xs={9}>
-          {/* <GeneralInfo id={idNum} /> */}
+          <GeneralInfo id={idNum} />
         </Grid>
         <Grid item xs={6}>
           <Bio mentorId={idNum} />
