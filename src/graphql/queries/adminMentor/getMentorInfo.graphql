@@ -2,14 +2,7 @@ query GetMentorInfo($mentorId: Int!) {
   getMentorInfo(mentorId: $mentorId) {
     errorMsg
     mentor {
-      id
-      firstName
-      lastName
-      title
-      country
-      city
-      languages
-      rate
+      ...MentorInfo
     }
   }
 }

@@ -709,8 +709,8 @@ export type MutationCreateCertificateByAdminArgs = {
 
 
 export type MutationCreateExpertiseByAdminArgs = {
-  descriptionText: Scalars['String'];
-  description: Scalars['String'];
+  descriptionText?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
   skillName: Scalars['String'];
   mentorId: Scalars['Int'];
 };
@@ -1846,7 +1846,7 @@ export type GetMentorInfoQuery = (
     & Pick<Temp, 'errorMsg'>
     & { mentor?: Maybe<(
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'country' | 'city' | 'languages' | 'rate'>
+      & MentorInfoFragment
     )> }
   ) }
 );
@@ -4364,18 +4364,11 @@ export const GetMentorInfoDocument = gql`
   getMentorInfo(mentorId: $mentorId) {
     errorMsg
     mentor {
-      id
-      firstName
-      lastName
-      title
-      country
-      city
-      languages
-      rate
+      ...MentorInfo
     }
   }
 }
-    `;
+    ${MentorInfoFragmentDoc}`;
 
 /**
  * __useGetMentorInfoQuery__
