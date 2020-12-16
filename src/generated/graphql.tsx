@@ -424,6 +424,7 @@ export type Mutation = {
   registerMentor: UserResponse;
   registerAdmin: UserResponse;
   addAvatar: UserResponse;
+  uploadAvatar: AvatarResponse;
   forgotPassword: Scalars['Boolean'];
   changePassword: UserResponse;
   changeKnownPassword: UserResponse;
@@ -446,7 +447,7 @@ export type Mutation = {
   setRequestComplete: SetRequestCompleteResponse;
   createSessionRequest: CreateRequestResponse;
   confirmUser: Scalars['Boolean'];
-  addAvatarByAdmin: Scalars['Boolean'];
+  addAvatarByAdmin: AvatarResponse;
   setBioByMentor: Scalars['Boolean'];
   setMentorDetailsByAdmin: MentorResponse;
   setMottoByMentor: Scalars['Boolean'];
@@ -523,7 +524,7 @@ export type MutationDeleteCompanyArgs = {
 
 
 export type MutationRegisterIndividualArgs = {
-  options: RegisterInput;
+  options: IndividualRegisterInput;
 };
 
 
@@ -542,6 +543,11 @@ export type MutationRegisterAdminArgs = {
 export type MutationAddAvatarArgs = {
   publicId: Scalars['String'];
   avatarUrl: Scalars['String'];
+};
+
+
+export type MutationUploadAvatarArgs = {
+  photo: Scalars['String'];
 };
 
 
@@ -659,8 +665,7 @@ export type MutationConfirmUserArgs = {
 
 export type MutationAddAvatarByAdminArgs = {
   mentorId: Scalars['Int'];
-  publicId: Scalars['String'];
-  avatarUrl: Scalars['String'];
+  photo: Scalars['String'];
 };
 
 
@@ -805,13 +810,27 @@ export type UserResponse = {
   user?: Maybe<Users>;
 };
 
+export type IndividualRegisterInput = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+  repeatPassword: Scalars['String'];
+  code: Scalars['String'];
+};
+
 export type RegisterInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
   repeatPassword: Scalars['String'];
-  code?: Maybe<Scalars['String']>;
+};
+
+export type AvatarResponse = {
+  __typename?: 'AvatarResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  user?: Maybe<Users>;
 };
 
 export type UpdateIndividualInfoResponse = {
@@ -1091,15 +1110,21 @@ export type UpdateAdminInfoMutation = (
 );
 
 export type AddAvatarByAdminMutationVariables = Exact<{
-  avatarUrl: Scalars['String'];
-  publicId: Scalars['String'];
+  photo: Scalars['String'];
   mentorId: Scalars['Int'];
 }>;
 
 
 export type AddAvatarByAdminMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'addAvatarByAdmin'>
+  & { addAvatarByAdmin: (
+    { __typename?: 'AvatarResponse' }
+    & Pick<AvatarResponse, 'errorMsg'>
+    & { user?: Maybe<(
+      { __typename?: 'Users' }
+      & Pick<Users, 'id'>
+    )> }
+  ) }
 );
 
 export type CreateCertificateByAdminMutationVariables = Exact<{
@@ -1319,7 +1344,7 @@ export type ForgotPasswordMutation = (
 );
 
 export type RegisterIndividualMutationVariables = Exact<{
-  options: RegisterInput;
+  options: IndividualRegisterInput;
 }>;
 
 
@@ -1753,6 +1778,23 @@ export type ConfirmUserMutationVariables = Exact<{
 export type ConfirmUserMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'confirmUser'>
+);
+
+export type UploadAvatarMutationVariables = Exact<{
+  photo: Scalars['String'];
+}>;
+
+
+export type UploadAvatarMutation = (
+  { __typename?: 'Mutation' }
+  & { uploadAvatar: (
+    { __typename?: 'AvatarResponse' }
+    & Pick<AvatarResponse, 'errorMsg'>
+    & { user?: Maybe<(
+      { __typename?: 'Users' }
+      & Pick<Users, 'id'>
+    )> }
+  ) }
 );
 
 export type CreateWorkExperienceMutationVariables = Exact<{
@@ -2685,8 +2727,13 @@ export type UpdateAdminInfoMutationHookResult = ReturnType<typeof useUpdateAdmin
 export type UpdateAdminInfoMutationResult = Apollo.MutationResult<UpdateAdminInfoMutation>;
 export type UpdateAdminInfoMutationOptions = Apollo.BaseMutationOptions<UpdateAdminInfoMutation, UpdateAdminInfoMutationVariables>;
 export const AddAvatarByAdminDocument = gql`
-    mutation AddAvatarByAdmin($avatarUrl: String!, $publicId: String!, $mentorId: Int!) {
-  addAvatarByAdmin(avatarUrl: $avatarUrl, publicId: $publicId, mentorId: $mentorId)
+    mutation AddAvatarByAdmin($photo: String!, $mentorId: Int!) {
+  addAvatarByAdmin(photo: $photo, mentorId: $mentorId) {
+    errorMsg
+    user {
+      id
+    }
+  }
 }
     `;
 export type AddAvatarByAdminMutationFn = Apollo.MutationFunction<AddAvatarByAdminMutation, AddAvatarByAdminMutationVariables>;
@@ -2704,8 +2751,7 @@ export type AddAvatarByAdminMutationFn = Apollo.MutationFunction<AddAvatarByAdmi
  * @example
  * const [addAvatarByAdminMutation, { data, loading, error }] = useAddAvatarByAdminMutation({
  *   variables: {
- *      avatarUrl: // value for 'avatarUrl'
- *      publicId: // value for 'publicId'
+ *      photo: // value for 'photo'
  *      mentorId: // value for 'mentorId'
  *   },
  * });
@@ -3212,7 +3258,7 @@ export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswo
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const RegisterIndividualDocument = gql`
-    mutation RegisterIndividual($options: RegisterInput!) {
+    mutation RegisterIndividual($options: IndividualRegisterInput!) {
   registerIndividual(options: $options) {
     errors {
       field
@@ -4182,6 +4228,41 @@ export function useConfirmUserMutation(baseOptions?: Apollo.MutationHookOptions<
 export type ConfirmUserMutationHookResult = ReturnType<typeof useConfirmUserMutation>;
 export type ConfirmUserMutationResult = Apollo.MutationResult<ConfirmUserMutation>;
 export type ConfirmUserMutationOptions = Apollo.BaseMutationOptions<ConfirmUserMutation, ConfirmUserMutationVariables>;
+export const UploadAvatarDocument = gql`
+    mutation UploadAvatar($photo: String!) {
+  uploadAvatar(photo: $photo) {
+    errorMsg
+    user {
+      id
+    }
+  }
+}
+    `;
+export type UploadAvatarMutationFn = Apollo.MutationFunction<UploadAvatarMutation, UploadAvatarMutationVariables>;
+
+/**
+ * __useUploadAvatarMutation__
+ *
+ * To run a mutation, you first call `useUploadAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadAvatarMutation, { data, loading, error }] = useUploadAvatarMutation({
+ *   variables: {
+ *      photo: // value for 'photo'
+ *   },
+ * });
+ */
+export function useUploadAvatarMutation(baseOptions?: Apollo.MutationHookOptions<UploadAvatarMutation, UploadAvatarMutationVariables>) {
+        return Apollo.useMutation<UploadAvatarMutation, UploadAvatarMutationVariables>(UploadAvatarDocument, baseOptions);
+      }
+export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
+export type UploadAvatarMutationResult = Apollo.MutationResult<UploadAvatarMutation>;
+export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<UploadAvatarMutation, UploadAvatarMutationVariables>;
 export const CreateWorkExperienceDocument = gql`
     mutation CreateWorkExperience($input: WorkExperienceInput!) {
   createWorkExperience(input: $input) {
