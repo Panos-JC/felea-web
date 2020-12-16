@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
 import {
   FieldError,
-  RegisterInput,
+  IndividualRegisterInput,
   useRegisterIndividualMutation,
 } from "../../generated/graphql";
 
@@ -51,7 +51,7 @@ type Inputs = {
   email: string;
   password: string;
   repeatPassword: string;
-  code?: string;
+  code: string;
 };
 
 interface RegisterIndividualProps {}
@@ -71,7 +71,7 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
   const { register, handleSubmit } = useForm<Inputs>();
 
   const onSubmit = async (formData: Inputs) => {
-    const options: RegisterInput = {
+    const options: IndividualRegisterInput = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
@@ -223,7 +223,7 @@ export const RegisterIndividual: React.FC<RegisterIndividualProps> = () => {
                 helperText={
                   errors?.field === "code"
                     ? errors.message
-                    : "(Optional): Fill the 10 digit code if you are part of an organization"
+                    : "Fill the 10 digit code if you are part of an organization"
                 }
                 className={classes.code}
                 inputRef={register}

@@ -1,4 +1,4 @@
-mutation RegisterIndividual($options: RegisterInput!) {
+mutation RegisterIndividual($options: IndividualRegisterInput!) {
   registerIndividual(options: $options) {
     errors {
       field
