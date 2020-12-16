@@ -147,7 +147,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
           <Grid container>
             <Grid item xs={4} className={classes.flexCenter}>
               <Typography variant="h6" className={classes.title}>
-                Title
+                Occupation Title
               </Typography>
             </Grid>
             <Grid item xs={8}>
@@ -157,7 +157,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                 helperText={errors.title ? "Required field" : null}
                 defaultValue={data?.me?.mentor?.title}
                 name="title"
-                label="Title"
+                label="Occupation Title"
                 variant="outlined"
                 size="small"
                 className={classes.input}

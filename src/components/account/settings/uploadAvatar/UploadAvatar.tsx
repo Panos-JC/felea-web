@@ -9,9 +9,8 @@ import { CloudUpload } from "@material-ui/icons";
 import React, { useState } from "react";
 import {
   MeDocument,
-  useAddAvatarMutation,
+  useUploadAvatarMutation,
 } from "../../../../generated/graphql";
-import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   infoCard: {
@@ -52,31 +51,32 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({ avatar }) => {
   const [loading, setLoading] = useState(false);
 
   // GraphQL
-  const [addAvatar] = useAddAvatarMutation();
+  const [uploadAvatar] = useUploadAvatarMutation();
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
-    const formData = new FormData();
-    formData.append("file", e.target.files![0]);
-    formData.append("upload_preset", "qw0fx1xw");
-
-    const cloudName = "dhhvqnkvr";
-
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-      formData
-    );
-
-    const { data } = await addAvatar({
-      variables: {
-        avatarUrl: response.data.secure_url,
-        publicId: response.data.public_id,
-      },
-      refetchQueries: [{ query: MeDocument }],
-    });
-
-    if (data?.addAvatar) {
-      setLoading(false);
+    const reader = new FileReader();
+    if (e.target.files) {
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onloadend = async () => {
+        console.log(reader.result);
+        const photo = String(reader.result);
+        const { data, errors } = await uploadAvatar({
+          variables: { photo },
+          refetchQueries: [{ query: MeDocument }],
+        });
+        // console.log(data);
+        if (data?.uploadAvatar) {
+          setLoading(false);
+        }
+        if (errors) {
+          console.log(errors);
+        }
+      };
+      reader.onerror = () => {
+        console.error("AHHHHHHHH!!");
+        setLoading(false);
+      };
     }
   };
 

@@ -1,0 +1,8 @@
+mutation UploadAvatar($photo: String!) {
+  uploadAvatar(photo: $photo) {
+    errorMsg
+    user {
+      id
+    }
+  }
+}

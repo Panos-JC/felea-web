@@ -1,11 +1,8 @@
-mutation AddAvatarByAdmin(
-  $avatarUrl: String!
-  $publicId: String!
-  $mentorId: Int!
-) {
-  addAvatarByAdmin(
-    avatarUrl: $avatarUrl
-    publicId: $publicId
-    mentorId: $mentorId
-  )
+mutation AddAvatarByAdmin($photo: String!, $mentorId: Int!) {
+  addAvatarByAdmin(photo: $photo, mentorId: $mentorId) {
+    errorMsg
+    user {
+      id
+    }
+  }
 }

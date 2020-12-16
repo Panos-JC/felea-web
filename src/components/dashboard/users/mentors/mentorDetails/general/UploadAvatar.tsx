@@ -6,8 +6,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { CloudUpload } from "@material-ui/icons";
-import React from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   GetAvatarDocument,
   useAddAvatarByAdminMutation,
@@ -50,34 +49,67 @@ interface UploadAvatarProps {
 export const UploadAvatar: React.FC<UploadAvatarProps> = ({ id }) => {
   const classes = useStyles();
 
+  const [loading, setLoading] = useState(false);
+
   const { data } = useGetAvatarQuery({ variables: { mentorId: id } });
   const [addAvatar, { loading: avatarLoading }] = useAddAvatarByAdminMutation();
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formData = new FormData();
-    formData.append("file", e.target.files![0]);
-    formData.append("upload_preset", "qw0fx1xw");
+  // const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const formData = new FormData();
+  //   formData.append("file", e.target.files![0]);
+  //   formData.append("upload_preset", "qw0fx1xw");
 
-    const cloudName = "dhhvqnkvr";
+  //   const cloudName = "dhhvqnkvr";
 
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-      formData
-    );
+  //   const response = await axios.post(
+  //     `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+  //     formData
+  //   );
 
-    await addAvatar({
-      variables: {
-        avatarUrl: response.data.secure_url,
-        publicId: response.data.public_id,
-        mentorId: id,
-      },
-      refetchQueries: [
-        { query: GetAvatarDocument, variables: { mentorId: id } },
-      ],
-    });
+  //   await addAvatar({
+  //     variables: {
+  //       avatarUrl: response.data.secure_url,
+  //       publicId: response.data.public_id,
+  //       mentorId: id,
+  //     },
+  //     refetchQueries: [
+  //       { query: GetAvatarDocument, variables: { mentorId: id } },
+  //     ],
+  //   });
 
-    console.log(response.data);
+  //   console.log(response.data);
+  // };
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+
+    const reader = new FileReader();
+    if (e.target.files) {
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onloadend = async () => {
+        console.log(reader.result);
+        const photo = String(reader.result);
+        const { data, errors } = await addAvatar({
+          variables: { photo, mentorId: id },
+          refetchQueries: [
+            { query: GetAvatarDocument, variables: { mentorId: id } },
+          ],
+        });
+        // console.log(data);
+        if (data?.addAvatarByAdmin) {
+          setLoading(false);
+        }
+        if (errors) {
+          console.log(errors);
+        }
+      };
+      reader.onerror = () => {
+        console.error("AHHHHHHHH!!");
+        setLoading(false);
+      };
+    }
   };
+
   return (
     <Card className={classes.infoCard}>
       <div className={classes.info}>
@@ -102,7 +134,7 @@ export const UploadAvatar: React.FC<UploadAvatarProps> = ({ id }) => {
           size="small"
           component="span"
           disableElevation
-          disabled={avatarLoading}
+          disabled={avatarLoading || loading}
           className={classes.button}
           startIcon={<CloudUpload />}
         >
