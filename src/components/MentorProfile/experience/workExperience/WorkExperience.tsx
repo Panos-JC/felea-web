@@ -5,7 +5,7 @@ import {
   makeStyles,
   Typography,
 } from "@material-ui/core";
-import { Delete } from "@material-ui/icons";
+import { Delete, Edit } from "@material-ui/icons";
 import moment from "moment";
 import React, { useState } from "react";
 import {
@@ -96,6 +96,10 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
   // GraphQL
   const [deleteWorkExperience] = useDeleteWorkExperienceMutation();
 
+  const handleEdit = () => {
+    setEdit(!edit);
+  };
+
   const handleDelete = async () => {
     const { data } = await deleteWorkExperience({
       variables: { id },
@@ -129,13 +133,13 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
         </Typography>
         {editable && (
           <div>
-            {/* <IconButton
-            onClick={handleEdit}
-            className={classes.editIcon}
-            size="small"
-          >
-            <Edit />
-          </IconButton> */}
+            <IconButton
+              onClick={handleEdit}
+              className={classes.editIcon}
+              size="small"
+            >
+              <Edit />
+            </IconButton>
             <IconButton
               onClick={handleDelete}
               className={classes.deleteIcon}

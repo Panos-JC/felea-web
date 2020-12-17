@@ -2,11 +2,9 @@ import MomentUtils from "@date-io/moment";
 import { Grid, TextField, Button, makeStyles } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Industry,
-  useIndustriesQuery,
   useUpdateWorkExperienceMutation,
   WorkExperienceInput,
   WorkExperiencesDocument,
@@ -31,7 +29,7 @@ type Inputs = {
   description: string;
   from: string;
   untill: string;
-  industries: Industry[];
+  industries: string[];
 };
 
 interface Values {
@@ -59,10 +57,19 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
   const classes = useStyles();
 
   // GraphQL
-  const { data, loading } = useIndustriesQuery();
   const [updateWorkExperience] = useUpdateWorkExperienceMutation();
 
-  const { register, handleSubmit, errors, control } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+  } = useForm<Inputs>();
+
+  useEffect(() => {
+    register("industries", { required: true });
+  }, [register]);
 
   const onSubmit = async (formData: Inputs) => {
     const input: WorkExperienceInput = {
@@ -71,10 +78,10 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
       from: formData.from,
       untill: formData.untill,
       description: formData.description,
-      industries: formData.industries.map((industry) =>
-        industry.name.toLowerCase()
-      ),
+      industries: formData.industries,
     };
+
+    console.log(input);
 
     const { data } = await updateWorkExperience({
       variables: { id, input },
@@ -185,38 +192,28 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
         </Grid>
 
         <Grid item xs={12}>
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            <Controller
-              control={control}
-              name="industries"
-              defaultValue={values.industries}
-              render={() => (
-                <Autocomplete
-                  multiple
-                  id="tags-standard"
-                  options={data?.industries as Industry[]}
-                  getOptionLabel={(option) => option.name}
-                  getOptionSelected={(option, value) =>
-                    option.name === value.name
-                  }
-                  defaultValue={values.industries}
-                  ChipProps={{ size: "small" }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      error={errors.industries ? true : false}
-                      variant="outlined"
-                      label="Industries"
-                      placeholder="B2B, B2C..."
-                      size="small"
-                    />
-                  )}
-                />
-              )}
-            />
-          )}
+          <Autocomplete
+            multiple
+            id="tags-standard"
+            options={[]}
+            freeSolo
+            onChange={(event, values) => {
+              setValue("industries", values);
+            }}
+            defaultValue={values.industries?.map((ind) => ind.name)}
+            ChipProps={{ size: "small" }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                error={errors.industries ? true : false}
+                helperText="(Tip): Type one industry and hit enter. You can type more than one industries."
+                variant="outlined"
+                label="Industries"
+                placeholder="Type an industry..."
+                size="small"
+              />
+            )}
+          />
         </Grid>
 
         <Grid item xs={12}>
