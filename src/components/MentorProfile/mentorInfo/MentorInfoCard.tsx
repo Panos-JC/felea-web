@@ -127,9 +127,11 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
         </Typography>
       </div>
       <div className={classes.infoSmall}>
-        <div
-          className={classes.titleSmall}
-        >{`${mentorInfo.city}, ${mentorInfo.country}`}</div>
+        <div className={classes.titleSmall}>
+          {mentorInfo.city &&
+            mentorInfo.country &&
+            `${mentorInfo.city}, ${mentorInfo.country}`}
+        </div>
         <div className={classes.titleSmall}>{mentorInfo.languages}</div>
       </div>
       <div className={classes.cardBody}>
