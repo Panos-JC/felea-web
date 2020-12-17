@@ -1,0 +1,8 @@
+mutation EditSkill($newName: String!, $skillId: Int!) {
+  editSkill(newName: $newName, skillId: $skillId) {
+    errorMsg
+    skill {
+      id
+    }
+  }
+}

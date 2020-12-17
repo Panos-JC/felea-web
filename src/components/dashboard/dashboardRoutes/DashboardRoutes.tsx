@@ -14,6 +14,8 @@ import { EditMentorDetails } from "../users/mentors/mentorDetails/EditMentorDeta
 import { IndividualPage } from "../users/individuals/individualPage/IndividualPage";
 import { MentorDetails } from "../users/mentors/mentorDetails/MentorDetails";
 import { CompanyPage } from "../users/companies/companyPage/CompanyPage";
+import { Skills } from "../tags/Skills";
+import { Industries } from "../tags/Industries";
 
 interface DashboardRoutesProps {}
 
@@ -21,6 +23,12 @@ export const DashboardRoutes: React.FC<DashboardRoutesProps> = () => {
   return (
     <>
       <ProtectedRoute path="/dashboard/settings" component={Settings} exact />
+      <ProtectedRoute path="/dashboard/tags/skills" component={Skills} exact />
+      <ProtectedRoute
+        path="/dashboard/tags/industries"
+        component={Industries}
+        exact
+      />
       <ProtectedRoute
         path="/dashboard/users/mentor/:id/edit"
         component={EditMentorDetails}
