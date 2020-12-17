@@ -29,7 +29,7 @@ export type Query = {
   mentors: Array<MentorsResponse>;
   isProfileComplete: IsProfileCompleteResponse;
   reviewsById: Array<Review>;
-  skills: Array<Skill>;
+  skills: Array<SkillsResponse>;
   workExperiences: WorkExperiencesResponse;
   requestsByMentor: RequestsByMentorResponse;
   sessionRequests: Array<SessionRequest>;
@@ -221,6 +221,7 @@ export type Skill = {
   id: Scalars['Int'];
   name: Scalars['String'];
   nameLowercase: Scalars['String'];
+  expertise: Expertise;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -297,6 +298,14 @@ export type IsProfileCompleteResponse = {
   __typename?: 'IsProfileCompleteResponse';
   messages: Array<Scalars['String']>;
   isComplete: Scalars['Boolean'];
+};
+
+export type SkillsResponse = {
+  __typename?: 'SkillsResponse';
+  skill_id: Scalars['Int'];
+  skill_name: Scalars['String'];
+  skill_nameLowercase: Scalars['String'];
+  count: Scalars['Int'];
 };
 
 export type WorkExperiencesResponse = {
@@ -415,6 +424,8 @@ export type Mutation = {
   createExpertise: ExpertiseResponse;
   deleteExpertise: DeleteResponse;
   createReview: ReviewResponse;
+  editSkill: EditSkillResponse;
+  deleteSkill: DeleteSkillResponse;
   createWorkExperience: WorkExperienceResponse;
   updateWorkExperience: WorkExperienceResponse;
   deleteWorkExperience: Scalars['Boolean'];
@@ -494,6 +505,17 @@ export type MutationDeleteExpertiseArgs = {
 
 export type MutationCreateReviewArgs = {
   input: ReviewInput;
+};
+
+
+export type MutationEditSkillArgs = {
+  newName: Scalars['String'];
+  skillId: Scalars['Int'];
+};
+
+
+export type MutationDeleteSkillArgs = {
+  skillId: Scalars['Int'];
 };
 
 
@@ -776,6 +798,18 @@ export type ReviewInput = {
   message: Scalars['String'];
   rating: Scalars['Float'];
   mentorId: Scalars['Float'];
+};
+
+export type EditSkillResponse = {
+  __typename?: 'EditSkillResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  skill?: Maybe<Skill>;
+};
+
+export type DeleteSkillResponse = {
+  __typename?: 'DeleteSkillResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  deleted?: Maybe<Scalars['Boolean']>;
 };
 
 export type WorkExperienceResponse = {
@@ -1750,6 +1784,37 @@ export type SetRequestCompleteMutation = (
   ) }
 );
 
+export type DeleteSkillMutationVariables = Exact<{
+  skillId: Scalars['Int'];
+}>;
+
+
+export type DeleteSkillMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteSkill: (
+    { __typename?: 'DeleteSkillResponse' }
+    & Pick<DeleteSkillResponse, 'errorMsg' | 'deleted'>
+  ) }
+);
+
+export type EditSkillMutationVariables = Exact<{
+  newName: Scalars['String'];
+  skillId: Scalars['Int'];
+}>;
+
+
+export type EditSkillMutation = (
+  { __typename?: 'Mutation' }
+  & { editSkill: (
+    { __typename?: 'EditSkillResponse' }
+    & Pick<EditSkillResponse, 'errorMsg'>
+    & { skill?: Maybe<(
+      { __typename?: 'Skill' }
+      & Pick<Skill, 'id'>
+    )> }
+  ) }
+);
+
 export type ChangeKnownPasswordMutationVariables = Exact<{
   oldPassword: Scalars['String'];
   newPassword: Scalars['String'];
@@ -2352,8 +2417,8 @@ export type SkillsQueryVariables = Exact<{ [key: string]: never; }>;
 export type SkillsQuery = (
   { __typename?: 'Query' }
   & { skills: Array<(
-    { __typename?: 'Skill' }
-    & SkillFieldsFragment
+    { __typename?: 'SkillsResponse' }
+    & Pick<SkillsResponse, 'skill_id' | 'skill_name' | 'skill_nameLowercase' | 'count'>
   )> }
 );
 
@@ -4159,6 +4224,75 @@ export function useSetRequestCompleteMutation(baseOptions?: Apollo.MutationHookO
 export type SetRequestCompleteMutationHookResult = ReturnType<typeof useSetRequestCompleteMutation>;
 export type SetRequestCompleteMutationResult = Apollo.MutationResult<SetRequestCompleteMutation>;
 export type SetRequestCompleteMutationOptions = Apollo.BaseMutationOptions<SetRequestCompleteMutation, SetRequestCompleteMutationVariables>;
+export const DeleteSkillDocument = gql`
+    mutation DeleteSkill($skillId: Int!) {
+  deleteSkill(skillId: $skillId) {
+    errorMsg
+    deleted
+  }
+}
+    `;
+export type DeleteSkillMutationFn = Apollo.MutationFunction<DeleteSkillMutation, DeleteSkillMutationVariables>;
+
+/**
+ * __useDeleteSkillMutation__
+ *
+ * To run a mutation, you first call `useDeleteSkillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSkillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSkillMutation, { data, loading, error }] = useDeleteSkillMutation({
+ *   variables: {
+ *      skillId: // value for 'skillId'
+ *   },
+ * });
+ */
+export function useDeleteSkillMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSkillMutation, DeleteSkillMutationVariables>) {
+        return Apollo.useMutation<DeleteSkillMutation, DeleteSkillMutationVariables>(DeleteSkillDocument, baseOptions);
+      }
+export type DeleteSkillMutationHookResult = ReturnType<typeof useDeleteSkillMutation>;
+export type DeleteSkillMutationResult = Apollo.MutationResult<DeleteSkillMutation>;
+export type DeleteSkillMutationOptions = Apollo.BaseMutationOptions<DeleteSkillMutation, DeleteSkillMutationVariables>;
+export const EditSkillDocument = gql`
+    mutation EditSkill($newName: String!, $skillId: Int!) {
+  editSkill(newName: $newName, skillId: $skillId) {
+    errorMsg
+    skill {
+      id
+    }
+  }
+}
+    `;
+export type EditSkillMutationFn = Apollo.MutationFunction<EditSkillMutation, EditSkillMutationVariables>;
+
+/**
+ * __useEditSkillMutation__
+ *
+ * To run a mutation, you first call `useEditSkillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditSkillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editSkillMutation, { data, loading, error }] = useEditSkillMutation({
+ *   variables: {
+ *      newName: // value for 'newName'
+ *      skillId: // value for 'skillId'
+ *   },
+ * });
+ */
+export function useEditSkillMutation(baseOptions?: Apollo.MutationHookOptions<EditSkillMutation, EditSkillMutationVariables>) {
+        return Apollo.useMutation<EditSkillMutation, EditSkillMutationVariables>(EditSkillDocument, baseOptions);
+      }
+export type EditSkillMutationHookResult = ReturnType<typeof useEditSkillMutation>;
+export type EditSkillMutationResult = Apollo.MutationResult<EditSkillMutation>;
+export type EditSkillMutationOptions = Apollo.BaseMutationOptions<EditSkillMutation, EditSkillMutationVariables>;
 export const ChangeKnownPasswordDocument = gql`
     mutation ChangeKnownPassword($oldPassword: String!, $newPassword: String!) {
   changeKnownPassword(oldPassword: $oldPassword, newPassword: $newPassword) {
@@ -5467,10 +5601,13 @@ export type SessionRequestsQueryResult = Apollo.QueryResult<SessionRequestsQuery
 export const SkillsDocument = gql`
     query Skills {
   skills {
-    ...SkillFields
+    skill_id
+    skill_name
+    skill_nameLowercase
+    count
   }
 }
-    ${SkillFieldsFragmentDoc}`;
+    `;
 
 /**
  * __useSkillsQuery__
