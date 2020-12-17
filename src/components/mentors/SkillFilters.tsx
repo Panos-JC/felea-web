@@ -68,14 +68,14 @@ export const SkillFilters: React.FC<SkillFiltersProps> = ({
               skillData.skills &&
               skillData.skills.map((skill) => (
                 <FormControlLabel
-                  key={skill.id}
+                  key={skill.skill_id}
                   classes={{ label: classes.filter }}
-                  value={skill.name}
+                  value={skill.skill_name}
                   control={
                     <Checkbox size="small" onChange={handleSkillChange} />
                   }
-                  label={skill.name}
-                  name={skill.name}
+                  label={skill.skill_name}
+                  name={skill.skill_name}
                   inputRef={register}
                 />
               ))}
