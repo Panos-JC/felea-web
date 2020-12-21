@@ -17,6 +17,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  admin: Admin;
   admins: Array<Admin>;
   expertises: Array<Expertise>;
   expertisesById: Array<Expertise>;
@@ -46,6 +47,11 @@ export type Query = {
   getAvatar: GetResponse;
   getMotto: GetResponse;
   getMentorInfo: Temp;
+};
+
+
+export type QueryAdminArgs = {
+  adminId: Scalars['Int'];
 };
 
 
@@ -472,6 +478,7 @@ export type Mutation = {
   createEducationByAdmin: EducationResponse;
   deleteIndividual: DeleteEntityResponse;
   deleteMentor: DeleteEntityResponse;
+  deleteAdmin: DeleteAdminResponse;
 };
 
 
@@ -764,6 +771,11 @@ export type MutationDeleteMentorArgs = {
   mentorId: Scalars['Int'];
 };
 
+
+export type MutationDeleteAdminArgs = {
+  adminId: Scalars['Int'];
+};
+
 export type GenerateUserResponse = {
   __typename?: 'GenerateUserResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -971,6 +983,12 @@ export type DeleteEntityResponse = {
   deleted: Scalars['Boolean'];
 };
 
+export type DeleteAdminResponse = {
+  __typename?: 'DeleteAdminResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  deleted: Scalars['Boolean'];
+};
+
 export type AdminFragment = (
   { __typename?: 'Admin' }
   & Pick<Admin, 'id' | 'firstName' | 'lastName'>
@@ -1097,6 +1115,19 @@ export type AssignFacilitatorMutationVariables = Exact<{
 export type AssignFacilitatorMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'assignFacilitator'>
+);
+
+export type DeleteAdminMutationVariables = Exact<{
+  adminId: Scalars['Int'];
+}>;
+
+
+export type DeleteAdminMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteAdmin: (
+    { __typename?: 'DeleteAdminResponse' }
+    & Pick<DeleteAdminResponse, 'errorMsg' | 'deleted'>
+  ) }
 );
 
 export type GenerateAdminMutationVariables = Exact<{
@@ -1915,6 +1946,34 @@ export type UpdateWorkExperienceMutation = (
   ) }
 );
 
+export type AdminQueryVariables = Exact<{
+  adminId: Scalars['Int'];
+}>;
+
+
+export type AdminQuery = (
+  { __typename?: 'Query' }
+  & { admin: (
+    { __typename?: 'Admin' }
+    & Pick<Admin, 'id' | 'firstName' | 'lastName'>
+    & { user: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'email' | 'avatar'>
+    ) }
+  ) }
+);
+
+export type AdminsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AdminsQuery = (
+  { __typename?: 'Query' }
+  & { admins: Array<(
+    { __typename?: 'Admin' }
+    & AdminFragment
+  )> }
+);
+
 export type GetAvatarQueryVariables = Exact<{
   mentorId: Scalars['Int'];
 }>;
@@ -1969,17 +2028,6 @@ export type GetMottoQuery = (
     { __typename?: 'GetResponse' }
     & Pick<GetResponse, 'result'>
   ) }
-);
-
-export type AdminsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AdminsQuery = (
-  { __typename?: 'Query' }
-  & { admins: Array<(
-    { __typename?: 'Admin' }
-    & AdminFragment
-  )> }
 );
 
 export type AllMentorsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -2689,6 +2737,39 @@ export function useAssignFacilitatorMutation(baseOptions?: Apollo.MutationHookOp
 export type AssignFacilitatorMutationHookResult = ReturnType<typeof useAssignFacilitatorMutation>;
 export type AssignFacilitatorMutationResult = Apollo.MutationResult<AssignFacilitatorMutation>;
 export type AssignFacilitatorMutationOptions = Apollo.BaseMutationOptions<AssignFacilitatorMutation, AssignFacilitatorMutationVariables>;
+export const DeleteAdminDocument = gql`
+    mutation DeleteAdmin($adminId: Int!) {
+  deleteAdmin(adminId: $adminId) {
+    errorMsg
+    deleted
+  }
+}
+    `;
+export type DeleteAdminMutationFn = Apollo.MutationFunction<DeleteAdminMutation, DeleteAdminMutationVariables>;
+
+/**
+ * __useDeleteAdminMutation__
+ *
+ * To run a mutation, you first call `useDeleteAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAdminMutation, { data, loading, error }] = useDeleteAdminMutation({
+ *   variables: {
+ *      adminId: // value for 'adminId'
+ *   },
+ * });
+ */
+export function useDeleteAdminMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAdminMutation, DeleteAdminMutationVariables>) {
+        return Apollo.useMutation<DeleteAdminMutation, DeleteAdminMutationVariables>(DeleteAdminDocument, baseOptions);
+      }
+export type DeleteAdminMutationHookResult = ReturnType<typeof useDeleteAdminMutation>;
+export type DeleteAdminMutationResult = Apollo.MutationResult<DeleteAdminMutation>;
+export type DeleteAdminMutationOptions = Apollo.BaseMutationOptions<DeleteAdminMutation, DeleteAdminMutationVariables>;
 export const GenerateAdminDocument = gql`
     mutation GenerateAdmin($email: String!) {
   generateAdmin(email: $email) {
@@ -4508,6 +4589,77 @@ export function useUpdateWorkExperienceMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateWorkExperienceMutationHookResult = ReturnType<typeof useUpdateWorkExperienceMutation>;
 export type UpdateWorkExperienceMutationResult = Apollo.MutationResult<UpdateWorkExperienceMutation>;
 export type UpdateWorkExperienceMutationOptions = Apollo.BaseMutationOptions<UpdateWorkExperienceMutation, UpdateWorkExperienceMutationVariables>;
+export const AdminDocument = gql`
+    query Admin($adminId: Int!) {
+  admin(adminId: $adminId) {
+    id
+    firstName
+    lastName
+    user {
+      email
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useAdminQuery__
+ *
+ * To run a query within a React component, call `useAdminQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminQuery({
+ *   variables: {
+ *      adminId: // value for 'adminId'
+ *   },
+ * });
+ */
+export function useAdminQuery(baseOptions: Apollo.QueryHookOptions<AdminQuery, AdminQueryVariables>) {
+        return Apollo.useQuery<AdminQuery, AdminQueryVariables>(AdminDocument, baseOptions);
+      }
+export function useAdminLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminQuery, AdminQueryVariables>) {
+          return Apollo.useLazyQuery<AdminQuery, AdminQueryVariables>(AdminDocument, baseOptions);
+        }
+export type AdminQueryHookResult = ReturnType<typeof useAdminQuery>;
+export type AdminLazyQueryHookResult = ReturnType<typeof useAdminLazyQuery>;
+export type AdminQueryResult = Apollo.QueryResult<AdminQuery, AdminQueryVariables>;
+export const AdminsDocument = gql`
+    query Admins {
+  admins {
+    ...Admin
+  }
+}
+    ${AdminFragmentDoc}`;
+
+/**
+ * __useAdminsQuery__
+ *
+ * To run a query within a React component, call `useAdminsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAdminsQuery(baseOptions?: Apollo.QueryHookOptions<AdminsQuery, AdminsQueryVariables>) {
+        return Apollo.useQuery<AdminsQuery, AdminsQueryVariables>(AdminsDocument, baseOptions);
+      }
+export function useAdminsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminsQuery, AdminsQueryVariables>) {
+          return Apollo.useLazyQuery<AdminsQuery, AdminsQueryVariables>(AdminsDocument, baseOptions);
+        }
+export type AdminsQueryHookResult = ReturnType<typeof useAdminsQuery>;
+export type AdminsLazyQueryHookResult = ReturnType<typeof useAdminsLazyQuery>;
+export type AdminsQueryResult = Apollo.QueryResult<AdminsQuery, AdminsQueryVariables>;
 export const GetAvatarDocument = gql`
     query GetAvatar($mentorId: Int!) {
   getAvatar(mentorId: $mentorId) {
@@ -4643,38 +4795,6 @@ export function useGetMottoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetMottoQueryHookResult = ReturnType<typeof useGetMottoQuery>;
 export type GetMottoLazyQueryHookResult = ReturnType<typeof useGetMottoLazyQuery>;
 export type GetMottoQueryResult = Apollo.QueryResult<GetMottoQuery, GetMottoQueryVariables>;
-export const AdminsDocument = gql`
-    query Admins {
-  admins {
-    ...Admin
-  }
-}
-    ${AdminFragmentDoc}`;
-
-/**
- * __useAdminsQuery__
- *
- * To run a query within a React component, call `useAdminsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAdminsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAdminsQuery(baseOptions?: Apollo.QueryHookOptions<AdminsQuery, AdminsQueryVariables>) {
-        return Apollo.useQuery<AdminsQuery, AdminsQueryVariables>(AdminsDocument, baseOptions);
-      }
-export function useAdminsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdminsQuery, AdminsQueryVariables>) {
-          return Apollo.useLazyQuery<AdminsQuery, AdminsQueryVariables>(AdminsDocument, baseOptions);
-        }
-export type AdminsQueryHookResult = ReturnType<typeof useAdminsQuery>;
-export type AdminsLazyQueryHookResult = ReturnType<typeof useAdminsLazyQuery>;
-export type AdminsQueryResult = Apollo.QueryResult<AdminsQuery, AdminsQueryVariables>;
 export const AllMentorsDocument = gql`
     query AllMentors {
   allMentors {

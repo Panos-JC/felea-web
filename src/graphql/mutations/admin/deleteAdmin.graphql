@@ -1,0 +1,6 @@
+mutation DeleteAdmin($adminId: Int!) {
+  deleteAdmin(adminId: $adminId) {
+    errorMsg
+    deleted
+  }
+}

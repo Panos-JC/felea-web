@@ -1,0 +1,11 @@
+query Admin($adminId: Int!) {
+  admin(adminId: $adminId) {
+    id
+    firstName
+    lastName
+    user {
+      email
+      avatar
+    }
+  }
+}
