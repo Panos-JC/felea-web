@@ -1,21 +1,11 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
-import {
-  makeStyles,
-  Avatar,
-  Link,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Chip,
-  IconButton,
-  CircularProgress,
-} from "@material-ui/core";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { makeStyles, Avatar, Link } from "@material-ui/core";
 import { fade } from "@material-ui/core/styles";
-import { ArrowForward as ArrowForwardIcon } from "@material-ui/icons";
+import { ArrowForward } from "@material-ui/icons";
 import { useAdminsQuery } from "../../../../generated/graphql";
+import MaterialTable from "material-table";
+import { Loading } from "../../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -54,69 +44,71 @@ interface AdminTableProps {}
 export const AdminTable: React.FC<AdminTableProps> = () => {
   const classes = useStyles();
 
+  const history = useHistory();
+
   const { data, loading } = useAdminsQuery();
 
-  if (loading) {
-    return (
-      <div className={classes.spinner}>
-        <CircularProgress />
-      </div>
-    );
+  if (loading || !data) {
+    return <Loading />;
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Active</TableCell>
-          <TableCell align="right">Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data &&
-          data.admins &&
-          data.admins.map((admin) => (
-            <TableRow hover key={admin.id}>
-              <TableCell>
-                <div className={classes.nameCell}>
-                  <Avatar
-                    src={admin.user.avatar || ""}
-                    className={classes.avatar}
-                  >
-                    JD
-                  </Avatar>
-                  <div>
-                    <Link
-                      className={classes.link}
-                      color="inherit"
-                      component={RouterLink}
-                      to="/management/customers/1"
-                      variant="h6"
-                    >
-                      {`${admin.firstName} ${admin.lastName}`}
-                    </Link>
-                    <div className={classes.email}>{admin.user.email}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label={admin.user.activated ? "True" : "False"}
-                  size="small"
-                  className={
-                    admin.user.activated ? classes.success : classes.warn
-                  }
-                />
-              </TableCell>
-              <TableCell align="right">
-                <IconButton size="small" color="primary">
-                  <ArrowForwardIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
+    <MaterialTable
+      title=""
+      columns={[
+        {
+          title: "Name",
+          render: (rowData) => (
+            <div className={classes.nameCell}>
+              <Avatar src={rowData.avatar || ""} className={classes.avatar} />
+              <div>
+                <Link
+                  className={classes.link}
+                  color="inherit"
+                  component={RouterLink}
+                  to={`/dashboard/users/admin/${rowData.id}`}
+                  variant="h6"
+                >
+                  {`${rowData.firstName} ${rowData.lastName}`}
+                </Link>
+                <div className={classes.email}>{rowData.email}</div>
+              </div>
+            </div>
+          ),
+          customFilterAndSearch: (term, rowData) =>
+            (
+              rowData.firstName.toLowerCase() +
+              " " +
+              rowData.lastName.toLowerCase()
+            ).indexOf(term.toLowerCase()) !== -1 ||
+            rowData.email.toLowerCase().indexOf(term.toLowerCase()) !== -1,
+        },
+      ]}
+      data={data.admins.map((admin) => {
+        return {
+          id: admin.id,
+          firstName: admin.firstName,
+          lastName: admin.lastName,
+          avatar: admin.user.avatar,
+          email: admin.user.email,
+          emailActive: admin.user.activated,
+        };
+      })}
+      options={{
+        draggable: false,
+        emptyRowsWhenPaging: false,
+        pageSize: 10,
+        pageSizeOptions: [10, 20],
+        actionsColumnIndex: -1,
+      }}
+      actions={[
+        {
+          icon: () => <ArrowForward />,
+          tooltip: "Details",
+          onClick: (event, rowData: any) =>
+            history.push(`/dashboard/users/admin/${rowData.id}`),
+        },
+      ]}
+    />
   );
 };
