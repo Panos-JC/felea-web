@@ -134,7 +134,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           <div className={classes.headerInfo}>
             <Typography className={classes.infoItem}>
               <LocationOnOutlined className={classes.locationIcon} />
-              {`${mentor.city}, ${mentor.country}`}
+              {`${mentor.city || ""}, ${mentor.country || ""}`}
             </Typography>
             <Typography className={classes.infoItem}>
               {mentor.languages}
@@ -142,15 +142,6 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           </div>
         </div>
         <div className={classes.actions}>
-          <Button
-            className={classes.action}
-            color="primary"
-            size="small"
-            variant="contained"
-            disableElevation
-          >
-            Contanct
-          </Button>
           <Link to={`/mentor/${mentor.id}`} className={classes.link}>
             <Button
               className={classes.action}
@@ -174,7 +165,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           <span>sessions</span>
         </div>
         <div className={classes.stat}>
-          <strong>{rating || "_"}</strong>
+          {rating && <strong>{rating}</strong>}
           <StarBorder color="primary" />
         </div>
       </div>
