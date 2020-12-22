@@ -177,7 +177,7 @@ export const MentorInfoCard: React.FC<MentorInfoCardProps> = ({
               {sessions}
             </Typography>
             <Typography className={classes.subtitle} variant="subtitle2">
-              Sessionss
+              Sessions
             </Typography>
           </span>
           <span className={classes.stat}>
