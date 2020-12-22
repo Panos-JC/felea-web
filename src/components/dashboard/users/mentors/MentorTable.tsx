@@ -1,8 +1,9 @@
-import { Avatar, Link, makeStyles } from "@material-ui/core";
+import { Avatar, Chip, Link, makeStyles } from "@material-ui/core";
 import { fade } from "@material-ui/core/styles";
+import { ArrowForward, Edit } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useAllMentorsQuery } from "../../../../generated/graphql";
 import { Loading } from "../../../shared/loading/Loading";
 
@@ -38,6 +39,8 @@ interface MentorTableProps {}
 export const MentorTable: React.FC<MentorTableProps> = () => {
   const classes = useStyles();
 
+  const history = useHistory();
+
   const { data, loading } = useAllMentorsQuery();
 
   if (loading || !data) {
@@ -67,14 +70,57 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
               </div>
             </div>
           ),
+          customFilterAndSearch: (term, rowData) =>
+            (
+              rowData.firstName.toLowerCase() +
+              " " +
+              rowData.lastName.toLowerCase()
+            ).indexOf(term.toLowerCase()) !== -1 ||
+            rowData.email.toLowerCase().indexOf(term.toLowerCase()) !== -1,
         },
         {
-          title: "Profile Complete",
-          field: "profileComplete",
+          title: "Profile",
+          render: (rowData) => {
+            if (rowData.profileComplete) {
+              return (
+                <Chip
+                  label="Complete"
+                  size="small"
+                  className={classes.success}
+                />
+              );
+            } else {
+              return (
+                <Chip
+                  label="Incomplete"
+                  size="small"
+                  className={classes.warn}
+                />
+              );
+            }
+          },
+          customSort: (a, b) =>
+            a.profileComplete === b.profileComplete
+              ? 0
+              : a.profileComplete
+              ? -1
+              : 1,
         },
         {
-          title: "Email Active",
-          field: "emailActive",
+          title: "Email",
+          render: (rowData) => {
+            if (rowData.emailActive) {
+              return (
+                <Chip label="Active" size="small" className={classes.success} />
+              );
+            } else {
+              return (
+                <Chip label="Inactive" size="small" className={classes.warn} />
+              );
+            }
+          },
+          customSort: (a, b) =>
+            a.emailActive === b.emailActive ? 0 : a.emailActive ? -1 : 1,
         },
       ]}
       data={data.allMentors.map((mentor) => {
@@ -89,6 +135,27 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
           sessions: mentor.sessions,
         };
       })}
+      options={{
+        draggable: false,
+        emptyRowsWhenPaging: false,
+        pageSize: 10,
+        pageSizeOptions: [10, 20],
+        actionsColumnIndex: -1,
+      }}
+      actions={[
+        {
+          icon: () => <Edit />,
+          tooltip: "Edit Mentor",
+          onClick: (event, rowData: any) =>
+            history.push(`/dashboard/users/mentor/${rowData.id}/edit`),
+        },
+        {
+          icon: () => <ArrowForward />,
+          tooltip: "Details",
+          onClick: (event, rowData: any) =>
+            history.push(`/dashboard/users/mentor/${rowData.id}`),
+        },
+      ]}
     />
   );
 };
