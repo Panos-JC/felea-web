@@ -2040,10 +2040,10 @@ export type AllMentorsQuery = (
     & Pick<MentorsResponse, 'sessions' | 'avg'>
     & { mentor: (
       { __typename?: 'Mentor' }
-      & Pick<Mentor, 'id' | 'firstName' | 'lastName'>
+      & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'profileComplete'>
       & { user: (
         { __typename?: 'Users' }
-        & Pick<Users, 'email' | 'avatar'>
+        & Pick<Users, 'email' | 'avatar' | 'activated'>
       ) }
     ) }
   )> }
@@ -4802,9 +4802,11 @@ export const AllMentorsDocument = gql`
       id
       firstName
       lastName
+      profileComplete
       user {
         email
         avatar
+        activated
       }
     }
     sessions

@@ -4,9 +4,11 @@ query AllMentors {
       id
       firstName
       lastName
+      profileComplete
       user {
         email
         avatar
+        activated
       }
     }
     sessions
