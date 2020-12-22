@@ -1,20 +1,10 @@
-import {
-  Avatar,
-  CircularProgress,
-  IconButton,
-  Link,
-  makeStyles,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@material-ui/core";
+import { Avatar, Link, makeStyles } from "@material-ui/core";
 import { fade } from "@material-ui/core/styles";
-import { ArrowForward as ArrowForwardIcon, Edit } from "@material-ui/icons";
+import MaterialTable from "material-table";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAllMentorsQuery } from "../../../../generated/graphql";
+import { Loading } from "../../../shared/loading/Loading";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -41,11 +31,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.875rem",
     color: theme.palette.text.secondary,
   },
-  spinner: {
-    textAlign: "center",
-    paddingTop: 40,
-    paddingBottom: 40,
-  },
 }));
 
 interface MentorTableProps {}
@@ -55,78 +40,55 @@ export const MentorTable: React.FC<MentorTableProps> = () => {
 
   const { data, loading } = useAllMentorsQuery();
 
-  if (loading) {
-    return (
-      <div className={classes.spinner}>
-        <CircularProgress />
-      </div>
-    );
+  if (loading || !data) {
+    return <Loading />;
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Name</TableCell>
-          <TableCell>Sessions</TableCell>
-          <TableCell align="right">Actions</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {data &&
-          data.allMentors &&
-          data.allMentors.map((mentor) => (
-            <TableRow hover key={mentor.mentor.id}>
-              <TableCell>
-                <div className={classes.nameCell}>
-                  <Avatar
-                    className={classes.avatar}
-                    src={mentor.mentor.user.avatar || ""}
-                  />
-                  <div>
-                    <Link
-                      className={classes.link}
-                      color="inherit"
-                      component={RouterLink}
-                      to={`/mentor/${mentor.mentor.id}`}
-                      variant="h6"
-                    >
-                      {`${mentor.mentor.firstName} ${mentor.mentor.lastName}`}
-                    </Link>
-                    <div className={classes.email}>
-                      {mentor.mentor.user.email}
-                    </div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>{mentor.sessions}</TableCell>
-              <TableCell align="right">
+    <MaterialTable
+      title=""
+      columns={[
+        {
+          title: "Name",
+          render: (rowData) => (
+            <div className={classes.nameCell}>
+              <Avatar className={classes.avatar} src={rowData.avatar || ""} />
+              <div>
                 <Link
                   className={classes.link}
                   color="inherit"
                   component={RouterLink}
-                  to={`/dashboard/users/mentor/${mentor.mentor.id}/edit`}
+                  to={`/mentor/${rowData.id}`}
                   variant="h6"
                 >
-                  <IconButton size="small" color="primary">
-                    <Edit />
-                  </IconButton>
+                  {`${rowData.firstName} ${rowData.lastName}`}
                 </Link>
-                <Link
-                  className={classes.link}
-                  color="inherit"
-                  component={RouterLink}
-                  to={`/dashboard/users/mentor/${mentor.mentor.id}`}
-                  variant="h6"
-                >
-                  <IconButton size="small" color="primary">
-                    <ArrowForwardIcon />
-                  </IconButton>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
+                <div className={classes.email}>{rowData.email}</div>
+              </div>
+            </div>
+          ),
+        },
+        {
+          title: "Profile Complete",
+          field: "profileComplete",
+        },
+        {
+          title: "Email Active",
+          field: "emailActive",
+        },
+      ]}
+      data={data.allMentors.map((mentor) => {
+        return {
+          id: mentor.mentor.id,
+          firstName: mentor.mentor.firstName,
+          lastName: mentor.mentor.lastName,
+          email: mentor.mentor.user.email,
+          avatar: mentor.mentor.user.avatar,
+          profileComplete: mentor.mentor.profileComplete,
+          emailActive: mentor.mentor.user.activated,
+          sessions: mentor.sessions,
+        };
+      })}
+    />
   );
 };
