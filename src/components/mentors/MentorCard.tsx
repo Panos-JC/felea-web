@@ -72,8 +72,15 @@ const useStyles = makeStyles((theme) => ({
   skill: {
     margin: 5,
   },
+  btn: {
+    textDecoration: "none",
+  },
   link: {
     textDecoration: "none",
+    color: theme.palette.text.primary,
+    "&:hover": {
+      textDecoration: "underline",
+    },
   },
   locationIcon: {
     color: theme.palette.grey["300"],
@@ -123,10 +130,11 @@ export const MentorCard: React.FC<MentorCardProps> = ({
       <div className={classes.headerWrapper}>
         <Avatar className={classes.avatar} src={avatar || ""} />
         <div className={classes.header}>
-          <Typography variant="h5">
-            {mentor.firstName} {mentor.lastName}
-          </Typography>
-
+          <Link to={`/mentor/${mentor.id}`} className={classes.link}>
+            <Typography variant="h5">
+              {mentor.firstName} {mentor.lastName}
+            </Typography>
+          </Link>
           {mentor.title && (
             <Typography variant="caption">{mentor.title}</Typography>
           )}
@@ -142,7 +150,7 @@ export const MentorCard: React.FC<MentorCardProps> = ({
           </div>
         </div>
         <div className={classes.actions}>
-          <Link to={`/mentor/${mentor.id}`} className={classes.link}>
+          <Link to={`/mentor/${mentor.id}`} className={classes.btn}>
             <Button
               className={classes.action}
               color="primary"
