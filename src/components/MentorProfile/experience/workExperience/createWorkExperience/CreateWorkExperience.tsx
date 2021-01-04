@@ -5,10 +5,12 @@ import {
   Button,
   makeStyles,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   IsProfileCompleteDocument,
@@ -37,6 +39,7 @@ type Inputs = {
   from: string;
   untill: string;
   industries: string[];
+  present: boolean;
 };
 
 interface CreateWorkExperienceProps {
@@ -49,6 +52,8 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
   setEdit,
 }) => {
   const classes = useStyles();
+
+  const [checked, setChecked] = useState(false);
 
   const [createWorkExperience] = useCreateWorkExperienceMutation();
 
@@ -67,10 +72,9 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
       description: formData.description,
       from: formData.from,
       untill: formData.untill,
+      present: formData.present,
       industries: formData.industries,
     };
-
-    console.log(input);
 
     await createWorkExperience({
       variables: { input },
@@ -125,6 +129,16 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
             />
           </Grid>
 
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox color="primary" />}
+              onChange={() => setChecked(!checked)}
+              label="I am currently working in this role"
+              name="present"
+              inputRef={register}
+            />
+          </Grid>
+
           <Grid item xs={6}>
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <Controller
@@ -146,26 +160,28 @@ export const CreateWorkExperience: React.FC<CreateWorkExperienceProps> = ({
             </MuiPickersUtilsProvider>
           </Grid>
 
-          <Grid item xs={6}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <Controller
-                control={control}
-                name="untill"
-                defaultValue={new Date()}
-                render={({ onChange, value }) => (
-                  <DatePicker
-                    className={classes.picker}
-                    views={["year", "month"]}
-                    label="Untill"
-                    inputVariant="outlined"
-                    value={value}
-                    onChange={onChange}
-                    size="small"
-                  />
-                )}
-              />
-            </MuiPickersUtilsProvider>
-          </Grid>
+          {!checked && (
+            <Grid item xs={6}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Controller
+                  control={control}
+                  name="untill"
+                  defaultValue={new Date()}
+                  render={({ onChange, value }) => (
+                    <DatePicker
+                      className={classes.picker}
+                      views={["year", "month"]}
+                      label="Untill"
+                      inputVariant="outlined"
+                      value={value}
+                      onChange={onChange}
+                      size="small"
+                    />
+                  )}
+                />
+              </MuiPickersUtilsProvider>
+            </Grid>
+          )}
 
           <Grid item xs={12}>
             <TextField

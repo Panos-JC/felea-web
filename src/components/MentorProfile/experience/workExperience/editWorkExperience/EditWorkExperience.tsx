@@ -1,8 +1,15 @@
 import MomentUtils from "@date-io/moment";
-import { Grid, TextField, Button, makeStyles } from "@material-ui/core";
+import {
+  Grid,
+  TextField,
+  Button,
+  makeStyles,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   useUpdateWorkExperienceMutation,
@@ -30,6 +37,7 @@ type Inputs = {
   from: string;
   untill: string;
   industries: string[];
+  present: boolean;
 };
 
 interface Values {
@@ -37,8 +45,9 @@ interface Values {
   company: string;
   from: Date;
   to: Date;
+  present: boolean;
   description: string;
-  industries: any[] | undefined;
+  industries: any[] | undefined | null;
 }
 
 interface EditWorkExperienceProps {
@@ -56,16 +65,16 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
 }) => {
   const classes = useStyles();
 
+  const [checked, setChecked] = useState<boolean>(values.present);
+
   // GraphQL
   const [updateWorkExperience] = useUpdateWorkExperienceMutation();
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    control,
-    setValue,
-  } = useForm<Inputs>();
+  const { register, handleSubmit, errors, control, setValue } = useForm<Inputs>(
+    {
+      defaultValues: { industries: values.industries?.map((ind) => ind.name) },
+    }
+  );
 
   useEffect(() => {
     register("industries", { required: true });
@@ -77,11 +86,10 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
       companyName: formData.company,
       from: formData.from,
       untill: formData.untill,
+      present: formData.present,
       description: formData.description,
       industries: formData.industries,
     };
-
-    console.log(input);
 
     const { data } = await updateWorkExperience({
       variables: { id, input },
@@ -131,6 +139,16 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
           />
         </Grid>
 
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={<Checkbox color="primary" checked={checked} />}
+            onChange={() => setChecked(!checked)}
+            label="I am currently working in this role"
+            name="present"
+            inputRef={register}
+          />
+        </Grid>
+
         <Grid item xs={6}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Controller
@@ -152,26 +170,28 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
           </MuiPickersUtilsProvider>
         </Grid>
 
-        <Grid item xs={6}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Controller
-              control={control}
-              name="untill"
-              defaultValue={new Date(values.to)}
-              render={({ onChange, value }) => (
-                <DatePicker
-                  className={classes.picker}
-                  views={["year", "month"]}
-                  label="Untill"
-                  inputVariant="outlined"
-                  value={value}
-                  onChange={onChange}
-                  size="small"
-                />
-              )}
-            />
-          </MuiPickersUtilsProvider>
-        </Grid>
+        {!checked && (
+          <Grid item xs={6}>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <Controller
+                control={control}
+                name="untill"
+                defaultValue={new Date(values.to)}
+                render={({ onChange, value }) => (
+                  <DatePicker
+                    className={classes.picker}
+                    views={["year", "month"]}
+                    label="Untill"
+                    inputVariant="outlined"
+                    value={value}
+                    onChange={onChange}
+                    size="small"
+                  />
+                )}
+              />
+            </MuiPickersUtilsProvider>
+          </Grid>
+        )}
 
         <Grid item xs={12}>
           <TextField
@@ -200,7 +220,9 @@ export const EditWorkExperience: React.FC<EditWorkExperienceProps> = ({
             onChange={(event, values) => {
               setValue("industries", values);
             }}
-            defaultValue={values.industries?.map((ind) => ind.name)}
+            defaultValue={
+              values.industries ? values.industries.map((ind) => ind.name) : []
+            }
             ChipProps={{ size: "small" }}
             renderInput={(params) => (
               <TextField

@@ -10,6 +10,7 @@ import moment from "moment";
 import React, { useState } from "react";
 import {
   useDeleteWorkExperienceMutation,
+  WorkExperienceFragment,
   WorkExperiencesDocument,
 } from "../../../../generated/graphql";
 import { EditWorkExperience } from "./editWorkExperience/EditWorkExperience";
@@ -68,25 +69,13 @@ const useStyles = makeStyles((theme) => ({
 interface WorkExperienceProps {
   editable: boolean;
   mentorId: number;
-  id: number;
-  role: string;
-  company: string;
-  from: Date;
-  to: Date;
-  description: string;
-  industries: any[] | undefined;
+  data: WorkExperienceFragment;
 }
 
 export const WorkExperience: React.FC<WorkExperienceProps> = ({
   editable,
   mentorId,
-  id,
-  role,
-  company,
-  from,
-  to,
-  description,
-  industries,
+  data,
 }) => {
   const classes = useStyles();
 
@@ -101,13 +90,12 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
   };
 
   const handleDelete = async () => {
-    const { data } = await deleteWorkExperience({
-      variables: { id },
+    await deleteWorkExperience({
+      variables: { id: data.id },
       refetchQueries: [
         { query: WorkExperiencesDocument, variables: { mentorId } },
       ],
     });
-    console.log(data?.deleteWorkExperience);
   };
 
   if (edit) {
@@ -117,8 +105,16 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
           <EditWorkExperience
             mentorId={mentorId}
             setEdit={setEdit}
-            id={id}
-            values={{ role, company, from, to, description, industries }}
+            id={data.id}
+            values={{
+              role: data.role,
+              company: data.companyName,
+              from: data.from,
+              to: data.untill,
+              present: data.present,
+              description: data.description,
+              industries: data.industries,
+            }}
           />
         </div>
       </Grow>
@@ -129,7 +125,7 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
     <div className={classes.root}>
       <div className={classes.title}>
         <Typography className={classes.role} variant="subtitle2">
-          {role}
+          {data.role}
         </Typography>
         {editable && (
           <div>
@@ -150,16 +146,25 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
           </div>
         )}
       </div>
-      <Typography className={classes.company}>{company}</Typography>
-      <Typography className={classes.date}>
-        {`${moment(from).format("MMM YYYY")} - ${moment(to).format(
-          "MMM YYYY"
-        )}`}
+      <Typography className={classes.company}>{data.companyName}</Typography>
+      {data.present && (
+        <Typography className={classes.date}>
+          {`${moment(data.from).format("MMM YYYY")} - present`}
+        </Typography>
+      )}
+      {!data.present && (
+        <Typography className={classes.date}>
+          {`${moment(data.from).format("MMM YYYY")} - ${moment(
+            data.untill
+          ).format("MMM YYYY")}`}
+        </Typography>
+      )}
+      <Typography className={classes.description}>
+        {data.description}
       </Typography>
-      <Typography className={classes.description}>{description}</Typography>
       <div className={classes.industries}>
-        {industries &&
-          industries.map((industry) => (
+        {data.industries &&
+          data.industries.map((industry) => (
             <Chip
               key={industry.name}
               className={classes.industryChip}

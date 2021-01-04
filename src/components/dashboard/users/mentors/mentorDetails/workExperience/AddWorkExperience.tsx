@@ -5,6 +5,8 @@ import {
   Grid,
   TextField,
   Button,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
@@ -36,6 +38,7 @@ type Inputs = {
   from: string;
   untill: string;
   industries: string[];
+  present: boolean;
 };
 
 interface AddWorkExperienceProps {
@@ -67,6 +70,7 @@ export const AddWorkExperience: React.FC<AddWorkExperienceProps> = ({ id }) => {
       description: formData.description,
       from: formData.from,
       untill: formData.untill,
+      present: formData.present,
       industries: formData.industries,
     };
 
@@ -116,6 +120,15 @@ export const AddWorkExperience: React.FC<AddWorkExperienceProps> = ({ id }) => {
               label="Company"
               name="company"
               size="small"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox color="primary" />}
+              label="I am currently working in this role"
+              name="present"
+              inputRef={register}
             />
           </Grid>
 

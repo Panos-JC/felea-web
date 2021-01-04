@@ -137,13 +137,7 @@ export const Experience: React.FC<ExperienceProps> = ({ id, editable }) => {
                   <WorkExperience
                     editable={editable}
                     mentorId={id}
-                    id={work.id}
-                    role={work.role}
-                    company={work.companyName}
-                    from={work.from}
-                    to={work.untill}
-                    description={work.description}
-                    industries={work.industries!}
+                    data={work}
                   />
                   {workExperiencesData.workExperiences.data &&
                     workExperiencesData.workExperiences.data.length >
