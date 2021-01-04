@@ -1,6 +1,6 @@
 import { makeStyles, Button } from "@material-ui/core";
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     color: theme.palette.text.primary,
   },
+  active: {
+    "& .MuiButton-root": {
+      backgroundColor: theme.palette.common.white,
+      color: theme.palette.primary.main,
+    },
+  },
 }));
 
 interface IndividualNavProps {}
@@ -18,7 +24,11 @@ export const IndividualNav: React.FC<IndividualNavProps> = () => {
   const classes = useStyles();
   return (
     <>
-      <Link to="/user/requests" className={classes.link}>
+      <NavLink
+        to="/user/requests"
+        className={classes.link}
+        activeClassName={classes.active}
+      >
         <Button
           className={classes.menuButton}
           color="primary"
@@ -27,8 +37,12 @@ export const IndividualNav: React.FC<IndividualNavProps> = () => {
         >
           My Requests
         </Button>
-      </Link>
-      <Link to="/mentors" className={classes.link}>
+      </NavLink>
+      <NavLink
+        to="/mentors"
+        className={classes.link}
+        activeClassName={classes.active}
+      >
         <Button
           className={classes.menuButton}
           color="primary"
@@ -37,7 +51,7 @@ export const IndividualNav: React.FC<IndividualNavProps> = () => {
         >
           Browse Mentors
         </Button>
-      </Link>
+      </NavLink>
     </>
   );
 };
