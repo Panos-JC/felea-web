@@ -74,7 +74,7 @@ export const Mentors: React.FC<MentorsProps> = () => {
   }
 
   return (
-    <Layout maxWidth="lg">
+    <Layout maxWidth="md">
       <Grid container spacing={3}>
         <Grid item xs={3}>
           <Typography className={classes.title}>Our Mentors</Typography>
@@ -90,7 +90,7 @@ export const Mentors: React.FC<MentorsProps> = () => {
         </Grid> */}
 
         {data.mentors.map((mentor) => (
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <MentorCard
               mentor={mentor.mentor}
               avatar={mentor.mentor.user.avatar}
