@@ -1,0 +1,8 @@
+mutation EditIndustry($industryId: Int!, $newName: String!) {
+  editIndustry(industryId: $industryId, newName: $newName) {
+    errorMsg
+    industry {
+      id
+    }
+  }
+}

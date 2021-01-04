@@ -1,0 +1,6 @@
+mutation AcceptRequest($requestId: Int!, $date: String!) {
+  acceptRequest(requestId: $requestId, date: $date) {
+    errorMsg
+    accepted
+  }
+}

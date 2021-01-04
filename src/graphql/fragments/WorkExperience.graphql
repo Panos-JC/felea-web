@@ -1,0 +1,14 @@
+fragment WorkExperience on WorkExperience {
+  id
+  role
+  companyName
+  from
+  untill
+  present
+  createdAt
+  updatedAt
+  description
+  industries {
+    name
+  }
+}

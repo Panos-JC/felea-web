@@ -1,0 +1,6 @@
+mutation CancelRequest($requestId: Int!) {
+  cancelRequest(reqId: $requestId) {
+    errorMsg
+    canceled
+  }
+}

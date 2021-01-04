@@ -7,6 +7,10 @@ query IndividualRequestById($requestId: Int!) {
       headline
       communicationTool
       communicationToolId
+      suggestedDate1
+      suggestedDate2
+      suggestedDate3
+      selectedDate
       email
       status
       ammount

@@ -23,7 +23,7 @@ export type Query = {
   expertisesById: Array<Expertise>;
   individual: Individual;
   individuals: Array<Individual>;
-  industries: Array<Industry>;
+  industries: Array<IndustriesResponse>;
   mentor: MentorInfoResponse;
   loggedInMentor: MentorInfoResponse;
   allMentors: Array<MentorsResponse>;
@@ -196,7 +196,8 @@ export type WorkExperience = {
   companyName: Scalars['String'];
   description: Scalars['String'];
   from: Scalars['DateTime'];
-  untill: Scalars['DateTime'];
+  untill?: Maybe<Scalars['DateTime']>;
+  present: Scalars['Boolean'];
   industries?: Maybe<Array<Industry>>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -207,6 +208,7 @@ export type Industry = {
   id: Scalars['Int'];
   name: Scalars['String'];
   nameLowercase: Scalars['String'];
+  workExperiences: Array<WorkExperience>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -280,10 +282,22 @@ export type SessionRequest = {
   message: Scalars['String'];
   status: Scalars['String'];
   ammount: Scalars['Float'];
+  suggestedDate1: Scalars['DateTime'];
+  suggestedDate2: Scalars['DateTime'];
+  suggestedDate3: Scalars['DateTime'];
+  selectedDate?: Maybe<Scalars['DateTime']>;
   individual: Individual;
   mentor: Mentor;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type IndustriesResponse = {
+  __typename?: 'IndustriesResponse';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  name_lowercase: Scalars['String'];
+  count: Scalars['Int'];
 };
 
 export type MentorInfoResponse = {
@@ -331,6 +345,7 @@ export type RequestsTypes = {
   pending: Array<SessionRequest>;
   accepted: Array<SessionRequest>;
   declined: Array<SessionRequest>;
+  canceled: Array<SessionRequest>;
   completed: Array<SessionRequest>;
 };
 
@@ -429,6 +444,7 @@ export type Mutation = {
   assignFacilitator: Scalars['Boolean'];
   createExpertise: ExpertiseResponse;
   deleteExpertise: DeleteResponse;
+  editIndustry: EditIndustryResponse;
   createReview: ReviewResponse;
   editSkill: EditSkillResponse;
   deleteSkill: DeleteSkillResponse;
@@ -463,6 +479,8 @@ export type Mutation = {
   declineRequest: RequestActionResponse;
   setRequestComplete: SetRequestCompleteResponse;
   createSessionRequest: CreateRequestResponse;
+  deleteRequestByUser: DeleteRequestResponse;
+  cancelRequest: CancelRequestResponse;
   confirmUser: Scalars['Boolean'];
   addAvatarByAdmin: AvatarResponse;
   setBioByMentor: Scalars['Boolean'];
@@ -507,6 +525,12 @@ export type MutationCreateExpertiseArgs = {
 
 export type MutationDeleteExpertiseArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationEditIndustryArgs = {
+  newName: Scalars['String'];
+  industryId: Scalars['Int'];
 };
 
 
@@ -668,6 +692,7 @@ export type MutationSetMottoArgs = {
 
 
 export type MutationAcceptRequestArgs = {
+  date: Scalars['String'];
   requestId: Scalars['Int'];
 };
 
@@ -684,6 +709,16 @@ export type MutationSetRequestCompleteArgs = {
 
 export type MutationCreateSessionRequestArgs = {
   input: SessionRequestInput;
+};
+
+
+export type MutationDeleteRequestByUserArgs = {
+  reqId: Scalars['Int'];
+};
+
+
+export type MutationCancelRequestArgs = {
+  reqId: Scalars['Int'];
 };
 
 
@@ -800,6 +835,12 @@ export type DeleteResponse = {
   deleted?: Maybe<Scalars['Boolean']>;
 };
 
+export type EditIndustryResponse = {
+  __typename?: 'EditIndustryResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  industry?: Maybe<Industry>;
+};
+
 export type ReviewResponse = {
   __typename?: 'ReviewResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -835,7 +876,8 @@ export type WorkExperienceInput = {
   companyName: Scalars['String'];
   description: Scalars['String'];
   from: Scalars['DateTime'];
-  untill: Scalars['DateTime'];
+  untill?: Maybe<Scalars['DateTime']>;
+  present: Scalars['Boolean'];
   industries: Array<Scalars['String']>;
 };
 
@@ -972,9 +1014,24 @@ export type SessionRequestInput = {
   email: Scalars['String'];
   communicationTool: Scalars['String'];
   communicationToolId: Scalars['String'];
+  suggestedDate1: Scalars['DateTime'];
+  suggestedDate2: Scalars['DateTime'];
+  suggestedDate3: Scalars['DateTime'];
   message: Scalars['String'];
   ammount: Scalars['Float'];
   mentorId: Scalars['Float'];
+};
+
+export type DeleteRequestResponse = {
+  __typename?: 'DeleteRequestResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  deleted?: Maybe<Scalars['Boolean']>;
+};
+
+export type CancelRequestResponse = {
+  __typename?: 'CancelRequestResponse';
+  errorMsg?: Maybe<Scalars['String']>;
+  canceled?: Maybe<Scalars['Boolean']>;
 };
 
 export type DeleteEntityResponse = {
@@ -1055,9 +1112,9 @@ export type MentorInfoFragment = (
   & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'country' | 'city' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram' | 'website'>
 );
 
-export type SessionRequestFragmentFragment = (
+export type SessionRequestFragment = (
   { __typename?: 'SessionRequest' }
-  & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'email' | 'message' | 'status' | 'createdAt'>
+  & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'suggestedDate1' | 'suggestedDate2' | 'suggestedDate3' | 'selectedDate' | 'email' | 'message' | 'status' | 'createdAt'>
   & { individual: (
     { __typename?: 'Individual' }
     & Pick<Individual, 'firstName' | 'lastName' | 'premium'>
@@ -1073,17 +1130,13 @@ export type SkillFieldsFragment = (
   & Pick<Skill, 'id' | 'name' | 'nameLowercase'>
 );
 
-export type AcceptRequestMutationVariables = Exact<{
-  requestId: Scalars['Int'];
-}>;
-
-
-export type AcceptRequestMutation = (
-  { __typename?: 'Mutation' }
-  & { acceptRequest: (
-    { __typename?: 'RequestActionResponse' }
-    & Pick<RequestActionResponse, 'errorMsg' | 'accepted'>
-  ) }
+export type WorkExperienceFragment = (
+  { __typename?: 'WorkExperience' }
+  & Pick<WorkExperience, 'id' | 'role' | 'companyName' | 'from' | 'untill' | 'present' | 'createdAt' | 'updatedAt' | 'description'>
+  & { industries?: Maybe<Array<(
+    { __typename?: 'Industry' }
+    & Pick<Industry, 'name'>
+  )>> }
 );
 
 export type AddAvatarMutationVariables = Exact<{
@@ -1602,36 +1655,6 @@ export type CreateReviewMutation = (
   ) }
 );
 
-export type CreateSessionRequestMutationVariables = Exact<{
-  input: SessionRequestInput;
-}>;
-
-
-export type CreateSessionRequestMutation = (
-  { __typename?: 'Mutation' }
-  & { createSessionRequest: (
-    { __typename?: 'CreateRequestResponse' }
-    & Pick<CreateRequestResponse, 'errorMsg'>
-    & { sessionRequest?: Maybe<(
-      { __typename?: 'SessionRequest' }
-      & Pick<SessionRequest, 'id' | 'headline'>
-    )> }
-  ) }
-);
-
-export type DeclineRequestMutationVariables = Exact<{
-  requestId: Scalars['Int'];
-}>;
-
-
-export type DeclineRequestMutation = (
-  { __typename?: 'Mutation' }
-  & { declineRequest: (
-    { __typename?: 'RequestActionResponse' }
-    & Pick<RequestActionResponse, 'errorMsg' | 'declined'>
-  ) }
-);
-
 export type DeleteExpertiseMutationVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -1721,6 +1744,24 @@ export type UpdateIndividualInfoMutation = (
   ) }
 );
 
+export type EditIndustryMutationVariables = Exact<{
+  industryId: Scalars['Int'];
+  newName: Scalars['String'];
+}>;
+
+
+export type EditIndustryMutation = (
+  { __typename?: 'Mutation' }
+  & { editIndustry: (
+    { __typename?: 'EditIndustryResponse' }
+    & Pick<EditIndustryResponse, 'errorMsg'>
+    & { industry?: Maybe<(
+      { __typename?: 'Industry' }
+      & Pick<Industry, 'id'>
+    )> }
+  ) }
+);
+
 export type DeleteMentorMutationVariables = Exact<{
   mentorId: Scalars['Int'];
 }>;
@@ -1748,6 +1789,76 @@ export type SetMottoMutation = (
       { __typename?: 'Mentor' }
       & Pick<Mentor, 'id'>
     )> }
+  ) }
+);
+
+export type AcceptRequestMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+  date: Scalars['String'];
+}>;
+
+
+export type AcceptRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { acceptRequest: (
+    { __typename?: 'RequestActionResponse' }
+    & Pick<RequestActionResponse, 'errorMsg' | 'accepted'>
+  ) }
+);
+
+export type CancelRequestMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type CancelRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { cancelRequest: (
+    { __typename?: 'CancelRequestResponse' }
+    & Pick<CancelRequestResponse, 'errorMsg' | 'canceled'>
+  ) }
+);
+
+export type CreateSessionRequestMutationVariables = Exact<{
+  input: SessionRequestInput;
+}>;
+
+
+export type CreateSessionRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { createSessionRequest: (
+    { __typename?: 'CreateRequestResponse' }
+    & Pick<CreateRequestResponse, 'errorMsg'>
+    & { sessionRequest?: Maybe<(
+      { __typename?: 'SessionRequest' }
+      & Pick<SessionRequest, 'id' | 'headline'>
+    )> }
+  ) }
+);
+
+export type DeclineRequestMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type DeclineRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { declineRequest: (
+    { __typename?: 'RequestActionResponse' }
+    & Pick<RequestActionResponse, 'errorMsg' | 'declined'>
+  ) }
+);
+
+export type DeleteRequestByUserMutationVariables = Exact<{
+  requestId: Scalars['Int'];
+}>;
+
+
+export type DeleteRequestByUserMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteRequestByUser: (
+    { __typename?: 'DeleteRequestResponse' }
+    & Pick<DeleteRequestResponse, 'errorMsg' | 'deleted'>
   ) }
 );
 
@@ -2194,8 +2305,8 @@ export type IndustriesQueryVariables = Exact<{ [key: string]: never; }>;
 export type IndustriesQuery = (
   { __typename?: 'Query' }
   & { industries: Array<(
-    { __typename?: 'Industry' }
-    & Pick<Industry, 'id' | 'name'>
+    { __typename?: 'IndustriesResponse' }
+    & Pick<IndustriesResponse, 'id' | 'name' | 'name_lowercase' | 'count'>
   )> }
 );
 
@@ -2305,33 +2416,6 @@ export type MentorsQuery = (
   )> }
 );
 
-export type RequestsByMentorQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type RequestsByMentorQuery = (
-  { __typename?: 'Query' }
-  & { requestsByMentor: (
-    { __typename?: 'RequestsByMentorResponse' }
-    & Pick<RequestsByMentorResponse, 'errorMsg'>
-    & { requests?: Maybe<(
-      { __typename?: 'RequestsTypes' }
-      & { pending: Array<(
-        { __typename?: 'SessionRequest' }
-        & SessionRequestFragmentFragment
-      )>, accepted: Array<(
-        { __typename?: 'SessionRequest' }
-        & SessionRequestFragmentFragment
-      )>, declined: Array<(
-        { __typename?: 'SessionRequest' }
-        & SessionRequestFragmentFragment
-      )>, completed: Array<(
-        { __typename?: 'SessionRequest' }
-        & SessionRequestFragmentFragment
-      )> }
-    )> }
-  ) }
-);
-
 export type ReviewsByIdQueryVariables = Exact<{
   mentorId: Scalars['Int'];
 }>;
@@ -2365,7 +2449,7 @@ export type IndividualRequestByIdQuery = (
     & Pick<SessionRequestResponse, 'errorMsg'>
     & { data?: Maybe<(
       { __typename?: 'SessionRequest' }
-      & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'email' | 'status' | 'ammount' | 'message' | 'createdAt'>
+      & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'suggestedDate1' | 'suggestedDate2' | 'suggestedDate3' | 'selectedDate' | 'email' | 'status' | 'ammount' | 'message' | 'createdAt'>
       & { mentor: (
         { __typename?: 'Mentor' }
         & Pick<Mentor, 'id' | 'firstName' | 'lastName'>
@@ -2388,7 +2472,7 @@ export type IndividualRequestsQuery = (
     & Pick<SessionRequestsResponse, 'errorMsg'>
     & { data?: Maybe<Array<(
       { __typename?: 'SessionRequest' }
-      & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'email' | 'message' | 'status' | 'ammount' | 'createdAt'>
+      & Pick<SessionRequest, 'id' | 'objective' | 'headline' | 'communicationTool' | 'communicationToolId' | 'suggestedDate1' | 'suggestedDate2' | 'suggestedDate3' | 'selectedDate' | 'email' | 'message' | 'status' | 'ammount' | 'createdAt'>
       & { mentor: (
         { __typename?: 'Mentor' }
         & Pick<Mentor, 'id' | 'firstName' | 'lastName'>
@@ -2398,6 +2482,36 @@ export type IndividualRequestsQuery = (
         ) }
       ) }
     )>> }
+  ) }
+);
+
+export type RequestsByMentorQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RequestsByMentorQuery = (
+  { __typename?: 'Query' }
+  & { requestsByMentor: (
+    { __typename?: 'RequestsByMentorResponse' }
+    & Pick<RequestsByMentorResponse, 'errorMsg'>
+    & { requests?: Maybe<(
+      { __typename?: 'RequestsTypes' }
+      & { pending: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragment
+      )>, accepted: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragment
+      )>, declined: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragment
+      )>, canceled: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragment
+      )>, completed: Array<(
+        { __typename?: 'SessionRequest' }
+        & SessionRequestFragment
+      )> }
+    )> }
   ) }
 );
 
@@ -2482,11 +2596,7 @@ export type WorkExperiencesQuery = (
     & Pick<WorkExperiencesResponse, 'errorMsg'>
     & { data?: Maybe<Array<(
       { __typename?: 'WorkExperience' }
-      & Pick<WorkExperience, 'id' | 'role' | 'companyName' | 'from' | 'untill' | 'createdAt' | 'updatedAt' | 'description'>
-      & { industries?: Maybe<Array<(
-        { __typename?: 'Industry' }
-        & Pick<Industry, 'name'>
-      )>> }
+      & WorkExperienceFragment
     )>> }
   ) }
 );
@@ -2605,13 +2715,17 @@ export const MentorInfoFragmentDoc = gql`
   website
 }
     `;
-export const SessionRequestFragmentFragmentDoc = gql`
-    fragment SessionRequestFragment on SessionRequest {
+export const SessionRequestFragmentDoc = gql`
+    fragment SessionRequest on SessionRequest {
   id
   objective
   headline
   communicationTool
   communicationToolId
+  suggestedDate1
+  suggestedDate2
+  suggestedDate3
+  selectedDate
   email
   message
   status
@@ -2634,39 +2748,22 @@ export const SkillFieldsFragmentDoc = gql`
   nameLowercase
 }
     `;
-export const AcceptRequestDocument = gql`
-    mutation AcceptRequest($requestId: Int!) {
-  acceptRequest(requestId: $requestId) {
-    errorMsg
-    accepted
+export const WorkExperienceFragmentDoc = gql`
+    fragment WorkExperience on WorkExperience {
+  id
+  role
+  companyName
+  from
+  untill
+  present
+  createdAt
+  updatedAt
+  description
+  industries {
+    name
   }
 }
     `;
-export type AcceptRequestMutationFn = Apollo.MutationFunction<AcceptRequestMutation, AcceptRequestMutationVariables>;
-
-/**
- * __useAcceptRequestMutation__
- *
- * To run a mutation, you first call `useAcceptRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAcceptRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [acceptRequestMutation, { data, loading, error }] = useAcceptRequestMutation({
- *   variables: {
- *      requestId: // value for 'requestId'
- *   },
- * });
- */
-export function useAcceptRequestMutation(baseOptions?: Apollo.MutationHookOptions<AcceptRequestMutation, AcceptRequestMutationVariables>) {
-        return Apollo.useMutation<AcceptRequestMutation, AcceptRequestMutationVariables>(AcceptRequestDocument, baseOptions);
-      }
-export type AcceptRequestMutationHookResult = ReturnType<typeof useAcceptRequestMutation>;
-export type AcceptRequestMutationResult = Apollo.MutationResult<AcceptRequestMutation>;
-export type AcceptRequestMutationOptions = Apollo.BaseMutationOptions<AcceptRequestMutation, AcceptRequestMutationVariables>;
 export const AddAvatarDocument = gql`
     mutation AddAvatar($avatarUrl: String!, $publicId: String!) {
   addAvatar(avatarUrl: $avatarUrl, publicId: $publicId) {
@@ -3821,75 +3918,6 @@ export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
 export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
 export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
-export const CreateSessionRequestDocument = gql`
-    mutation CreateSessionRequest($input: SessionRequestInput!) {
-  createSessionRequest(input: $input) {
-    errorMsg
-    sessionRequest {
-      id
-      headline
-    }
-  }
-}
-    `;
-export type CreateSessionRequestMutationFn = Apollo.MutationFunction<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>;
-
-/**
- * __useCreateSessionRequestMutation__
- *
- * To run a mutation, you first call `useCreateSessionRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSessionRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSessionRequestMutation, { data, loading, error }] = useCreateSessionRequestMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateSessionRequestMutation(baseOptions?: Apollo.MutationHookOptions<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>) {
-        return Apollo.useMutation<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>(CreateSessionRequestDocument, baseOptions);
-      }
-export type CreateSessionRequestMutationHookResult = ReturnType<typeof useCreateSessionRequestMutation>;
-export type CreateSessionRequestMutationResult = Apollo.MutationResult<CreateSessionRequestMutation>;
-export type CreateSessionRequestMutationOptions = Apollo.BaseMutationOptions<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>;
-export const DeclineRequestDocument = gql`
-    mutation DeclineRequest($requestId: Int!) {
-  declineRequest(requestId: $requestId) {
-    errorMsg
-    declined
-  }
-}
-    `;
-export type DeclineRequestMutationFn = Apollo.MutationFunction<DeclineRequestMutation, DeclineRequestMutationVariables>;
-
-/**
- * __useDeclineRequestMutation__
- *
- * To run a mutation, you first call `useDeclineRequestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeclineRequestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [declineRequestMutation, { data, loading, error }] = useDeclineRequestMutation({
- *   variables: {
- *      requestId: // value for 'requestId'
- *   },
- * });
- */
-export function useDeclineRequestMutation(baseOptions?: Apollo.MutationHookOptions<DeclineRequestMutation, DeclineRequestMutationVariables>) {
-        return Apollo.useMutation<DeclineRequestMutation, DeclineRequestMutationVariables>(DeclineRequestDocument, baseOptions);
-      }
-export type DeclineRequestMutationHookResult = ReturnType<typeof useDeclineRequestMutation>;
-export type DeclineRequestMutationResult = Apollo.MutationResult<DeclineRequestMutation>;
-export type DeclineRequestMutationOptions = Apollo.BaseMutationOptions<DeclineRequestMutation, DeclineRequestMutationVariables>;
 export const DeleteExpertiseDocument = gql`
     mutation DeleteExpertise($id: Int!) {
   deleteExpertise(id: $id) {
@@ -4093,6 +4121,42 @@ export function useUpdateIndividualInfoMutation(baseOptions?: Apollo.MutationHoo
 export type UpdateIndividualInfoMutationHookResult = ReturnType<typeof useUpdateIndividualInfoMutation>;
 export type UpdateIndividualInfoMutationResult = Apollo.MutationResult<UpdateIndividualInfoMutation>;
 export type UpdateIndividualInfoMutationOptions = Apollo.BaseMutationOptions<UpdateIndividualInfoMutation, UpdateIndividualInfoMutationVariables>;
+export const EditIndustryDocument = gql`
+    mutation EditIndustry($industryId: Int!, $newName: String!) {
+  editIndustry(industryId: $industryId, newName: $newName) {
+    errorMsg
+    industry {
+      id
+    }
+  }
+}
+    `;
+export type EditIndustryMutationFn = Apollo.MutationFunction<EditIndustryMutation, EditIndustryMutationVariables>;
+
+/**
+ * __useEditIndustryMutation__
+ *
+ * To run a mutation, you first call `useEditIndustryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditIndustryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editIndustryMutation, { data, loading, error }] = useEditIndustryMutation({
+ *   variables: {
+ *      industryId: // value for 'industryId'
+ *      newName: // value for 'newName'
+ *   },
+ * });
+ */
+export function useEditIndustryMutation(baseOptions?: Apollo.MutationHookOptions<EditIndustryMutation, EditIndustryMutationVariables>) {
+        return Apollo.useMutation<EditIndustryMutation, EditIndustryMutationVariables>(EditIndustryDocument, baseOptions);
+      }
+export type EditIndustryMutationHookResult = ReturnType<typeof useEditIndustryMutation>;
+export type EditIndustryMutationResult = Apollo.MutationResult<EditIndustryMutation>;
+export type EditIndustryMutationOptions = Apollo.BaseMutationOptions<EditIndustryMutation, EditIndustryMutationVariables>;
 export const DeleteMentorDocument = gql`
     mutation DeleteMentor($mentorId: Int!) {
   deleteMentor(mentorId: $mentorId) {
@@ -4161,6 +4225,175 @@ export function useSetMottoMutation(baseOptions?: Apollo.MutationHookOptions<Set
 export type SetMottoMutationHookResult = ReturnType<typeof useSetMottoMutation>;
 export type SetMottoMutationResult = Apollo.MutationResult<SetMottoMutation>;
 export type SetMottoMutationOptions = Apollo.BaseMutationOptions<SetMottoMutation, SetMottoMutationVariables>;
+export const AcceptRequestDocument = gql`
+    mutation AcceptRequest($requestId: Int!, $date: String!) {
+  acceptRequest(requestId: $requestId, date: $date) {
+    errorMsg
+    accepted
+  }
+}
+    `;
+export type AcceptRequestMutationFn = Apollo.MutationFunction<AcceptRequestMutation, AcceptRequestMutationVariables>;
+
+/**
+ * __useAcceptRequestMutation__
+ *
+ * To run a mutation, you first call `useAcceptRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptRequestMutation, { data, loading, error }] = useAcceptRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useAcceptRequestMutation(baseOptions?: Apollo.MutationHookOptions<AcceptRequestMutation, AcceptRequestMutationVariables>) {
+        return Apollo.useMutation<AcceptRequestMutation, AcceptRequestMutationVariables>(AcceptRequestDocument, baseOptions);
+      }
+export type AcceptRequestMutationHookResult = ReturnType<typeof useAcceptRequestMutation>;
+export type AcceptRequestMutationResult = Apollo.MutationResult<AcceptRequestMutation>;
+export type AcceptRequestMutationOptions = Apollo.BaseMutationOptions<AcceptRequestMutation, AcceptRequestMutationVariables>;
+export const CancelRequestDocument = gql`
+    mutation CancelRequest($requestId: Int!) {
+  cancelRequest(reqId: $requestId) {
+    errorMsg
+    canceled
+  }
+}
+    `;
+export type CancelRequestMutationFn = Apollo.MutationFunction<CancelRequestMutation, CancelRequestMutationVariables>;
+
+/**
+ * __useCancelRequestMutation__
+ *
+ * To run a mutation, you first call `useCancelRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelRequestMutation, { data, loading, error }] = useCancelRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useCancelRequestMutation(baseOptions?: Apollo.MutationHookOptions<CancelRequestMutation, CancelRequestMutationVariables>) {
+        return Apollo.useMutation<CancelRequestMutation, CancelRequestMutationVariables>(CancelRequestDocument, baseOptions);
+      }
+export type CancelRequestMutationHookResult = ReturnType<typeof useCancelRequestMutation>;
+export type CancelRequestMutationResult = Apollo.MutationResult<CancelRequestMutation>;
+export type CancelRequestMutationOptions = Apollo.BaseMutationOptions<CancelRequestMutation, CancelRequestMutationVariables>;
+export const CreateSessionRequestDocument = gql`
+    mutation CreateSessionRequest($input: SessionRequestInput!) {
+  createSessionRequest(input: $input) {
+    errorMsg
+    sessionRequest {
+      id
+      headline
+    }
+  }
+}
+    `;
+export type CreateSessionRequestMutationFn = Apollo.MutationFunction<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>;
+
+/**
+ * __useCreateSessionRequestMutation__
+ *
+ * To run a mutation, you first call `useCreateSessionRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSessionRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSessionRequestMutation, { data, loading, error }] = useCreateSessionRequestMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSessionRequestMutation(baseOptions?: Apollo.MutationHookOptions<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>) {
+        return Apollo.useMutation<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>(CreateSessionRequestDocument, baseOptions);
+      }
+export type CreateSessionRequestMutationHookResult = ReturnType<typeof useCreateSessionRequestMutation>;
+export type CreateSessionRequestMutationResult = Apollo.MutationResult<CreateSessionRequestMutation>;
+export type CreateSessionRequestMutationOptions = Apollo.BaseMutationOptions<CreateSessionRequestMutation, CreateSessionRequestMutationVariables>;
+export const DeclineRequestDocument = gql`
+    mutation DeclineRequest($requestId: Int!) {
+  declineRequest(requestId: $requestId) {
+    errorMsg
+    declined
+  }
+}
+    `;
+export type DeclineRequestMutationFn = Apollo.MutationFunction<DeclineRequestMutation, DeclineRequestMutationVariables>;
+
+/**
+ * __useDeclineRequestMutation__
+ *
+ * To run a mutation, you first call `useDeclineRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeclineRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [declineRequestMutation, { data, loading, error }] = useDeclineRequestMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useDeclineRequestMutation(baseOptions?: Apollo.MutationHookOptions<DeclineRequestMutation, DeclineRequestMutationVariables>) {
+        return Apollo.useMutation<DeclineRequestMutation, DeclineRequestMutationVariables>(DeclineRequestDocument, baseOptions);
+      }
+export type DeclineRequestMutationHookResult = ReturnType<typeof useDeclineRequestMutation>;
+export type DeclineRequestMutationResult = Apollo.MutationResult<DeclineRequestMutation>;
+export type DeclineRequestMutationOptions = Apollo.BaseMutationOptions<DeclineRequestMutation, DeclineRequestMutationVariables>;
+export const DeleteRequestByUserDocument = gql`
+    mutation DeleteRequestByUser($requestId: Int!) {
+  deleteRequestByUser(reqId: $requestId) {
+    errorMsg
+    deleted
+  }
+}
+    `;
+export type DeleteRequestByUserMutationFn = Apollo.MutationFunction<DeleteRequestByUserMutation, DeleteRequestByUserMutationVariables>;
+
+/**
+ * __useDeleteRequestByUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteRequestByUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRequestByUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRequestByUserMutation, { data, loading, error }] = useDeleteRequestByUserMutation({
+ *   variables: {
+ *      requestId: // value for 'requestId'
+ *   },
+ * });
+ */
+export function useDeleteRequestByUserMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRequestByUserMutation, DeleteRequestByUserMutationVariables>) {
+        return Apollo.useMutation<DeleteRequestByUserMutation, DeleteRequestByUserMutationVariables>(DeleteRequestByUserDocument, baseOptions);
+      }
+export type DeleteRequestByUserMutationHookResult = ReturnType<typeof useDeleteRequestByUserMutation>;
+export type DeleteRequestByUserMutationResult = Apollo.MutationResult<DeleteRequestByUserMutation>;
+export type DeleteRequestByUserMutationOptions = Apollo.BaseMutationOptions<DeleteRequestByUserMutation, DeleteRequestByUserMutationVariables>;
 export const SetBioDocument = gql`
     mutation SetBio($bio: String!) {
   setBio(bio: $bio) {
@@ -5172,6 +5405,8 @@ export const IndustriesDocument = gql`
   industries {
     id
     name
+    name_lowercase
+    count
   }
 }
     `;
@@ -5414,52 +5649,6 @@ export function useMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MentorsQueryHookResult = ReturnType<typeof useMentorsQuery>;
 export type MentorsLazyQueryHookResult = ReturnType<typeof useMentorsLazyQuery>;
 export type MentorsQueryResult = Apollo.QueryResult<MentorsQuery, MentorsQueryVariables>;
-export const RequestsByMentorDocument = gql`
-    query RequestsByMentor {
-  requestsByMentor {
-    errorMsg
-    requests {
-      pending {
-        ...SessionRequestFragment
-      }
-      accepted {
-        ...SessionRequestFragment
-      }
-      declined {
-        ...SessionRequestFragment
-      }
-      completed {
-        ...SessionRequestFragment
-      }
-    }
-  }
-}
-    ${SessionRequestFragmentFragmentDoc}`;
-
-/**
- * __useRequestsByMentorQuery__
- *
- * To run a query within a React component, call `useRequestsByMentorQuery` and pass it any options that fit your needs.
- * When your component renders, `useRequestsByMentorQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRequestsByMentorQuery({
- *   variables: {
- *   },
- * });
- */
-export function useRequestsByMentorQuery(baseOptions?: Apollo.QueryHookOptions<RequestsByMentorQuery, RequestsByMentorQueryVariables>) {
-        return Apollo.useQuery<RequestsByMentorQuery, RequestsByMentorQueryVariables>(RequestsByMentorDocument, baseOptions);
-      }
-export function useRequestsByMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RequestsByMentorQuery, RequestsByMentorQueryVariables>) {
-          return Apollo.useLazyQuery<RequestsByMentorQuery, RequestsByMentorQueryVariables>(RequestsByMentorDocument, baseOptions);
-        }
-export type RequestsByMentorQueryHookResult = ReturnType<typeof useRequestsByMentorQuery>;
-export type RequestsByMentorLazyQueryHookResult = ReturnType<typeof useRequestsByMentorLazyQuery>;
-export type RequestsByMentorQueryResult = Apollo.QueryResult<RequestsByMentorQuery, RequestsByMentorQueryVariables>;
 export const ReviewsByIdDocument = gql`
     query ReviewsById($mentorId: Int!) {
   reviewsById(mentorId: $mentorId) {
@@ -5513,6 +5702,10 @@ export const IndividualRequestByIdDocument = gql`
       headline
       communicationTool
       communicationToolId
+      suggestedDate1
+      suggestedDate2
+      suggestedDate3
+      selectedDate
       email
       status
       ammount
@@ -5566,6 +5759,10 @@ export const IndividualRequestsDocument = gql`
       headline
       communicationTool
       communicationToolId
+      suggestedDate1
+      suggestedDate2
+      suggestedDate3
+      selectedDate
       email
       message
       status
@@ -5608,6 +5805,55 @@ export function useIndividualRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type IndividualRequestsQueryHookResult = ReturnType<typeof useIndividualRequestsQuery>;
 export type IndividualRequestsLazyQueryHookResult = ReturnType<typeof useIndividualRequestsLazyQuery>;
 export type IndividualRequestsQueryResult = Apollo.QueryResult<IndividualRequestsQuery, IndividualRequestsQueryVariables>;
+export const RequestsByMentorDocument = gql`
+    query RequestsByMentor {
+  requestsByMentor {
+    errorMsg
+    requests {
+      pending {
+        ...SessionRequest
+      }
+      accepted {
+        ...SessionRequest
+      }
+      declined {
+        ...SessionRequest
+      }
+      canceled {
+        ...SessionRequest
+      }
+      completed {
+        ...SessionRequest
+      }
+    }
+  }
+}
+    ${SessionRequestFragmentDoc}`;
+
+/**
+ * __useRequestsByMentorQuery__
+ *
+ * To run a query within a React component, call `useRequestsByMentorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRequestsByMentorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRequestsByMentorQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRequestsByMentorQuery(baseOptions?: Apollo.QueryHookOptions<RequestsByMentorQuery, RequestsByMentorQueryVariables>) {
+        return Apollo.useQuery<RequestsByMentorQuery, RequestsByMentorQueryVariables>(RequestsByMentorDocument, baseOptions);
+      }
+export function useRequestsByMentorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RequestsByMentorQuery, RequestsByMentorQueryVariables>) {
+          return Apollo.useLazyQuery<RequestsByMentorQuery, RequestsByMentorQueryVariables>(RequestsByMentorDocument, baseOptions);
+        }
+export type RequestsByMentorQueryHookResult = ReturnType<typeof useRequestsByMentorQuery>;
+export type RequestsByMentorLazyQueryHookResult = ReturnType<typeof useRequestsByMentorLazyQuery>;
+export type RequestsByMentorQueryResult = Apollo.QueryResult<RequestsByMentorQuery, RequestsByMentorQueryVariables>;
 export const SessionRequestByIdDocument = gql`
     query SessionRequestById($requestId: Int!) {
   sessionRequestById(requestId: $requestId) {
@@ -5760,21 +6006,11 @@ export const WorkExperiencesDocument = gql`
   workExperiences(mentorId: $mentorId) {
     errorMsg
     data {
-      id
-      role
-      companyName
-      from
-      untill
-      createdAt
-      updatedAt
-      description
-      industries {
-        name
-      }
+      ...WorkExperience
     }
   }
 }
-    `;
+    ${WorkExperienceFragmentDoc}`;
 
 /**
  * __useWorkExperiencesQuery__

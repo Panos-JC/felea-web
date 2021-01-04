@@ -1,0 +1,6 @@
+mutation DeleteRequestByUser($requestId: Int!) {
+  deleteRequestByUser(reqId: $requestId) {
+    errorMsg
+    deleted
+  }
+}

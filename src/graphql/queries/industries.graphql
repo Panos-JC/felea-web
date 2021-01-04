@@ -2,5 +2,7 @@ query Industries {
   industries {
     id
     name
+    name_lowercase
+    count
   }
 }

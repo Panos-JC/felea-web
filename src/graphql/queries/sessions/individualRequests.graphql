@@ -7,6 +7,10 @@ query IndividualRequests {
       headline
       communicationTool
       communicationToolId
+      suggestedDate1
+      suggestedDate2
+      suggestedDate3
+      selectedDate
       email
       message
       status

@@ -1,9 +1,13 @@
-fragment SessionRequestFragment on SessionRequest {
+fragment SessionRequest on SessionRequest {
   id
   objective
   headline
   communicationTool
   communicationToolId
+  suggestedDate1
+  suggestedDate2
+  suggestedDate3
+  selectedDate
   email
   message
   status

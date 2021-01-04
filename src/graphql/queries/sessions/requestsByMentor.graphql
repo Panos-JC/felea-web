@@ -3,16 +3,19 @@ query RequestsByMentor {
     errorMsg
     requests {
       pending {
-        ...SessionRequestFragment
+        ...SessionRequest
       }
       accepted {
-        ...SessionRequestFragment
+        ...SessionRequest
       }
       declined {
-        ...SessionRequestFragment
+        ...SessionRequest
+      }
+      canceled {
+        ...SessionRequest
       }
       completed {
-        ...SessionRequestFragment
+        ...SessionRequest
       }
     }
   }
