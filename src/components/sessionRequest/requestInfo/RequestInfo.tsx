@@ -1,3 +1,4 @@
+import MomentUtils from "@date-io/moment";
 import {
   Avatar,
   Button,
@@ -12,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useHistory, useParams } from "react-router-dom";
@@ -58,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
   actionBtn: {
     marginTop: theme.spacing(2),
   },
+  dateInput: {
+    width: "100%",
+  },
 }));
 
 const reasons = [
@@ -75,6 +80,9 @@ type Inputs = {
   tool: string;
   id: string;
   message: string;
+  date1: Date;
+  date2: Date;
+  date3: Date;
 };
 
 interface ParamTypes {
@@ -105,6 +113,14 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
 
   const watchObjective = watch("objective");
 
+  const newDate = () => {
+    const date = new Date();
+    date.setHours(0);
+    date.setMinutes(0);
+
+    return date;
+  };
+
   const onSubmit = async (formData: Inputs) => {
     let objective = formData.objective;
 
@@ -119,6 +135,9 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
       email: formData.email,
       communicationTool: formData.tool,
       communicationToolId: formData.id,
+      suggestedDate1: formData.date1,
+      suggestedDate2: formData.date2,
+      suggestedDate3: formData.date3,
       message: formData.message,
       ammount: parseInt(data?.mentor.info.rate!) * 100, // Amount in cents
       mentorId: parseInt(id),
@@ -236,29 +255,17 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
           <Divider className={classes.input} />
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <FormControl
-                error={errors.tool ? true : false}
+              <TextField
+                inputRef={register({ required: true })}
+                error={errors.id ? true : false}
+                helperText={errors.id ? "This field is required" : null}
+                label="Communication Tool"
+                placeholder="e.g. Skype"
+                name="tool"
+                variant="outlined"
                 fullWidth
                 size="small"
-                variant="outlined"
-              >
-                <InputLabel>Communication Tool</InputLabel>
-                <Controller
-                  as={
-                    <Select label="Communication Tool">
-                      <MenuItem value={"Skype"}>Skype</MenuItem>
-                    </Select>
-                  }
-                  name="tool"
-                  control={control}
-                  rules={{ required: true }}
-                />
-                {errors.tool && (
-                  <Typography variant="caption" color="error">
-                    This field is required
-                  </Typography>
-                )}
-              </FormControl>
+              />
               <Typography variant="caption" className={classes.input}>
                 How would you like to communicate with{" "}
                 {data?.mentor.info.firstName}?
@@ -277,6 +284,88 @@ export const RequestInfo: React.FC<RequestInfoProps> = () => {
                 fullWidth
                 size="small"
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1">
+                Suggest Times When You're Free to Talk
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Controller
+                  name="date1"
+                  control={control}
+                  defaultValue={newDate}
+                  rules={{ required: true }}
+                  render={({ onChange, value }) => (
+                    <DateTimePicker
+                      error={errors.date1 ? true : false}
+                      helperText={
+                        errors.date1 ? "This field is required" : null
+                      }
+                      variant="inline"
+                      size="small"
+                      inputVariant="outlined"
+                      disablePast
+                      minutesStep={60}
+                      views={["date", "hours"]}
+                      value={value}
+                      onChange={onChange}
+                      className={classes.dateInput}
+                    />
+                  )}
+                />
+              </MuiPickersUtilsProvider>
+            </Grid>
+            <Grid item xs={4}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Controller
+                  error={errors.date2 ? true : false}
+                  helperText={errors.date2 ? "This field is required" : null}
+                  name="date2"
+                  control={control}
+                  defaultValue={newDate}
+                  rules={{ required: true }}
+                  render={({ onChange, value }) => (
+                    <DateTimePicker
+                      variant="inline"
+                      size="small"
+                      inputVariant="outlined"
+                      disablePast
+                      minutesStep={60}
+                      views={["date", "hours"]}
+                      value={value}
+                      onChange={onChange}
+                      className={classes.dateInput}
+                    />
+                  )}
+                />
+              </MuiPickersUtilsProvider>
+            </Grid>
+            <Grid item xs={4}>
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <Controller
+                  error={errors.date3 ? true : false}
+                  helperText={errors.date3 ? "This field is required" : null}
+                  name="date3"
+                  control={control}
+                  defaultValue={newDate}
+                  rules={{ required: true }}
+                  render={({ onChange, value }) => (
+                    <DateTimePicker
+                      variant="inline"
+                      size="small"
+                      inputVariant="outlined"
+                      disablePast
+                      minutesStep={60}
+                      views={["date", "hours"]}
+                      value={value}
+                      onChange={onChange}
+                      className={classes.dateInput}
+                    />
+                  )}
+                />
+              </MuiPickersUtilsProvider>
             </Grid>
           </Grid>
           <TextField
