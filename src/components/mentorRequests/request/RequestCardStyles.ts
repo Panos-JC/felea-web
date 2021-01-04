@@ -61,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.error.dark,
     },
   },
+  cancelBtn: {
+    color: theme.palette.error.main,
+    borderColor: theme.palette.error.main,
+  },
   actions: {
     marginTop: theme.spacing(2),
   },
