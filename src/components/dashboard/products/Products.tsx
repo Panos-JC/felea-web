@@ -1,10 +1,9 @@
-import { Avatar, Link, makeStyles, Typography } from "@material-ui/core";
+import { Avatar, makeStyles, Typography } from "@material-ui/core";
 import MaterialTable from "material-table";
 import React from "react";
 import { useProductsQuery } from "../../../generated/graphql";
 import { Loading } from "../../shared/loading/Loading";
 import { PageTitle } from "../pageTitle/PageTitle";
-import { Link as RouterLink } from "react-router-dom";
 import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +55,7 @@ export const Products: React.FC<ProductsProps> = () => {
                   className={classes.avatar}
                 />
                 <div>
-                  <Link
+                  {/* <Link
                     className={classes.link}
                     color="inherit"
                     component={RouterLink}
@@ -64,7 +63,8 @@ export const Products: React.FC<ProductsProps> = () => {
                     variant="h6"
                   >
                     {rowData.title}
-                  </Link>
+                  </Link> */}
+                  {rowData.title}
                 </div>
               </div>
             ),
