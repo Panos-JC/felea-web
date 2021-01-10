@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiCardHeader-subheader": {
       fontSize: 13,
+      height: 19,
     },
   },
   chip: {
