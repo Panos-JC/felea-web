@@ -47,6 +47,7 @@ export type Query = {
   getAvatar: GetResponse;
   getMotto: GetResponse;
   getMentorInfo: Temp;
+  products: Array<Product>;
 };
 
 
@@ -437,6 +438,20 @@ export type Temp = {
   mentor?: Maybe<Mentor>;
 };
 
+export type Product = {
+  __typename?: 'Product';
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  subtitle?: Maybe<Scalars['String']>;
+  image: Scalars['String'];
+  imagePublicId: Scalars['String'];
+  descriptionRichText: Scalars['String'];
+  description: Scalars['String'];
+  price: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   generateMentor: GenerateUserResponse;
@@ -497,6 +512,7 @@ export type Mutation = {
   deleteIndividual: DeleteEntityResponse;
   deleteMentor: DeleteEntityResponse;
   deleteAdmin: DeleteAdminResponse;
+  createProduct: CreateProductResponse;
 };
 
 
@@ -811,6 +827,11 @@ export type MutationDeleteAdminArgs = {
   adminId: Scalars['Int'];
 };
 
+
+export type MutationCreateProductArgs = {
+  input: ProductInput;
+};
+
 export type GenerateUserResponse = {
   __typename?: 'GenerateUserResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -1046,6 +1067,21 @@ export type DeleteAdminResponse = {
   deleted: Scalars['Boolean'];
 };
 
+export type CreateProductResponse = {
+  __typename?: 'CreateProductResponse';
+  error?: Maybe<FieldError>;
+  product?: Maybe<Product>;
+};
+
+export type ProductInput = {
+  title: Scalars['String'];
+  subtitle?: Maybe<Scalars['String']>;
+  image: Scalars['String'];
+  descriptionRichText: Scalars['String'];
+  description: Scalars['String'];
+  price: Scalars['Float'];
+};
+
 export type AdminFragment = (
   { __typename?: 'Admin' }
   & Pick<Admin, 'id' | 'firstName' | 'lastName'>
@@ -1110,6 +1146,11 @@ export type IndividualFragment = (
 export type MentorInfoFragment = (
   { __typename?: 'Mentor' }
   & Pick<Mentor, 'id' | 'firstName' | 'lastName' | 'title' | 'country' | 'city' | 'languages' | 'bio' | 'motto' | 'rate' | 'profileComplete' | 'availableDayFrom' | 'availableDayUntill' | 'availableTimeFrom' | 'availableTimeUntill' | 'medium' | 'facebook' | 'linkedin' | 'twitter' | 'instagram' | 'website'>
+);
+
+export type ProductFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'title' | 'subtitle' | 'image' | 'descriptionRichText' | 'description' | 'price' | 'createdAt'>
 );
 
 export type SessionRequestFragment = (
@@ -1792,6 +1833,25 @@ export type SetMottoMutation = (
   ) }
 );
 
+export type CreateProductMutationVariables = Exact<{
+  input: ProductInput;
+}>;
+
+
+export type CreateProductMutation = (
+  { __typename?: 'Mutation' }
+  & { createProduct: (
+    { __typename?: 'CreateProductResponse' }
+    & { error?: Maybe<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>, product?: Maybe<(
+      { __typename?: 'Product' }
+      & Pick<Product, 'id'>
+    )> }
+  ) }
+);
+
 export type AcceptRequestMutationVariables = Exact<{
   requestId: Scalars['Int'];
   date: Scalars['String'];
@@ -2416,6 +2476,17 @@ export type MentorsQuery = (
   )> }
 );
 
+export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProductsQuery = (
+  { __typename?: 'Query' }
+  & { products: Array<(
+    { __typename?: 'Product' }
+    & ProductFragment
+  )> }
+);
+
 export type ReviewsByIdQueryVariables = Exact<{
   mentorId: Scalars['Int'];
 }>;
@@ -2713,6 +2784,18 @@ export const MentorInfoFragmentDoc = gql`
   twitter
   instagram
   website
+}
+    `;
+export const ProductFragmentDoc = gql`
+    fragment Product on Product {
+  id
+  title
+  subtitle
+  image
+  descriptionRichText
+  description
+  price
+  createdAt
 }
     `;
 export const SessionRequestFragmentDoc = gql`
@@ -4225,6 +4308,44 @@ export function useSetMottoMutation(baseOptions?: Apollo.MutationHookOptions<Set
 export type SetMottoMutationHookResult = ReturnType<typeof useSetMottoMutation>;
 export type SetMottoMutationResult = Apollo.MutationResult<SetMottoMutation>;
 export type SetMottoMutationOptions = Apollo.BaseMutationOptions<SetMottoMutation, SetMottoMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($input: ProductInput!) {
+  createProduct(input: $input) {
+    error {
+      field
+      message
+    }
+    product {
+      id
+    }
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, baseOptions);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const AcceptRequestDocument = gql`
     mutation AcceptRequest($requestId: Int!, $date: String!) {
   acceptRequest(requestId: $requestId, date: $date) {
@@ -5649,6 +5770,38 @@ export function useMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MentorsQueryHookResult = ReturnType<typeof useMentorsQuery>;
 export type MentorsLazyQueryHookResult = ReturnType<typeof useMentorsLazyQuery>;
 export type MentorsQueryResult = Apollo.QueryResult<MentorsQuery, MentorsQueryVariables>;
+export const ProductsDocument = gql`
+    query Products {
+  products {
+    ...Product
+  }
+}
+    ${ProductFragmentDoc}`;
+
+/**
+ * __useProductsQuery__
+ *
+ * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProductsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, baseOptions);
+      }
+export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
+          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, baseOptions);
+        }
+export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
+export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
+export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
 export const ReviewsByIdDocument = gql`
     query ReviewsById($mentorId: Int!) {
   reviewsById(mentorId: $mentorId) {
