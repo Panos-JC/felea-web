@@ -20,12 +20,14 @@ import { Settings } from "../components/account/settings/Settings";
 import { UserRequests } from "../components/userRequests/UserRequests";
 import { UserRequestPage } from "../components/userRequests/userRequestPage/UserRequestPage";
 import { Activate } from "../components/account/activate/Activate";
+import { Products } from "../components/products/Products";
 
 interface RoutesProps {}
 
 export const Routes: React.FC<RoutesProps> = () => {
   return (
     <Switch>
+      <ProtectedRoute path="/products" component={Products} exact />
       <ProtectedRoute
         path="/mentor/:id"
         component={MentorProfilePublic}

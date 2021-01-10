@@ -18,13 +18,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface IndividualNavProps {}
+interface AdminNavProps {}
 
-export const IndividualNav: React.FC<IndividualNavProps> = () => {
+export const AdminNav: React.FC<AdminNavProps> = () => {
   const classes = useStyles();
+
   return (
     <>
-      {/* <NavLink
+      <NavLink
         to="/products"
         className={classes.link}
         activeClassName={classes.active}
@@ -36,20 +37,6 @@ export const IndividualNav: React.FC<IndividualNavProps> = () => {
           disableElevation
         >
           Products
-        </Button>
-      </NavLink> */}
-      <NavLink
-        to="/user/requests"
-        className={classes.link}
-        activeClassName={classes.active}
-      >
-        <Button
-          className={classes.menuButton}
-          color="primary"
-          variant="contained"
-          disableElevation
-        >
-          My Requests
         </Button>
       </NavLink>
       <NavLink

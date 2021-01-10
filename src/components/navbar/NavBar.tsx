@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useMeQuery, useLogoutMutation } from "../../generated/graphql";
 import { AdminMenu } from "./admin/AdminMenu";
+import { AdminNav } from "./admin/AdminNav";
 import { IndividualMenu } from "./individual/IndividualMenu";
 import { IndividualNav } from "./individual/IndividualNav";
 import { MentorMenu } from "./mentor/MentorMenu";
@@ -105,6 +106,8 @@ export const NavBar: React.FC<NavBarProps> = () => {
       {data?.me?.individual && <IndividualNav />}
 
       {data?.me?.mentor && <MentorNav />}
+
+      {data?.me?.admin && <AdminNav />}
       <Button
         className={classes.avatarButton}
         variant="contained"
