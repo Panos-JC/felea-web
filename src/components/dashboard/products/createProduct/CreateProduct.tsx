@@ -18,7 +18,6 @@ import {
   useCreateProductMutation,
 } from "../../../../generated/graphql";
 import { GeneralCard } from "../../../shared/generalCard/GeneralCard";
-import { GeneralSnackbar } from "../../../shared/generalSnackbar/GeneralSnackbar";
 import { RichEditor } from "../../../shared/richEditor/RichEditor";
 import { PageTitle } from "../../pageTitle/PageTitle";
 
