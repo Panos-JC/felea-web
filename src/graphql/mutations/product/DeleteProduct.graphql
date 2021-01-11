@@ -1,0 +1,6 @@
+mutation DeleteProduct($productId: Int!) {
+  deleteProduct(productId: $productId) {
+    errorMsg
+    deleted
+  }
+}
