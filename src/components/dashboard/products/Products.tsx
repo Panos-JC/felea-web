@@ -1,10 +1,15 @@
 import { Avatar, makeStyles, Typography } from "@material-ui/core";
 import MaterialTable from "material-table";
 import React from "react";
-import { useProductsQuery } from "../../../generated/graphql";
+import {
+  ProductsDocument,
+  useDeleteProductMutation,
+  useProductsQuery,
+} from "../../../generated/graphql";
 import { Loading } from "../../shared/loading/Loading";
 import { PageTitle } from "../pageTitle/PageTitle";
 import moment from "moment";
+import { DeleteOutline } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -19,13 +24,26 @@ const useStyles = makeStyles((theme) => ({
   link: {
     fontSize: 14,
   },
+  icon: {
+    color: theme.palette.error.light,
+  },
 }));
 
 interface ProductsProps {}
 
 export const Products: React.FC<ProductsProps> = () => {
   const classes = useStyles();
+
+  // GraphQL
   const { data, loading } = useProductsQuery();
+  const [deleteProduct] = useDeleteProductMutation();
+
+  const handleDelete = async (id: number) => {
+    await deleteProduct({
+      variables: { productId: id },
+      refetchQueries: [{ query: ProductsDocument }],
+    });
+  };
 
   if (loading || !data) {
     return <Loading />;
@@ -91,6 +109,13 @@ export const Products: React.FC<ProductsProps> = () => {
             createdAt: product.createdAt,
           };
         })}
+        actions={[
+          {
+            icon: () => <DeleteOutline className={classes.icon} />,
+            tooltip: "Delete Product",
+            onClick: (event, rowData: any) => handleDelete(rowData.id),
+          },
+        ]}
         options={{
           draggable: false,
           emptyRowsWhenPaging: false,
