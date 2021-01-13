@@ -24,7 +24,7 @@ export const IndividualNav: React.FC<IndividualNavProps> = () => {
   const classes = useStyles();
   return (
     <>
-      {/* <NavLink
+      <NavLink
         to="/products"
         className={classes.link}
         activeClassName={classes.active}
@@ -37,7 +37,7 @@ export const IndividualNav: React.FC<IndividualNavProps> = () => {
         >
           Products
         </Button>
-      </NavLink> */}
+      </NavLink>
       <NavLink
         to="/user/requests"
         className={classes.link}
