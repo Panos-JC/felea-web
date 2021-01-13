@@ -1,6 +1,6 @@
 import { Avatar, makeStyles, Typography } from "@material-ui/core";
 import MaterialTable from "material-table";
-import React from "react";
+import React, { useState } from "react";
 import {
   ProductsDocument,
   useDeleteProductMutation,
@@ -10,6 +10,7 @@ import { Loading } from "../../shared/loading/Loading";
 import { PageTitle } from "../pageTitle/PageTitle";
 import moment from "moment";
 import { DeleteOutline } from "@material-ui/icons";
+import { GeneralSnackbar } from "../../shared/generalSnackbar/GeneralSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   nameCell: {
@@ -34,15 +35,23 @@ interface ProductsProps {}
 export const Products: React.FC<ProductsProps> = () => {
   const classes = useStyles();
 
+  const [openSnackbar, setOpenSnackBar] = useState(false);
+  const [message, setMessage] = useState("");
+
   // GraphQL
   const { data, loading } = useProductsQuery();
   const [deleteProduct] = useDeleteProductMutation();
 
   const handleDelete = async (id: number) => {
-    await deleteProduct({
+    const { data } = await deleteProduct({
       variables: { productId: id },
       refetchQueries: [{ query: ProductsDocument }],
     });
+
+    if (data?.deleteProduct.errorMsg) {
+      setMessage(data.deleteProduct.errorMsg);
+      setOpenSnackBar(true);
+    }
   };
 
   if (loading || !data) {
@@ -123,6 +132,12 @@ export const Products: React.FC<ProductsProps> = () => {
           pageSizeOptions: [10, 20],
           actionsColumnIndex: -1,
         }}
+      />
+      <GeneralSnackbar
+        open={openSnackbar}
+        setOpen={setOpenSnackBar}
+        message={message}
+        type="error"
       />
     </>
   );
