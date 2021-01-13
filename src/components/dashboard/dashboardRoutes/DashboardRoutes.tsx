@@ -19,12 +19,17 @@ import { Industries } from "../tags/Industries";
 import { AdminPage } from "../users/admins/adminPage/AdminPage";
 import { Products } from "../products/Products";
 import { CreateProduct } from "../products/createProduct/CreateProduct";
+import { OrderList } from "../orders/OrderList";
+import { OrderPage } from "../orders/orderPage/OrderPage";
 
 interface DashboardRoutesProps {}
 
 export const DashboardRoutes: React.FC<DashboardRoutesProps> = () => {
   return (
     <>
+      <ProtectedRoute path="/dashboard/orders" component={OrderList} exact />
+      <ProtectedRoute path="/dashboard/order/:id" component={OrderPage} exact />
+
       <ProtectedRoute path="/dashboard/products" component={Products} exact />
       <ProtectedRoute
         path="/dashboard/products/new"
