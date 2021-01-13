@@ -21,6 +21,7 @@ import { UserRequests } from "../components/userRequests/UserRequests";
 import { UserRequestPage } from "../components/userRequests/userRequestPage/UserRequestPage";
 import { Activate } from "../components/account/activate/Activate";
 import { Products } from "../components/products/Products";
+import { ProductPage } from "../components/products/productPage/ProductPage";
 
 interface RoutesProps {}
 
@@ -28,6 +29,7 @@ export const Routes: React.FC<RoutesProps> = () => {
   return (
     <Switch>
       <ProtectedRoute path="/products" component={Products} exact />
+      <ProtectedRoute path="/product/:id" component={ProductPage} exact />
       <ProtectedRoute
         path="/mentor/:id"
         component={MentorProfilePublic}
