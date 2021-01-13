@@ -1,7 +1,6 @@
 import React from "react";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { makeStyles, Avatar, Link } from "@material-ui/core";
-import { fade } from "@material-ui/core/styles";
 import { ArrowForward } from "@material-ui/icons";
 import { useAdminsQuery } from "../../../../generated/graphql";
 import MaterialTable from "material-table";
@@ -17,25 +16,12 @@ const useStyles = makeStyles((theme) => ({
     width: 42,
     marginRight: theme.spacing(1),
   },
-  warn: {
-    background: fade(theme.palette.error.light, 0.4),
-    color: theme.palette.error.dark,
-  },
-  success: {
-    background: fade(theme.palette.success.light, 0.4),
-    color: theme.palette.success.dark,
-  },
   link: {
     fontSize: 14,
   },
   email: {
     fontSize: "0.875rem",
     color: theme.palette.text.secondary,
-  },
-  spinner: {
-    textAlign: "center",
-    paddingTop: 40,
-    paddingBottom: 40,
   },
 }));
 
