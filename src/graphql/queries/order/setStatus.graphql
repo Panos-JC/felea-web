@@ -1,0 +1,6 @@
+mutation SetStatus($orderId: Int!, $status: String!) {
+  setStatus(orderId: $orderId, status: $status) {
+    id
+    status
+  }
+}

@@ -1,0 +1,18 @@
+query Orders {
+  orders {
+    id
+    status
+    individual {
+      firstName
+      lastName
+      user {
+        email
+        avatar
+      }
+    }
+    product {
+      ...Product
+    }
+    createdAt
+  }
+}
