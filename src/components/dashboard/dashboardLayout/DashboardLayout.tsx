@@ -8,6 +8,7 @@ import {
 import React from "react";
 import { NavBar } from "../../navbar/NavBar";
 import { DashboardRoutes } from "../dashboardRoutes/DashboardRoutes";
+import { OrdersDrawerItem } from "./drawerItems/OrdersDrawerItem";
 import { ProductsDrawerItem } from "./drawerItems/ProductsDrawerItem";
 import { SessionsDrawerItem } from "./drawerItems/SessionsDrawerItem";
 import { TagsDrawerItem } from "./drawerItems/TagsDrawerItem";
@@ -59,6 +60,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
             <UsersDrawerItem />
             <TagsDrawerItem />
             <ProductsDrawerItem />
+            <OrdersDrawerItem />
           </List>
         </div>
       </Drawer>
