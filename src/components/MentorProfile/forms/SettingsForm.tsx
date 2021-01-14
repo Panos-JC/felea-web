@@ -223,10 +223,15 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                   Amount
                 </InputLabel>
                 <OutlinedInput
-                  inputRef={register({ required: true })}
-                  error={errors.lastName ? true : false}
+                  inputRef={register({
+                    required: true,
+                    pattern: {
+                      value: /^[0-9\b]+$/,
+                      message: "Field must be a number",
+                    },
+                  })}
+                  error={!!errors.rate}
                   defaultValue={data?.me?.mentor?.rate}
-                  // helperText={errors.lastName ? "Required field" : null}
                   name="rate"
                   id="outlined-adornment-amount"
                   startAdornment={
@@ -236,6 +241,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                   }
                   labelWidth={60}
                 />
+                {errors.rate && (
+                  <Typography color="error">{errors.rate.message}</Typography>
+                )}
               </FormControl>
             </Grid>
           </Grid>
@@ -404,6 +412,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                         options={countries}
                         onChange={(_, data) => onChange(data?.name)}
                         getOptionLabel={(option) => option.name}
+                        defaultValue={countries.find(
+                          (c) => c.name === data?.me?.mentor?.country
+                        )}
                         getOptionSelected={(option, value) => {
                           return option.name === value.name;
                         }}
@@ -412,6 +423,10 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                             {...params}
                             label="Country"
                             variant="outlined"
+                            error={!!errors.country}
+                            helperText={
+                              errors.country ? "Required field" : null
+                            }
                             size="small"
                           />
                         )}
@@ -419,6 +434,7 @@ export const SettingsForm: React.FC<SettingsFormProps> = () => {
                     )}
                     control={control}
                     defaultValue={data?.me?.mentor?.country}
+                    rules={{ required: true }}
                   />
                 </Grid>
                 <Grid item xs={6}>
