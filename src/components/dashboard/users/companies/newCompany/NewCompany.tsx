@@ -99,6 +99,7 @@ export const NewCompany: React.FC<NewCompanyProps> = () => {
                   onChange={(e) => setValue(e.target.value)}
                 >
                   <FormControlLabel value="2" control={<Radio />} label="2" />
+                  <FormControlLabel value="3" control={<Radio />} label="3" />
                   <FormControlLabel value="10" control={<Radio />} label="10" />
                   <FormControlLabel value="20" control={<Radio />} label="20" />
                   <FormControlLabel value="30" control={<Radio />} label="30" />
