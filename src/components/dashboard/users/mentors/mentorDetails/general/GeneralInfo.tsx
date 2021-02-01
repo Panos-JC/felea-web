@@ -406,6 +406,9 @@ export const GeneralInfo: React.FC<GeneralInfoProps> = ({ id }) => {
                         options={countries}
                         onChange={(_, data) => onChange(data?.name)}
                         getOptionLabel={(option) => option.name}
+                        defaultValue={countries.find(
+                          (c) => c.name === data?.getMentorInfo?.mentor?.country
+                        )}
                         getOptionSelected={(option, value) => {
                           return option.name === value.name;
                         }}
@@ -414,6 +417,10 @@ export const GeneralInfo: React.FC<GeneralInfoProps> = ({ id }) => {
                             {...params}
                             label="Country"
                             variant="outlined"
+                            error={!!errors.country}
+                            helperText={
+                              errors.country ? "Required field" : null
+                            }
                             size="small"
                           />
                         )}
@@ -421,6 +428,7 @@ export const GeneralInfo: React.FC<GeneralInfoProps> = ({ id }) => {
                     )}
                     control={control}
                     defaultValue={data?.getMentorInfo.mentor?.country}
+                    rules={{ required: true }}
                   />
                 </Grid>
                 <Grid item xs={6}>
