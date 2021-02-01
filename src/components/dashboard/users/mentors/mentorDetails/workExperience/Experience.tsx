@@ -22,6 +22,7 @@ export const Experience: React.FC<ExperienceProps> = ({ id }) => {
           company={experience.companyName}
           from={experience.from}
           to={experience.untill}
+          present={experience.present}
           description={experience.description}
           industries={experience.industries!}
         />

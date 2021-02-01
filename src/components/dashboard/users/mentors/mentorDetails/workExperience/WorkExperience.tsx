@@ -1,5 +1,6 @@
 import { makeStyles, Typography, Chip, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
+import moment from "moment";
 import React from "react";
 import {
   useDeleteWorkExperienceByAdminMutation,
@@ -64,6 +65,7 @@ interface WorkExperienceProps {
   company: string;
   from: string;
   to: string;
+  present: boolean;
   description: string;
   industries: any[] | undefined;
 }
@@ -75,6 +77,7 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
   company,
   from,
   to,
+  present,
   description,
   industries,
 }) => {
@@ -107,9 +110,18 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
         </div>
       </div>
       <Typography className={classes.company}>{company}</Typography>
-      <Typography className={classes.date}>
-        {new Date(from).getFullYear()} - {new Date(to).getFullYear()}
-      </Typography>
+      {present && (
+        <Typography className={classes.date}>
+          {`${moment(from).format("MMM YYYY")} - present`}
+        </Typography>
+      )}
+      {!present && (
+        <Typography className={classes.date}>
+          {`${moment(from).format("MMM YYYY")} - ${moment(to).format(
+            "MMM YYYY"
+          )}`}
+        </Typography>
+      )}
       <Typography className={classes.description}>{description}</Typography>
       <div className={classes.industries}>
         {industries &&
