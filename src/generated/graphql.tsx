@@ -51,6 +51,7 @@ export type Query = {
   product: Product;
   orders: Array<Order>;
   order: Order;
+  getAvailability: Array<AvailabilityDate>;
 };
 
 
@@ -460,7 +461,7 @@ export type Product = {
   imagePublicId: Scalars['String'];
   descriptionRichText: Scalars['String'];
   description: Scalars['String'];
-  price: Scalars['Float'];
+  price?: Maybe<Scalars['Float']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -473,6 +474,23 @@ export type Order = {
   product: Product;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type AvailabilityDate = {
+  __typename?: 'AvailabilityDate';
+  id: Scalars['Int'];
+  dayOfWeek: Scalars['Float'];
+  startTime: Scalars['String'];
+  endTime: Scalars['String'];
+  mentor: Mentor;
+  timeSlots: Array<TimeSlots>;
+};
+
+export type TimeSlots = {
+  __typename?: 'TimeSlots';
+  id: Scalars['Int'];
+  slot: Scalars['String'];
+  availabilityDate: AvailabilityDate;
 };
 
 export type Mutation = {
@@ -539,6 +557,7 @@ export type Mutation = {
   deleteProduct: DeleteProductResponse;
   createOrder: Order;
   setStatus: Order;
+  setAvailability: Scalars['Boolean'];
 };
 
 
@@ -874,6 +893,11 @@ export type MutationSetStatusArgs = {
   orderId: Scalars['Int'];
 };
 
+
+export type MutationSetAvailabilityArgs = {
+  input: Array<AvailabilityInput>;
+};
+
 export type GenerateUserResponse = {
   __typename?: 'GenerateUserResponse';
   errorMsg?: Maybe<Scalars['String']>;
@@ -1121,13 +1145,20 @@ export type ProductInput = {
   image: Scalars['String'];
   descriptionRichText: Scalars['String'];
   description: Scalars['String'];
-  price: Scalars['Float'];
+  price?: Maybe<Scalars['Float']>;
 };
 
 export type DeleteProductResponse = {
   __typename?: 'DeleteProductResponse';
   errorMsg?: Maybe<Scalars['String']>;
   deleted?: Maybe<Scalars['Boolean']>;
+};
+
+export type AvailabilityInput = {
+  day: Scalars['Int'];
+  start: Scalars['DateTime'];
+  end: Scalars['DateTime'];
+  slots: Array<Scalars['DateTime']>;
 };
 
 export type AdminFragment = (
@@ -1629,6 +1660,16 @@ export type MentorRegisterMutation = (
       )> }
     )> }
   ) }
+);
+
+export type SetAvailabilityMutationVariables = Exact<{
+  input: Array<AvailabilityInput>;
+}>;
+
+
+export type SetAvailabilityMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setAvailability'>
 );
 
 export type CreateCertificateMutationVariables = Exact<{
@@ -2291,6 +2332,21 @@ export type AllMentorsQuery = (
         & Pick<Users, 'email' | 'avatar' | 'activated'>
       ) }
     ) }
+  )> }
+);
+
+export type GetAvailabilityQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAvailabilityQuery = (
+  { __typename?: 'Query' }
+  & { getAvailability: Array<(
+    { __typename?: 'AvailabilityDate' }
+    & Pick<AvailabilityDate, 'dayOfWeek' | 'startTime' | 'endTime'>
+    & { timeSlots: Array<(
+      { __typename?: 'TimeSlots' }
+      & Pick<TimeSlots, 'slot'>
+    )> }
   )> }
 );
 
@@ -3896,6 +3952,36 @@ export function useMentorRegisterMutation(baseOptions?: Apollo.MutationHookOptio
 export type MentorRegisterMutationHookResult = ReturnType<typeof useMentorRegisterMutation>;
 export type MentorRegisterMutationResult = Apollo.MutationResult<MentorRegisterMutation>;
 export type MentorRegisterMutationOptions = Apollo.BaseMutationOptions<MentorRegisterMutation, MentorRegisterMutationVariables>;
+export const SetAvailabilityDocument = gql`
+    mutation SetAvailability($input: [AvailabilityInput!]!) {
+  setAvailability(input: $input)
+}
+    `;
+export type SetAvailabilityMutationFn = Apollo.MutationFunction<SetAvailabilityMutation, SetAvailabilityMutationVariables>;
+
+/**
+ * __useSetAvailabilityMutation__
+ *
+ * To run a mutation, you first call `useSetAvailabilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetAvailabilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setAvailabilityMutation, { data, loading, error }] = useSetAvailabilityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetAvailabilityMutation(baseOptions?: Apollo.MutationHookOptions<SetAvailabilityMutation, SetAvailabilityMutationVariables>) {
+        return Apollo.useMutation<SetAvailabilityMutation, SetAvailabilityMutationVariables>(SetAvailabilityDocument, baseOptions);
+      }
+export type SetAvailabilityMutationHookResult = ReturnType<typeof useSetAvailabilityMutation>;
+export type SetAvailabilityMutationResult = Apollo.MutationResult<SetAvailabilityMutation>;
+export type SetAvailabilityMutationOptions = Apollo.BaseMutationOptions<SetAvailabilityMutation, SetAvailabilityMutationVariables>;
 export const CreateCertificateDocument = gql`
     mutation CreateCertificate($input: CertificateInput!) {
   createCertificate(input: $input) {
@@ -5405,6 +5491,43 @@ export function useAllMentorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type AllMentorsQueryHookResult = ReturnType<typeof useAllMentorsQuery>;
 export type AllMentorsLazyQueryHookResult = ReturnType<typeof useAllMentorsLazyQuery>;
 export type AllMentorsQueryResult = Apollo.QueryResult<AllMentorsQuery, AllMentorsQueryVariables>;
+export const GetAvailabilityDocument = gql`
+    query GetAvailability {
+  getAvailability {
+    dayOfWeek
+    startTime
+    endTime
+    timeSlots {
+      slot
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAvailabilityQuery__
+ *
+ * To run a query within a React component, call `useGetAvailabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAvailabilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAvailabilityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAvailabilityQuery(baseOptions?: Apollo.QueryHookOptions<GetAvailabilityQuery, GetAvailabilityQueryVariables>) {
+        return Apollo.useQuery<GetAvailabilityQuery, GetAvailabilityQueryVariables>(GetAvailabilityDocument, baseOptions);
+      }
+export function useGetAvailabilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAvailabilityQuery, GetAvailabilityQueryVariables>) {
+          return Apollo.useLazyQuery<GetAvailabilityQuery, GetAvailabilityQueryVariables>(GetAvailabilityDocument, baseOptions);
+        }
+export type GetAvailabilityQueryHookResult = ReturnType<typeof useGetAvailabilityQuery>;
+export type GetAvailabilityLazyQueryHookResult = ReturnType<typeof useGetAvailabilityLazyQuery>;
+export type GetAvailabilityQueryResult = Apollo.QueryResult<GetAvailabilityQuery, GetAvailabilityQueryVariables>;
 export const CertificatesDocument = gql`
     query Certificates($mentorId: Int) {
   certificates(mentorId: $mentorId) {
