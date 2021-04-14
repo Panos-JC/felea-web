@@ -21,7 +21,7 @@ import { GeneralCard } from "../../../shared/generalCard/GeneralCard";
 import { RichEditor } from "../../../shared/richEditor/RichEditor";
 import { PageTitle } from "../../pageTitle/PageTitle";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   card: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
@@ -54,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
 type Inputs = {
   title: string;
   subtitle: string;
-  price: string;
 };
 
 interface CreateProductProps {}
@@ -102,7 +101,7 @@ export const CreateProduct: React.FC<CreateProductProps> = () => {
       descriptionRichText: JSON.stringify(contentRaw),
       description: plainText,
       image: file,
-      price: parseInt(formData.price),
+      price: null,
     };
 
     console.log(input);
@@ -184,7 +183,7 @@ export const CreateProduct: React.FC<CreateProductProps> = () => {
             </GeneralCard>
             <GeneralCard title="Price">
               <TextField
-                inputRef={register({ required: true })}
+                // inputRef={register({ required: true })}
                 error={errors.title}
                 helperText={errors.title ? "Required field" : null}
                 className={classes.input}
@@ -192,6 +191,7 @@ export const CreateProduct: React.FC<CreateProductProps> = () => {
                 label="Price"
                 name="price"
                 type="number"
+                disabled
               />
             </GeneralCard>
             <Button type="submit" variant="contained" color="primary">

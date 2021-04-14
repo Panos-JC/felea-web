@@ -23,7 +23,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { GeneralSnackbar } from "../../shared/generalSnackbar/GeneralSnackbar";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     // height: "100%",
   },
@@ -52,7 +52,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
-  extended = true,
+  extended = false,
 }) => {
   const classes = useStyles();
 
@@ -140,12 +140,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               variant="contained"
               color="primary"
               disableElevation
+              size="small"
               onClick={() => setOpenDialog(true)}
             >
               Order
             </Button>
           )}
-          <Chip label={`${product.price}\u20AC`} className={classes.chip} />
+          <Chip label="Price: TBD" size="small" className={classes.chip} />
         </CardActions>
       </Card>
       <Dialog onClose={handleCloseDialog} open={openDialog}>
