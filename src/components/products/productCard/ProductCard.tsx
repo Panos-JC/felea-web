@@ -52,7 +52,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
-  extended = false,
+  extended = true,
 }) => {
   const classes = useStyles();
 
@@ -105,13 +105,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               image={product.image}
               title="Paella dish"
             />
-            {extended && (
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {product.description.slice(0, 250)}
-                </Typography>
-              </CardContent>
-            )}
           </CardActionArea>
         ) : (
           <>
@@ -125,13 +118,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               image={product.image}
               title="Paella dish"
             />
-            {extended && (
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {product.description.slice(0, 250)}
-                </Typography>
-              </CardContent>
-            )}
           </>
         )}
         <CardActions disableSpacing>
