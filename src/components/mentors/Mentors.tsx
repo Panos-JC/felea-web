@@ -2,10 +2,10 @@ import React from "react";
 import { Layout } from "../shared/layout/Layout";
 import { MentorCard } from "./MentorCard";
 import { useMentorsQuery } from "../../generated/graphql";
-import { makeStyles, Grid, Typography } from "@material-ui/core";
+import { makeStyles, Grid, Typography, Card } from "@material-ui/core";
 import { Loading } from "../shared/loading/Loading";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   title: {
     fontSize: "1.5rem",
     lineHeight: 2,
@@ -28,6 +28,14 @@ const useStyles = makeStyles((theme) => ({
   filter: {
     fontSize: 14,
     fontWeight: 400,
+  },
+  contactCard: {
+    position: "fixed",
+    padding: 25,
+    width: 500,
+  },
+  contactCardTitle: {
+    marginBottom: 20,
   },
 }));
 
@@ -74,7 +82,7 @@ export const Mentors: React.FC<MentorsProps> = () => {
   }
 
   return (
-    <Layout maxWidth="md">
+    <Layout maxWidth="lg">
       <Grid container spacing={3}>
         <Grid item xs={3}>
           <Typography className={classes.title}>Our Mentors</Typography>
@@ -82,24 +90,40 @@ export const Mentors: React.FC<MentorsProps> = () => {
       </Grid>
 
       <Grid container spacing={3}>
-        {/* <Grid item xs={3}>
+        <Grid item xs={8}>
+          <Grid container spacing={3}>
+            {/* <Grid item xs={3}>
           <SkillFilters
             handleSkillChange={handleSkillChange}
             handleIndustryChange={handleIndustryChange}
           />
         </Grid> */}
 
-        {data.mentors.map((mentor) => (
-          <Grid item xs={12}>
-            <MentorCard
-              mentor={mentor.mentor}
-              avatar={mentor.mentor.user.avatar}
-              sessions={mentor.sessions}
-              rating={mentor.avg}
-              expertises={mentor.mentor.expertises}
-            />
+            {data.mentors.map(mentor => (
+              <Grid item xs={12}>
+                <MentorCard
+                  mentor={mentor.mentor}
+                  avatar={mentor.mentor.user.avatar}
+                  sessions={mentor.sessions}
+                  rating={mentor.avg}
+                  expertises={mentor.mentor.expertises}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
+        </Grid>
+        <Grid item xs={4}>
+          <Card className={classes.contactCard}>
+            <Typography variant="h5" className={classes.contactCardTitle}>
+              Ενδιαφέρεσαι για μέντορα ή προϊόν;
+            </Typography>
+            <Typography>
+              Επικοινώνησε με τη FELEA στο{" "}
+              <a href="mailto:info@felea.org">info@felea.org</a> για προσφορά
+              και καλύτερη τιμή.
+            </Typography>
+          </Card>
+        </Grid>
       </Grid>
     </Layout>
   );
